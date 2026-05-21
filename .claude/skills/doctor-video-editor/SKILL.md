@@ -19,12 +19,21 @@ If the user only wants ONE of these (e.g. just transcription or just translation
 
 ## Setup (one-time)
 
+**macOS / Linux:**
 ```bash
 cd .claude/skills/doctor-video-editor
 bash setup.sh
 ```
 
+**Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\.claude\skills\doctor-video-editor\setup.ps1
+$env:GEMINI_API_KEY = "your-key-here"   # for this session
+```
+
 This installs `ffmpeg-static` and Gemini deps locally inside the skill folder (no system ffmpeg required). Required env var: `GEMINI_API_KEY` (same key the MCP server uses).
+
+On Windows, all `node scripts/pipeline.mjs ...` commands below work identically from PowerShell or cmd. Paths may use either forward or backslashes — the pipeline normalizes them internally for ffmpeg's filter syntax.
 
 ## End-to-end run
 

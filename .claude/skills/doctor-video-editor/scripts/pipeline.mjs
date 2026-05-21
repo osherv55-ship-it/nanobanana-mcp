@@ -329,8 +329,13 @@ async function cmdOverlay(args) {
   ensureDir(path.dirname(out));
 
   // ass filter automatically uses the styling embedded in the .ass file.
-  // We escape colons in the path for ffmpeg's filter syntax.
-  const subsEscaped = subs.replace(/:/g, "\\:").replace(/'/g, "\\'");
+  // ffmpeg's filter parser is finicky about Windows paths — normalize
+  // backslashes to forward slashes (accepted on all platforms), then escape
+  // the drive-letter colon and any single quotes.
+  const subsEscaped = subs
+    .replace(/\\/g, "/")
+    .replace(/:/g, "\\:")
+    .replace(/'/g, "\\'");
   const filter = subs.toLowerCase().endsWith(".ass")
     ? `ass='${subsEscaped}'`
     : `subtitles='${subsEscaped}'`;
