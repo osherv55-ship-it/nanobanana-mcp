@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MediaMemoryRecord",
+  "description": "One record per media item stored in media-memory/. Append-only in metadata.jsonl. Mirrored into ChromaDB as the source of truth for the vector index.",
+  "type": "object",
+  "required": [
+    "id",
+    "filename",
+    "stored_path",
+    "type",
+    "mime_type",
+    "size_bytes",
+    "timestamp",
+    "source",
+    "description",
+    "tags",
+    "embedding_model",
+    "embedded"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUIDv4. Used as the ChromaDB document ID."
+    },
+    "filename": {
+      "type": "string",
+      "description": "Original filename as provided by the user (or a synthesized name for url/base64 inputs)."
+    },
+    "stored_path": {
+      "type": "string",
+      "description": "Path relative to repo root where the file lives on disk."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["image", "video", "audio", "document", "text", "other"],
+      "description": "High-level category inferred from MIME type."
+    },
+    "mime_type": {
+      "type": "string",
+      "description": "RFC 6838 media type, e.g. 'image/png', 'audio/mpeg'."
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of ingestion."
+    },
+    "source": {
+      "type": "string",
+      "description": "Where this asset came from: user_upload, generated, web_download, screenshot, export, or a specific tool name."
+    },
+    "description": {
+      "type": "string",
+      "description": "Natural-language description. Provided by the caller or auto-generated with Gemini multimodal."
+    },
+    "extracted_text": {
+      "type": "string",
+      "description": "OCR for images/PDFs, transcript for audio/video, raw content for text files. Empty if none."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Semantic tags. Lowercase, short. Auto-suggested by Gemini when not provided."
+    },
+    "embedding_model": {
+      "type": "string",
+      "description": "Model used to embed the semantic document, e.g. 'gemini-embedding-001'."
+    },
+    "embedded": {
+      "type": "boolean",
+      "description": "Whether a vector was successfully written to ChromaDB."
+    },
+    "extra": {
+      "type": "object",
+      "description": "Free-form caller-supplied metadata (tool name, conversation turn, generation params, etc.)."
+    }
+  }
+}

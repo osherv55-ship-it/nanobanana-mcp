@@ -1,0 +1,20 @@
+node_modules/
+npm-debug.log*
+
+# media-memory: vector index is derived; rebuild via scripts/reindex.py
+.chroma/
+
+# media-memory skill local venv
+.claude/skills/media-memory/.venv/
+
+# media-memory stored files: keep the directory and metadata, ignore raw bytes
+media-memory/**
+!media-memory/
+!media-memory/README.md
+!media-memory/.gitkeep
+!media-memory/metadata.jsonl
+
+# OS / editor cruft
+.DS_Store
+.env
+.env.local
