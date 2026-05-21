@@ -15,12 +15,19 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MCP_AUTH_TOKEN = process.env.MCP_AUTH_TOKEN; // optional Bearer token
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const PERPLEXITY_BASE_URL = process.env.PERPLEXITY_BASE_URL || "https://api.perplexity.ai";
+const PERPLEXITY_TIMEOUT_MS = parseInt(process.env.PERPLEXITY_TIMEOUT_MS || "300000", 10);
+
 if (!GEMINI_API_KEY) {
   console.error("FATAL: GEMINI_API_KEY environment variable is not set.");
   process.exit(1);
 }
 if (!MCP_AUTH_TOKEN) {
   console.warn("WARNING: MCP_AUTH_TOKEN not set — server is unauthenticated.");
+}
+if (!PERPLEXITY_API_KEY) {
+  console.warn("WARNING: PERPLEXITY_API_KEY not set — deep_research tool will error if called.");
 }
 
 const ASPECT_RATIOS = ["1:1","16:9","9:16","4:5","5:4","3:4","4:3","21:9","2:3","3:2","1:4","4:1","1:8","8:1"];
@@ -81,6 +88,104 @@ async function fetchImageAsBase64(input) {
   return { base64: buf.toString("base64"), mimeType };
 }
 
+// ---- Perplexity Sonar Deep Research helpers ----
+const REASONING_EFFORTS = ["minimal", "low", "medium", "high"];
+const RECENCY_FILTERS = ["hour", "day", "week", "month", "year"];
+
+function stripThinkingTokens(content) {
+  return content.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+}
+
+async function consumeSonarStream(response) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  const contentParts = [];
+  let citations;
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data:")) continue;
+      const data = trimmed.slice(5).trim();
+      if (data === "[DONE]") continue;
+      try {
+        const parsed = JSON.parse(data);
+        if (parsed.citations) citations = parsed.citations;
+        const delta = parsed.choices?.[0]?.delta;
+        if (delta?.content) contentParts.push(delta.content);
+      } catch {
+        // skip malformed chunks / keep-alives
+      }
+    }
+  }
+
+  return { content: contentParts.join(""), citations };
+}
+
+async function callSonarDeepResearch(query, opts = {}) {
+  if (!PERPLEXITY_API_KEY) {
+    throw new Error("PERPLEXITY_API_KEY environment variable is required for deep_research.");
+  }
+
+  const messages = [];
+  if (opts.system) messages.push({ role: "system", content: opts.system });
+  messages.push({ role: "user", content: query });
+
+  const body = {
+    model: "sonar-deep-research",
+    messages,
+    stream: true,
+    ...(opts.reasoningEffort && { reasoning_effort: opts.reasoningEffort }),
+    ...(opts.searchRecencyFilter && { search_recency_filter: opts.searchRecencyFilter }),
+    ...(opts.searchDomainFilter && { search_domain_filter: opts.searchDomainFilter }),
+  };
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PERPLEXITY_TIMEOUT_MS);
+
+  let res;
+  try {
+    res = await fetch(`${PERPLEXITY_BASE_URL}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
+        "User-Agent": "nanobanana-mcp/sonar-deep-research",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === "AbortError") {
+      throw new Error(`Perplexity API timed out after ${PERPLEXITY_TIMEOUT_MS}ms. Raise PERPLEXITY_TIMEOUT_MS to allow longer deep-research runs.`);
+    }
+    throw new Error(`Network error calling Perplexity API: ${error.message}`);
+  }
+  clearTimeout(timeoutId);
+
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => "(unreadable error body)");
+    throw new Error(`Perplexity API ${res.status} ${res.statusText}: ${errorText}`);
+  }
+
+  const { content, citations } = await consumeSonarStream(res);
+  let text = opts.stripThinking ? stripThinkingTokens(content) : content;
+
+  if (Array.isArray(citations) && citations.length > 0) {
+    text += "\n\nCitations:\n" + citations.map((c, i) => `[${i + 1}] ${c}`).join("\n");
+  }
+  return text;
+}
+
 // ---- MCP server factory (one per request, stateless) ----
 function buildServer() {
   const server = new Server(
@@ -117,12 +222,39 @@ function buildServer() {
           required: ["imageUrl", "instruction"],
         },
       },
+      {
+        name: "deep_research",
+        description: "Conduct deep, multi-source web research using Perplexity's sonar-deep-research model. Best for literature reviews, comprehensive market analysis, investigative briefs. Slow (30s+), returns a detailed answer with numbered citations. For quick factual Q&A this is overkill — use a normal search tool instead.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: { type: "string", description: "The research question. Be specific about scope, time window, and what kind of synthesis you want." },
+            system: { type: "string", description: "Optional system instruction (e.g. persona, output format constraints)." },
+            reasoning_effort: { type: "string", enum: REASONING_EFFORTS, description: "Depth of reasoning. Higher = more thorough but slower/costlier. Default: model default." },
+            strip_thinking: { type: "boolean", description: "If true, removes <think>...</think> blocks from the response to save tokens. Default false." },
+            search_recency_filter: { type: "string", enum: RECENCY_FILTERS, description: "Limit sources by recency (e.g. 'week' for this week's news)." },
+            search_domain_filter: { type: "array", items: { type: "string" }, description: "Restrict to / exclude domains. Use '-' prefix to exclude (e.g. ['-reddit.com'])." },
+          },
+          required: ["query"],
+        },
+      },
     ],
   }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     try {
+      if (name === "deep_research") {
+        const text = await callSonarDeepResearch(args.query, {
+          system: args.system,
+          reasoningEffort: args.reasoning_effort,
+          stripThinking: args.strip_thinking === true,
+          searchRecencyFilter: args.search_recency_filter,
+          searchDomainFilter: args.search_domain_filter,
+        });
+        return { content: [{ type: "text", text }] };
+      }
+
       let parts;
       if (name === "generate_image") {
         parts = [{ text: args.prompt }];
