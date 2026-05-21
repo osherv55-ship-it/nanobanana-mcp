@@ -14,6 +14,9 @@ media-memory/**
 !media-memory/.gitkeep
 !media-memory/metadata.jsonl
 
+# scratch / working dirs for video processing demos
+tmp/
+
 # OS / editor cruft
 .DS_Store
 .env
