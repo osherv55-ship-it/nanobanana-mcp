@@ -113,10 +113,10 @@ Note "Video: $videoPath ($sizeMb MB)"
 
 Section "Running pipeline (transcribe → cuts → trim → translate → burn-in)"
 $outDir = Join-Path $desktop "yasmin_out_$tag"
-# Aggressive mode + a 0.6s pause threshold catches inter-sentence beats
-# and side noise from the YASMIN clip. Override per-run by setting
-# $env:DVE_PAUSE_THRESHOLD before invoking.
-$pauseThreshold = if ($env:DVE_PAUSE_THRESHOLD) { $env:DVE_PAUSE_THRESHOLD } else { "0.6" }
+# No hard-coded --aggressive or --pause-threshold here on purpose: the
+# pipeline builds a per-video profile from the transcript and tunes those
+# parameters to the speaker's natural rhythm. Override on the command line
+# when running pipeline.mjs directly if you need to force a behavior.
 node scripts\pipeline.mjs all `
     --input $videoPath `
     --out-dir $outDir `
@@ -124,8 +124,6 @@ node scripts\pipeline.mjs all `
     --target-langs $targetLangs `
     --word-by-word `
     --crossfade 0.10 `
-    --aggressive `
-    --pause-threshold $pauseThreshold `
     --burn-in
 
 Section "Done"

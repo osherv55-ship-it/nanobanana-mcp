@@ -12,6 +12,7 @@ import { buildAss, buildAssWordByWord } from "./lib/ass.mjs";
 import { transcribeFile as elevenlabsTranscribe, toInternalTranscript } from "./lib/elevenlabs.mjs";
 import { extractAudio } from "./lib/audio.mjs";
 import { detectDisfluencies, remapWords } from "./lib/disfluency.mjs";
+import { buildProfile } from "./lib/profile.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -176,12 +177,27 @@ async function cmdFindCuts(args) {
     if (!hasWords) {
       die("detector=programmatic requires word-level transcript (use --transcriber elevenlabs)");
     }
-    const detectorOpts = { aggressive };
+
+    // Phase 1: analyze the transcript to derive a per-video editing profile.
+    // The profile's detectorOpts override the conservative built-in defaults
+    // unless the caller explicitly passed --aggressive or --pause-threshold.
+    const profile = buildProfile(transcript.words);
+    log(
+      `profile: style=${profile.style}, ${profile.speech.wpm} wpm, ` +
+        `${profile.fillers.count} fillers, ${profile.speakers.count} speaker(s), ` +
+        `natural pause ${profile.pauses.natural}s → threshold ${profile.detectorOpts.longPauseThreshold}s`,
+    );
+
+    // Phase 2: build detector opts. Profile is the base; CLI flags override.
+    const detectorOpts = { ...profile.detectorOpts };
+    if (aggressive) detectorOpts.aggressive = true;
     if (args["pause-threshold"] !== undefined && args["pause-threshold"] !== true) {
       detectorOpts.longPauseThreshold = parseFloat(args["pause-threshold"]);
     }
+
     log(
-      `detecting cuts programmatically over ${transcript.words.length} words (aggressive=${aggressive}, pauseThreshold=${detectorOpts.longPauseThreshold ?? (aggressive ? 0.5 : 1.0)}s)`,
+      `detecting cuts programmatically over ${transcript.words.length} words ` +
+        `(aggressive=${detectorOpts.aggressive}, pauseThreshold=${detectorOpts.longPauseThreshold}s)`,
     );
     const result = detectDisfluencies(transcript.words, detectorOpts);
     const removed = result.cuts.reduce((acc, c) => acc + (c.end - c.start), 0);
@@ -190,6 +206,8 @@ async function cmdFindCuts(args) {
       primary_speaker: result.primary_speaker,
       speakers: result.speakers,
       detector: "programmatic",
+      profile,
+      detectorOpts,
     });
     log(
       `wrote ${result.cuts.length} cuts (~${removed.toFixed(1)}s removed, primary=${result.primary_speaker || "n/a"}) to ${out}`,
