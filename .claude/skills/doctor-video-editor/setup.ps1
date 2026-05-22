@@ -22,4 +22,10 @@ if (-not $env:GEMINI_API_KEY) {
     Write-Host "Or permanently via System Properties -> Environment Variables."
 }
 
+if (-not $env:ELEVENLABS_API_KEY) {
+    Write-Host "ELEVENLABS_API_KEY is not set. The pipeline will fall back to Gemini for transcription."
+    Write-Host "For accurate word-level cuts + speaker diarization, set it for this session:"
+    Write-Host "  `$env:ELEVENLABS_API_KEY = 'your-key-here'"
+}
+
 Write-Host "Done."

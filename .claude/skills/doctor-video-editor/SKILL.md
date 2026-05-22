@@ -28,53 +28,78 @@ bash setup.sh
 **Windows (PowerShell):**
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\.claude\skills\doctor-video-editor\setup.ps1
-$env:GEMINI_API_KEY = "your-key-here"   # for this session
+$env:GEMINI_API_KEY = "your-key-here"        # required, used for translation
+$env:ELEVENLABS_API_KEY = "your-key-here"    # optional, enables word-level cuts
 ```
 
-This installs `ffmpeg-static` and Gemini deps locally inside the skill folder (no system ffmpeg required). Required env var: `GEMINI_API_KEY` (same key the MCP server uses).
+This installs `ffmpeg-static` and Gemini deps locally inside the skill folder (no system ffmpeg required).
+
+**Transcription backends:**
+- `ELEVENLABS_API_KEY` (preferred) — ElevenLabs Scribe gives word-level timestamps + speaker diarization. With this, filler detection, stutter detection, long-pause cuts, and side-talk filtering all run programmatically against word data (no LLM judgment for the cut list — fast and deterministic).
+- `GEMINI_API_KEY` (fallback) — Gemini 2.5 Flash transcribes at segment-level, and an LLM call selects cuts. Less precise on disfluencies but works on any video without a separate audio pipeline.
+
+If both keys are set, ElevenLabs is used by default. Force a backend with `--transcriber elevenlabs|gemini`.
 
 On Windows, all `node scripts/pipeline.mjs ...` commands below work identically from PowerShell or cmd. Paths may use either forward or backslashes — the pipeline normalizes them internally for ffmpeg's filter syntax.
 
 ## End-to-end run
+
+Polished default (ElevenLabs transcription, programmatic cuts, smooth transitions, word-by-word source-language captions):
 
 ```bash
 node .claude/skills/doctor-video-editor/scripts/pipeline.mjs all \
   --input /path/to/raw.mp4 \
   --out-dir ./out \
   --source-lang he \
-  --target-langs en,he \
+  --target-langs he,en \
+  --word-by-word \
+  --crossfade 0.10 \
   --burn-in
 ```
 
 Produces in `--out-dir`:
-- `transcript.json`            — Gemini timestamped transcript of the raw video
-- `cuts.json`                  — list of segments removed (with reasons)
-- `cleaned.mp4`                — video with stutters/fillers/long pauses removed
-- `subs.<lang>.ass`            — styled subtitle file per target language
+- `transcript.json`            — timestamped transcript (word-level when using ElevenLabs)
+- `cuts.json`                  — list of segments removed (with reasons + primary-speaker info)
+- `cleaned.mp4`                — video with disfluencies / side talk removed, optionally crossfaded
+- `cleaned.mp4.keeps.json`     — keep-interval map (used for subtitle remapping)
+- `subs/subs.<lang>.ass`       — styled subtitle file per target language
+- `subs/subs.<lang>.srt`       — plain SRT alongside the ASS, for editing pipelines
 - `final.<lang>.mp4`           — cleaned video with burned-in captions (only when `--burn-in`)
 
 Without `--burn-in`, the cleaned video plus sidecar `.ass` / `.srt` files ship as deliverables — useful when the editor wants to load subs into Premiere/Resolve.
+
+**Flags worth knowing:**
+- `--word-by-word` — single-word pop captions for the source language (uses ElevenLabs word timings). Other target languages fall back to phrase-level cues.
+- `--crossfade 0.10` — smooth 100 ms dissolve between every cut. Default is 0 (hard cuts). Auto-degrades to hard cut if any keep interval is too short.
+- `--transition fade` — xfade transition name. Try `fadeblack`, `wipeleft`, `dissolve`, etc. (ffmpeg xfade list).
+- `--aggressive` — also strip soft fillers (כאילו, יעני, like, basically).
+- `--transcriber elevenlabs|gemini` — force a transcription backend.
+- `--detector programmatic|gemini` — force a cut-detector backend.
 
 ## Subcommands (for partial / debug flows)
 
 Each step writes its output to disk so the next step can resume.
 
 ```bash
-# 1. Transcribe a video to timestamped JSON
+# 1. Transcribe a video to timestamped JSON.
+#    Uses ElevenLabs Scribe when ELEVENLABS_API_KEY is set, Gemini otherwise.
 pipeline.mjs transcribe --input raw.mp4 --out transcript.json --source-lang he
 
-# 2. Detect filler words / stutters / pauses and produce a cut list
+# 2. Detect filler words / stutters / pauses / side talk and produce a cut list.
+#    Programmatic against word-level data; falls back to Gemini for segment-only transcripts.
 pipeline.mjs find-cuts --transcript transcript.json --out cuts.json
 
-# 3. Apply the cut list with ffmpeg
-pipeline.mjs apply-cuts --input raw.mp4 --cuts cuts.json --out cleaned.mp4
+# 3. Apply the cut list with ffmpeg. Optional crossfade smooths every join.
+pipeline.mjs apply-cuts --input raw.mp4 --cuts cuts.json --out cleaned.mp4 --crossfade 0.10
 
-# 4. Translate cleaned-segment transcript to one or more languages
+# 4. Translate cleaned-segment transcript to one or more languages.
+#    Same-language outputs skip Gemini and use the source transcript directly.
+#    --word-by-word produces single-word pop captions for the source language.
 pipeline.mjs translate --transcript transcript.json --cuts cuts.json \
-  --target-langs en,ar --out-dir ./subs
+  --target-langs he,en --out-dir ./subs --word-by-word --crossfade 0.10
 
-# 5. Burn the .ass subtitles into the cleaned video
-pipeline.mjs overlay --input cleaned.mp4 --subs subs/subs.en.ass --out final.en.mp4
+# 5. Burn the .ass subtitles into the cleaned video.
+pipeline.mjs overlay --input cleaned.mp4 --subs subs/subs.he.ass --out final.he.mp4
 ```
 
 ## Style — "fast modern pace"
@@ -97,10 +122,26 @@ The skill expects you (Claude) to log artifacts after each run. After a successf
 
 Do this before reporting the task complete.
 
+## What gets cut
+
+When transcribing with ElevenLabs (the default when `ELEVENLABS_API_KEY` is set) the cut list is built **programmatically** from the word stream, not by an LLM:
+
+| Class | Trigger | Notes |
+|---|---|---|
+| `filler` | Word matches a built-in list of pure filler sounds (Hebrew: אממ/אהה/אם/אה/הממ/ממ. English: um/umm/uh/erm/hmm. Arabic: آه/إيه). | The list grows with `--aggressive` to also include כאילו/יעני/like/actually/basically/literally. |
+| `stutter` | Same normalized word repeated within 0.4 s. Also catches prefix stutters like "אנ-" → "אני". | Only the first instance is cut. |
+| `long-pause` | Gap between consecutive content words > 1.0 s. | Leaves 0.15 s on each side as natural breathing room. |
+| `breath` | ElevenLabs Scribe audio event tagged with breath/inhale/exhale/sigh. | Off-by-default in conservative mode? No — on by default; subtle but cleans up between sentences. |
+| `side-talk` | Contiguous run of words from a speaker that is NOT the primary speaker (determined by word-count majority). | Requires diarization (default on). 0.4 s minimum run-length so single interjections don't trigger. |
+
+When transcribing with Gemini, the LLM-based cut detector is used instead — that path still works but is less precise and can't see speakers.
+
 ## Notes & limits
 
 - Gemini Files API is used for any video over ~18 MB (inline payload limit). Files live ~48h on Google's side then auto-expire.
-- Default transcription model: `gemini-2.5-flash`. Override with `--model` or `GEMINI_VIDEO_MODEL` env var.
-- Cut detection is conservative by default — it removes obvious disfluencies, not "boring" content. Use `--aggressive` to also cut weak rephrasings and tangents.
-- For videos >10 minutes, expect long-running Gemini calls (5–15 min). The pipeline writes progress to stderr.
-- The ffmpeg cut step uses re-encoding (libx264 + AAC) for frame-accurate edits. Lossless cutting via `-c copy` is unreliable with mid-GOP cuts, so we don't use it.
+- ElevenLabs Scribe accepts up to ~2 GB per file. The pipeline extracts a 16 kHz mono FLAC track via ffmpeg before uploading, so even hour-long videos send ~50 MB of audio.
+- Default transcription model: `gemini-2.5-flash` (Gemini path) / `scribe_v1` (ElevenLabs path). Override Gemini with `--model` or `GEMINI_VIDEO_MODEL`.
+- Conservative by default — only obvious disfluencies. `--aggressive` adds soft fillers and (Gemini-only) phrase-level repetitions / tangents.
+- For videos >10 minutes via Gemini, expect long-running calls (5–15 min). The pipeline writes progress to stderr.
+- ffmpeg cut step uses re-encoding (libx264 + AAC) for frame-accurate edits. Lossless cutting via `-c copy` is unreliable with mid-GOP cuts.
+- Crossfade requires CFR input; the pipeline detects the source frame rate via ffprobe and pins the trimmed segments to it. If any keep interval is shorter than the requested crossfade, the pipeline auto-shrinks the crossfade or falls back to a hard cut for that join.

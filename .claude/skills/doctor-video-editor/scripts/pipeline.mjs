@@ -8,7 +8,10 @@ import { fileURLToPath } from "node:url";
 
 import { buildMediaPart, generateJson, DEFAULT_MODEL } from "./lib/gemini.mjs";
 import { runFfmpeg, ffprobeJson, getDuration } from "./lib/ffmpeg.mjs";
-import { buildAss } from "./lib/ass.mjs";
+import { buildAss, buildAssWordByWord } from "./lib/ass.mjs";
+import { transcribeFile as elevenlabsTranscribe, toInternalTranscript } from "./lib/elevenlabs.mjs";
+import { extractAudio } from "./lib/audio.mjs";
+import { detectDisfluencies, remapWords } from "./lib/disfluency.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -72,7 +75,38 @@ async function cmdTranscribe(args) {
   const sourceLang = args["source-lang"] || "auto";
   const model = args.model || DEFAULT_MODEL;
 
-  log(`transcribing ${input} (source-lang=${sourceLang}, model=${model})`);
+  // Pick transcriber. Defaults to ElevenLabs when its key is available, since
+  // it gives word-level + speaker info that the rest of the pipeline depends
+  // on for accurate filler / side-talk cuts. Force one with --transcriber.
+  const explicit = (args.transcriber || "").toString().toLowerCase();
+  let useElevenlabs;
+  if (explicit === "elevenlabs") useElevenlabs = true;
+  else if (explicit === "gemini") useElevenlabs = false;
+  else useElevenlabs = !!process.env.ELEVENLABS_API_KEY;
+
+  if (useElevenlabs) {
+    log(`transcribing ${input} via ElevenLabs Scribe (source-lang=${sourceLang})`);
+    const audioPath = path.join(
+      path.dirname(out),
+      path.basename(out, path.extname(out)) + ".audio.flac",
+    );
+    ensureDir(path.dirname(audioPath));
+    log(`extracting audio to ${audioPath}`);
+    await extractAudio(input, audioPath, { format: "flac" });
+    const raw = await elevenlabsTranscribe(audioPath, {
+      languageCode: sourceLang,
+      diarize: true,
+      tagAudioEvents: true,
+    });
+    const data = toInternalTranscript(raw);
+    writeJson(out, data);
+    log(
+      `wrote transcript (${data.transcriber}, ${data.words.length} words / ${data.segments.length} segments, lang=${data.detected_language}) to ${out}`,
+    );
+    return;
+  }
+
+  log(`transcribing ${input} via Gemini (source-lang=${sourceLang}, model=${model})`);
 
   const mimeType = mimeFromPath(input);
   const mediaPart = await buildMediaPart(input, mimeType);
@@ -116,19 +150,52 @@ async function cmdTranscribe(args) {
   if (!Array.isArray(data.segments)) {
     die(`transcript response missing 'segments' array: ${JSON.stringify(data).slice(0, 300)}`);
   }
+  data.transcriber = "gemini";
   writeJson(out, data);
-  log(`wrote transcript with ${data.segments.length} segments to ${out}`);
+  log(`wrote transcript (gemini, ${data.segments.length} segments) to ${out}`);
 }
 
 async function cmdFindCuts(args) {
   const transcriptPath = need(args, "transcript");
   const out = need(args, "out");
   const aggressive = !!args.aggressive;
-  const videoPath = args.video; // optional but strongly recommended for accuracy
+  const videoPath = args.video; // optional but strongly recommended for Gemini accuracy
   const model = args.model || DEFAULT_MODEL;
+  const detector = (args.detector || "auto").toString().toLowerCase();
 
   const transcript = readJson(transcriptPath);
-  log(`detecting cuts (aggressive=${aggressive}, video=${videoPath ? "yes" : "no"}) over ${transcript.segments.length} segments`);
+
+  // Programmatic path — runs whenever we have word-level data (ElevenLabs).
+  // It is more accurate and deterministic than the LLM detector for the
+  // disfluency classes the user actually wants cut (fillers, stutters,
+  // pauses, side talk).
+  const hasWords = Array.isArray(transcript.words) && transcript.words.length > 0;
+  const useProgrammatic = detector === "programmatic" || (detector === "auto" && hasWords);
+
+  if (useProgrammatic) {
+    if (!hasWords) {
+      die("detector=programmatic requires word-level transcript (use --transcriber elevenlabs)");
+    }
+    log(
+      `detecting cuts programmatically over ${transcript.words.length} words (aggressive=${aggressive})`,
+    );
+    const result = detectDisfluencies(transcript.words, { aggressive });
+    const removed = result.cuts.reduce((acc, c) => acc + (c.end - c.start), 0);
+    writeJson(out, {
+      cuts: result.cuts,
+      primary_speaker: result.primary_speaker,
+      speakers: result.speakers,
+      detector: "programmatic",
+    });
+    log(
+      `wrote ${result.cuts.length} cuts (~${removed.toFixed(1)}s removed, primary=${result.primary_speaker || "n/a"}) to ${out}`,
+    );
+    return;
+  }
+
+  log(
+    `detecting cuts via Gemini (aggressive=${aggressive}, video=${videoPath ? "yes" : "no"}) over ${transcript.segments.length} segments`,
+  );
 
   const sys =
     "You are a video editor specializing in talking-head doctor testimonials. " +
@@ -224,6 +291,8 @@ async function cmdApplyCuts(args) {
   const input = need(args, "input");
   const cutsPath = need(args, "cuts");
   const out = need(args, "out");
+  const requestedCrossfade = parseFloat(args.crossfade ?? "0");
+  const transition = (args.transition || "fade").toString();
 
   const { cuts } = readJson(cutsPath);
   const duration = await getDuration(input);
@@ -239,24 +308,76 @@ async function cmdApplyCuts(args) {
 
   if (keeps.length === 0) die("nothing left to keep — cut list covers the entire video");
 
-  log(`assembling ${keeps.length} keep intervals into ${out}`);
+  // Decide whether to use crossfades. xfade needs each side to be at least the
+  // crossfade duration. If any keep is too short we shrink the requested
+  // crossfade (or fall back to a hard cut for this run if shrinking it
+  // would make it imperceptible).
+  let crossfade = Math.max(0, requestedCrossfade);
+  if (crossfade > 0 && keeps.length > 1) {
+    const shortest = Math.min(...keeps.map((k) => k.end - k.start));
+    const maxSafe = Math.max(0, (shortest - 0.05) * 0.5);
+    if (maxSafe < 0.04) {
+      log(
+        `warning: shortest keep is ${shortest.toFixed(2)}s — too short for any crossfade; using hard cuts`,
+      );
+      crossfade = 0;
+    } else if (maxSafe < crossfade) {
+      log(
+        `warning: clamping crossfade ${requestedCrossfade}s → ${maxSafe.toFixed(2)}s to fit shortest keep (${shortest.toFixed(2)}s)`,
+      );
+      crossfade = maxSafe;
+    }
+  }
+
+  log(
+    `assembling ${keeps.length} keep intervals into ${out} (transition=${crossfade > 0 ? `${transition}/${crossfade.toFixed(2)}s` : "hard cut"})`,
+  );
   ensureDir(path.dirname(out));
 
-  // Build a single ffmpeg invocation using the concat filter on labeled trims.
-  // This is frame-accurate (re-encodes) and avoids the brittleness of -c copy
-  // across mid-GOP cut points.
+  // xfade requires constant frame rate; `trim` doesn't preserve it. Pin the
+  // post-trim segments to the source frame rate so xfade can chain them.
+  const fps = crossfade > 0 ? await detectFps(input) : null;
+  const vTail = fps ? `,fps=${fps}` : "";
+
   const filterParts = [];
   for (let i = 0; i < keeps.length; i++) {
     const { start, end } = keeps[i];
     filterParts.push(
-      `[0:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS[v${i}]`,
+      `[0:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS${vTail}[v${i}]`,
     );
     filterParts.push(
       `[0:a]atrim=start=${start.toFixed(3)}:end=${end.toFixed(3)},asetpts=PTS-STARTPTS[a${i}]`,
     );
   }
-  const concatInputs = keeps.map((_, i) => `[v${i}][a${i}]`).join("");
-  filterParts.push(`${concatInputs}concat=n=${keeps.length}:v=1:a=1[outv][outa]`);
+
+  if (crossfade > 0 && keeps.length > 1) {
+    // Chain xfade for video and acrossfade for audio. After joining clip k+1
+    // onto the running output, the new running duration is
+    // running + new_clip - crossfade.
+    let prevV = "v0";
+    let prevA = "a0";
+    let runningDur = keeps[0].end - keeps[0].start;
+    for (let i = 1; i < keeps.length; i++) {
+      const curDur = keeps[i].end - keeps[i].start;
+      const offset = Math.max(0, runningDur - crossfade);
+      const isLast = i === keeps.length - 1;
+      const outV = isLast ? "outv" : `vx${i}`;
+      const outA = isLast ? "outa" : `ax${i}`;
+      filterParts.push(
+        `[${prevV}][v${i}]xfade=transition=${transition}:duration=${crossfade.toFixed(3)}:offset=${offset.toFixed(3)}[${outV}]`,
+      );
+      filterParts.push(
+        `[${prevA}][a${i}]acrossfade=d=${crossfade.toFixed(3)}[${outA}]`,
+      );
+      prevV = outV;
+      prevA = outA;
+      runningDur = runningDur + curDur - crossfade;
+    }
+  } else {
+    const concatInputs = keeps.map((_, i) => `[v${i}][a${i}]`).join("");
+    filterParts.push(`${concatInputs}concat=n=${keeps.length}:v=1:a=1[outv][outa]`);
+  }
+
   const filterComplex = filterParts.join(";");
 
   await runFfmpeg([
@@ -277,7 +398,7 @@ async function cmdApplyCuts(args) {
   // Also emit a "kept-segments" timing map so subtitle generation can remap
   // original timestamps onto the cleaned timeline.
   const mapPath = out + ".keeps.json";
-  writeJson(mapPath, { source: input, duration, keeps });
+  writeJson(mapPath, { source: input, duration, keeps, crossfade });
   log(`wrote cleaned video to ${out} and keep map to ${mapPath}`);
 }
 
@@ -290,17 +411,68 @@ async function cmdTranslate(args) {
     .filter(Boolean);
   const outDir = need(args, "out-dir");
   const model = args.model || DEFAULT_MODEL;
+  const wordByWord = !!args["word-by-word"];
+  const crossfade = parseFloat(args.crossfade ?? "0");
   ensureDir(outDir);
 
   const transcript = readJson(transcriptPath);
-  const cuts = cutsPath ? readJson(cutsPath).cuts : [];
+  const cuts = cutsPath ? (readJson(cutsPath).cuts || []) : [];
 
-  // Remap transcript segments onto the post-cut timeline.
-  const remapped = remapSegments(transcript.segments, cuts);
-  log(`remapped ${transcript.segments.length} -> ${remapped.length} segments after cuts`);
+  const totalDuration = estimateTranscriptDuration(transcript);
+  const keeps = computeKeepsFromCuts(cuts, totalDuration);
+
+  // Two-step: (1) remap to post-cut timeline assuming hard cuts;
+  // (2) shift back by k*crossfade where k is the keep index, to land on the
+  // actual cleaned-video timeline.
+  let remappedSegs = remapSegments(transcript.segments, cuts);
+  remappedSegs = adjustForCrossfade(remappedSegs, keeps, crossfade);
+
+  let remappedWords = Array.isArray(transcript.words)
+    ? remapWords(transcript.words, cuts)
+    : null;
+  if (remappedWords) {
+    remappedWords = adjustForCrossfade(remappedWords, keeps, crossfade);
+  }
+
+  log(
+    `remapped ${transcript.segments.length} → ${remappedSegs.length} segments` +
+      (remappedWords ? `, ${transcript.words.length} → ${remappedWords.length} words` : "") +
+      (crossfade > 0 ? `, crossfade ${crossfade}s applied` : ""),
+  );
+
+  const sourceLang = String(transcript.detected_language || "").toLowerCase();
+  const sourceShort = sourceLang.slice(0, 2);
 
   for (const lang of targetLangs) {
-    log(`translating to ${lang}...`);
+    const langShort = lang.toLowerCase().slice(0, 2);
+    const sameLang = sourceShort && langShort === sourceShort;
+
+    // Word-by-word output uses the original (untranslated) words, so it only
+    // makes sense for the source language. If the user asked for word-by-word
+    // on a non-source language, fall back to segment-level + a warning.
+    if (wordByWord && sameLang && remappedWords) {
+      log(`building word-by-word ${lang} subtitles from ${remappedWords.length} words`);
+      writeAssAndSrt(outDir, lang, buildAssWordByWord(remappedWords), remappedSegs);
+      continue;
+    }
+    if (wordByWord && !sameLang) {
+      log(
+        `note: word-by-word for ${lang} not supported (source is ${sourceLang || "unknown"}); using segment-level`,
+      );
+    }
+    if (wordByWord && sameLang && !remappedWords) {
+      log(`note: --word-by-word requested but transcript has no word data; using segment-level`);
+    }
+
+    // Same-language and no word-by-word: skip Gemini translate and use the
+    // source transcript directly.
+    if (sameLang) {
+      log(`emitting ${lang} subtitles directly from source transcript (same language)`);
+      writeAssAndSrt(outDir, lang, buildAss(remappedSegs), remappedSegs);
+      continue;
+    }
+
+    log(`translating to ${lang} via Gemini...`);
     const sys =
       `You are a professional subtitle translator. You translate spoken doctor ` +
       `testimony into idiomatic ${lang}, preserving meaning and tone. ` +
@@ -320,7 +492,7 @@ async function cmdTranslate(args) {
       "}",
       "",
       "Input segments:",
-      JSON.stringify(remapped, null, 2),
+      JSON.stringify(remappedSegs, null, 2),
     ].join("\n");
 
     const data = await generateJson({
@@ -333,14 +505,16 @@ async function cmdTranslate(args) {
     if (!Array.isArray(data.segments)) {
       die(`translate(${lang}) did not return 'segments' array`);
     }
-
-    const ass = buildAss(data.segments);
-    const assPath = path.join(outDir, `subs.${lang}.ass`);
-    fs.writeFileSync(assPath, ass);
-    const srtPath = path.join(outDir, `subs.${lang}.srt`);
-    fs.writeFileSync(srtPath, segmentsToSrt(data.segments));
-    log(`wrote ${assPath} and ${srtPath}`);
+    writeAssAndSrt(outDir, lang, buildAss(data.segments), data.segments);
   }
+}
+
+function writeAssAndSrt(outDir, lang, assContent, segmentsForSrt) {
+  const assPath = path.join(outDir, `subs.${lang}.ass`);
+  fs.writeFileSync(assPath, assContent);
+  const srtPath = path.join(outDir, `subs.${lang}.srt`);
+  fs.writeFileSync(srtPath, segmentsToSrt(segmentsForSrt));
+  log(`wrote ${assPath} and ${srtPath}`);
 }
 
 async function cmdOverlay(args) {
@@ -392,6 +566,11 @@ async function cmdAll(args) {
     .filter(Boolean);
   const burnIn = !!args["burn-in"];
   const aggressive = !!args.aggressive;
+  const wordByWord = !!args["word-by-word"];
+  const crossfade = parseFloat(args.crossfade ?? "0");
+  const transcriber = args.transcriber;
+  const detector = args.detector;
+  const transition = args.transition;
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
@@ -402,15 +581,36 @@ async function cmdAll(args) {
   const cleanedPath = path.join(outDir, "cleaned.mp4");
   const subsDir = path.join(outDir, "subs");
 
-  await cmdTranscribe({ input, out: transcriptPath, "source-lang": sourceLang, model: args.model });
-  await cmdFindCuts({ transcript: transcriptPath, out: cutsPath, video: input, aggressive, model: args.model });
-  await cmdApplyCuts({ input, cuts: cutsPath, out: cleanedPath });
+  await cmdTranscribe({
+    input,
+    out: transcriptPath,
+    "source-lang": sourceLang,
+    model: args.model,
+    transcriber,
+  });
+  await cmdFindCuts({
+    transcript: transcriptPath,
+    out: cutsPath,
+    video: input,
+    aggressive,
+    model: args.model,
+    detector,
+  });
+  await cmdApplyCuts({
+    input,
+    cuts: cutsPath,
+    out: cleanedPath,
+    crossfade,
+    transition,
+  });
   await cmdTranslate({
     transcript: transcriptPath,
     cuts: cutsPath,
     "target-langs": targetLangs.join(","),
     "out-dir": subsDir,
     model: args.model,
+    "word-by-word": wordByWord,
+    crossfade,
   });
 
   if (burnIn) {
@@ -444,6 +644,74 @@ function mimeFromPath(p) {
       ".flac": "audio/flac",
     }[ext] || "application/octet-stream"
   );
+}
+
+// Compute the complement of `cuts` within [0, totalDuration]. Used by translate
+// to figure out keep indices so subtitle timestamps can be adjusted for
+// crossfade offsets without needing access to the rendered video.
+function computeKeepsFromCuts(cuts, totalDuration) {
+  const keeps = [];
+  let cursor = 0;
+  for (const c of cuts || []) {
+    if (c.start > cursor) keeps.push({ start: cursor, end: Math.min(c.start, totalDuration) });
+    cursor = Math.max(cursor, c.end);
+  }
+  if (cursor < totalDuration) keeps.push({ start: cursor, end: totalDuration });
+  return keeps;
+}
+
+// Detect the average frame rate of the video stream. Returns null if it can't
+// be parsed. Used only when crossfade is requested (xfade needs CFR).
+async function detectFps(videoPath) {
+  try {
+    const meta = await ffprobeJson(videoPath);
+    const v = (meta.streams || []).find((s) => s.codec_type === "video");
+    if (!v) return null;
+    const rate = v.avg_frame_rate || v.r_frame_rate || "";
+    const [num, den] = rate.split("/").map(Number);
+    if (Number.isFinite(num) && Number.isFinite(den) && den > 0 && num > 0) {
+      const fps = num / den;
+      return Math.round(fps * 1000) / 1000;
+    }
+  } catch (_) {}
+  return null;
+}
+
+// Best-effort guess at video duration from a transcript (no ffprobe needed).
+function estimateTranscriptDuration(transcript) {
+  let max = 0;
+  for (const s of transcript.segments || []) if (s.end > max) max = s.end;
+  for (const w of transcript.words || []) if (w.end > max) max = w.end;
+  // Pad a hair so the trailing keep isn't zero-length.
+  return max + 0.05;
+}
+
+// Each crossfade between adjacent keeps shrinks the output timeline by its
+// duration. Items remapped to the "hard cut" timeline therefore drift right
+// by k*crossfade where k is the index of their containing keep. This shifts
+// them back by that amount.
+function adjustForCrossfade(items, keeps, crossfade) {
+  if (!(crossfade > 0) || !keeps || keeps.length < 2) return items;
+  const keepStartsOut = [];
+  let acc = 0;
+  for (const k of keeps) {
+    keepStartsOut.push(acc);
+    acc += k.end - k.start;
+  }
+  return items.map((item) => {
+    let k = 0;
+    for (let i = keeps.length - 1; i >= 0; i--) {
+      if (item.start + 1e-6 >= keepStartsOut[i]) {
+        k = i;
+        break;
+      }
+    }
+    if (k <= 0) return item;
+    const adj = k * crossfade;
+    const newStart = Math.max(0, item.start - adj);
+    const newEnd = Math.max(newStart + 0.04, item.end - adj);
+    return { ...item, start: newStart, end: newEnd };
+  });
 }
 
 // Map original-timeline segments to the post-cut timeline.
@@ -505,12 +773,25 @@ async function main() {
     process.stdout.write(`Usage: pipeline.mjs <subcommand> [args]
 
 Subcommands:
-  transcribe   --input <video> --out <file> [--source-lang he|en|auto] [--model ...]
-  find-cuts    --transcript <file> --out <file> [--aggressive]
+  transcribe   --input <video> --out <file>
+               [--source-lang he|en|auto] [--transcriber elevenlabs|gemini|auto] [--model ...]
+               Default: elevenlabs when ELEVENLABS_API_KEY is set, else gemini.
+  find-cuts    --transcript <file> --out <file>
+               [--aggressive] [--detector programmatic|gemini|auto] [--video <video>]
+               Default: programmatic when transcript has word-level data, else gemini.
   apply-cuts   --input <video> --cuts <file> --out <video>
+               [--crossfade <seconds, default 0>] [--transition fade|fadeblack|wipeleft|...]
   translate    --transcript <file> [--cuts <file>] --target-langs en,he --out-dir <dir>
+               [--word-by-word] [--crossfade <seconds, default 0>]
   overlay      --input <video> --subs <ass|srt> --out <video>
-  all          --input <video> --out-dir <dir> --target-langs en,he [--source-lang auto] [--burn-in] [--aggressive]
+  all          --input <video> --out-dir <dir> --target-langs en,he
+               [--source-lang auto] [--burn-in] [--aggressive]
+               [--word-by-word] [--crossfade <s>] [--transition <name>]
+               [--transcriber elevenlabs|gemini] [--detector programmatic|gemini]
+
+Env:
+  GEMINI_API_KEY        required for Gemini transcription / translation
+  ELEVENLABS_API_KEY    enables ElevenLabs Scribe (word-level + diarization)
 `);
     process.exit(subcommand ? 0 : 1);
   }

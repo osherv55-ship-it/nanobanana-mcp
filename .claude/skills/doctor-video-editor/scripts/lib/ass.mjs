@@ -86,3 +86,32 @@ export function buildAss(segments, opts = {}) {
   });
   return header(opts) + lines.join("\n") + "\n";
 }
+
+// Word-by-word "pop" style: each spoken word appears solo, briefly, with a
+// fast fade. Modern Reels/Shorts feel. Requires word-level timing.
+const WORD_MIN_DURATION = 0.18;   // never shorter than this on screen
+const WORD_HOLD_EXTRA = 0.05;     // small tail to avoid flicker
+const WORD_GAP_FILL = 0.18;       // if next word > this away, let prev hold
+
+export function buildAssWordByWord(words, opts = {}) {
+  const lines = [];
+  const list = words.filter((w) => w.type === "word" || w.type === undefined);
+  for (let i = 0; i < list.length; i++) {
+    const w = list[i];
+    const text = String(w.text || "").replace(/\s+/g, " ").trim();
+    if (!text) continue;
+    const next = list[i + 1];
+    let start = Math.max(0, w.start);
+    let end = w.end + WORD_HOLD_EXTRA;
+    if (next) {
+      const gap = next.start - w.end;
+      // hold until next word arrives, but don't bridge huge silences
+      end = Math.min(next.start - 0.01, w.end + Math.max(WORD_HOLD_EXTRA, Math.min(gap, WORD_GAP_FILL)));
+    }
+    if (end - start < WORD_MIN_DURATION) end = start + WORD_MIN_DURATION;
+    lines.push(
+      `Dialogue: 0,${fmtTime(start)},${fmtTime(end)},Default,,0,0,0,,{\\fad(30,30)}${text}`,
+    );
+  }
+  return header(opts) + lines.join("\n") + "\n";
+}
