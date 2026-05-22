@@ -87,17 +87,17 @@ export function buildProfile(words, opts = {}) {
 
   // Tuned detector parameters
   // — longPauseThreshold: cuts anything longer than the SPEAKER'S OWN
-  //   natural inter-sentence pause. Polished speakers get a 20%
+  //   natural inter-sentence pause. Polished speakers get a 35%
   //   tighter threshold (they're already snappy by design, so we
   //   tighten further to lift the pace). Raw speakers get a 30% looser
   //   threshold to avoid chopping their natural rhythm.
   let pauseMul = 1.0;
-  if (style === "polished") pauseMul = 0.8;
+  if (style === "polished") pauseMul = 0.65;
   else if (style === "raw") pauseMul = 1.3;
-  const longPauseThreshold = clamp(naturalPause * pauseMul, 0.4, 1.5);
+  const longPauseThreshold = clamp(naturalPause * pauseMul, 0.35, 1.5);
   // — longPauseLeave: scales with threshold; tighter in polished mode.
-  const leaveMul = style === "polished" ? 0.15 : 0.2;
-  const longPauseLeave = clamp(longPauseThreshold * leaveMul, 0.06, 0.2);
+  const leaveMul = style === "polished" ? 0.12 : 0.2;
+  const longPauseLeave = clamp(longPauseThreshold * leaveMul, 0.05, 0.2);
   // — aggressive filler list: activated when fillers are frequent enough
   //   that the speaker likely uses "soft" fillers (כאילו/יעני/like/...).
   const aggressive = fillerCount >= 5;

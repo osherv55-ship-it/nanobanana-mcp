@@ -92,22 +92,30 @@ if (-not (Test-Path $videoPath)) {
 $sizeMb = [math]::Round((Get-Item $videoPath).Length / 1MB, 1)
 Note "Video: $videoPath ($sizeMb MB)"
 
-Section "Looking for overlay assets folder"
+Section "Looking for overlay assets + music"
 # Convention: any media files inside <Desktop>/overlay/ are auto-composed
 # onto the cleaned video — videos as B-roll, image pairs named
 # before*/after* as before/after splits, other images as still B-roll.
 $overlayDir = Join-Path $desktop "overlay"
 $overlayArgs = @()
+$musicArgs = @()
 if (Test-Path $overlayDir) {
     $assets = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp4|mov|webm|mkv|jpg|jpeg|png|webp)$' }
     if ($assets.Count -gt 0) {
-        Note "Overlay folder: $overlayDir ($($assets.Count) file(s))"
+        Note "Overlay folder: $overlayDir ($($assets.Count) visual file(s))"
         $overlayArgs = @("--overlays", $overlayDir)
     } else {
         Note "Overlay folder exists but no media inside — skipping overlays"
     }
+    # Background music: any audio file (mp3/m4a/wav/aac/flac/ogg) in the
+    # same folder is mixed under the dialogue at -18dB by default.
+    $musicFile = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp3|m4a|wav|aac|flac|ogg)$' } | Select-Object -First 1
+    if ($musicFile) {
+        Note "Music bed: $($musicFile.Name)"
+        $musicArgs = @("--music", $musicFile.FullName)
+    }
 } else {
-    Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images to enable)"
+    Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images / a music file to enable)"
 }
 
 Section "Running pipeline (transcribe → cuts → trim → overlay → subs → burn-in)"
@@ -124,6 +132,7 @@ node scripts\pipeline.mjs all `
     --word-by-word `
     --crossfade 0.10 `
     @overlayArgs `
+    @musicArgs `
     --burn-in
 
 Section "Done"

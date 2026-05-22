@@ -353,6 +353,8 @@ async function cmdApplyCuts(args) {
   const out = need(args, "out");
   const requestedCrossfade = parseFloat(args.crossfade ?? "0");
   const transition = (args.transition || "fade").toString();
+  const musicPath = args.music && args.music !== true ? String(args.music) : null;
+  const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
 
   const { cuts } = readJson(cutsPath);
   const duration = await getDuration(input);
@@ -390,7 +392,7 @@ async function cmdApplyCuts(args) {
   }
 
   log(
-    `assembling ${keeps.length} keep intervals into ${out} (transition=${crossfade > 0 ? `${transition}/${crossfade.toFixed(2)}s` : "hard cut"})`,
+    `assembling ${keeps.length} keep intervals into ${out} (transition=${crossfade > 0 ? `${transition}/${crossfade.toFixed(2)}s` : "hard cut"}${musicPath ? `, music=${path.basename(musicPath)}@${musicVolume}` : ""})`,
   );
   ensureDir(path.dirname(out));
 
@@ -398,6 +400,11 @@ async function cmdApplyCuts(args) {
   // post-trim segments to the source frame rate so xfade can chain them.
   const fps = crossfade > 0 ? await detectFps(input) : null;
   const vTail = fps ? `,fps=${fps}` : "";
+
+  // When mixing in music, the speech chain outputs to [outa_speech], then a
+  // separate music chain plus amix produces the final [outa]. Without music,
+  // the speech chain outputs directly to [outa].
+  const speechOutLabel = musicPath ? "outa_speech" : "outa";
 
   const filterParts = [];
   for (let i = 0; i < keeps.length; i++) {
@@ -422,7 +429,7 @@ async function cmdApplyCuts(args) {
       const offset = Math.max(0, runningDur - crossfade);
       const isLast = i === keeps.length - 1;
       const outV = isLast ? "outv" : `vx${i}`;
-      const outA = isLast ? "outa" : `ax${i}`;
+      const outA = isLast ? speechOutLabel : `ax${i}`;
       filterParts.push(
         `[${prevV}][v${i}]xfade=transition=${transition}:duration=${crossfade.toFixed(3)}:offset=${offset.toFixed(3)}[${outV}]`,
       );
@@ -435,14 +442,38 @@ async function cmdApplyCuts(args) {
     }
   } else {
     const concatInputs = keeps.map((_, i) => `[v${i}][a${i}]`).join("");
-    filterParts.push(`${concatInputs}concat=n=${keeps.length}:v=1:a=1[outv][outa]`);
+    filterParts.push(`${concatInputs}concat=n=${keeps.length}:v=1:a=1[outv][${speechOutLabel}]`);
+  }
+
+  // Cleaned-output duration (sum of keep durations less crossfade overlaps).
+  const cleanedDur = keeps.reduce((acc, k) => acc + (k.end - k.start), 0)
+    - (crossfade > 0 && keeps.length > 1 ? (keeps.length - 1) * crossfade : 0);
+
+  // Music mixing chain: loop the music file forever, trim to cleaned-output
+  // length, scale by volume, fade in/out, and mix under the speech with amix.
+  if (musicPath) {
+    if (!fs.existsSync(musicPath)) die(`music file not found: ${musicPath}`);
+    const fadeIn = Math.min(1.0, cleanedDur * 0.05);
+    const fadeOutStart = Math.max(0, cleanedDur - 1.5);
+    filterParts.push(
+      `[1:a]aloop=loop=-1:size=2e9,atrim=duration=${cleanedDur.toFixed(3)},asetpts=PTS-STARTPTS,` +
+        `volume=${musicVolume.toFixed(3)},` +
+        `afade=t=in:st=0:d=${fadeIn.toFixed(3)},` +
+        `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5` +
+        `[music]`,
+    );
+    filterParts.push(
+      `[outa_speech][music]amix=inputs=2:duration=first:dropout_transition=0,` +
+        `dynaudnorm=p=0.71:m=8` +
+        `[outa]`,
+    );
   }
 
   const filterComplex = filterParts.join(";");
 
-  await runFfmpeg([
-    "-y",
-    "-i", input,
+  const ffArgs = ["-y", "-i", input];
+  if (musicPath) ffArgs.push("-i", musicPath);
+  ffArgs.push(
     "-filter_complex", filterComplex,
     "-map", "[outv]",
     "-map", "[outa]",
@@ -453,12 +484,13 @@ async function cmdApplyCuts(args) {
     "-b:a", "192k",
     "-movflags", "+faststart",
     out,
-  ]);
+  );
+  await runFfmpeg(ffArgs);
 
   // Also emit a "kept-segments" timing map so subtitle generation can remap
   // original timestamps onto the cleaned timeline.
   const mapPath = out + ".keeps.json";
-  writeJson(mapPath, { source: input, duration, keeps, crossfade });
+  writeJson(mapPath, { source: input, duration, keeps, crossfade, music: musicPath ? path.basename(musicPath) : null });
   log(`wrote cleaned video to ${out} and keep map to ${mapPath}`);
 }
 
@@ -659,6 +691,8 @@ async function cmdAll(args) {
   const detector = args.detector;
   const transition = args.transition;
   const pauseThreshold = args["pause-threshold"];
+  const music = args.music;
+  const musicVolume = args["music-volume"];
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
@@ -692,6 +726,8 @@ async function cmdAll(args) {
     out: cleanedPath,
     crossfade,
     transition,
+    music,
+    "music-volume": musicVolume,
   });
 
   // Optional overlay pass. --overlays may be either:
