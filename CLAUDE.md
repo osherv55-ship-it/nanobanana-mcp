@@ -35,9 +35,23 @@ Treat cosine similarity > 0.75 as a strong match, 0.55–0.75 as worth surfacing
 
 ### How to invoke
 
-The skill scripts live at `.claude/skills/media-memory/scripts/`. The skill's `SKILL.md` documents the exact CLI for `ingest.py`, `search.py`, `list_media.py`, and `reindex.py`. Use the venv at `.claude/skills/media-memory/.venv/bin/python`. On a fresh checkout, run the one-time setup block in `SKILL.md`.
+The skill scripts live at `.claude/skills/media-memory/scripts/`. The skill's `SKILL.md` documents the exact CLI for `ingest.py`, `search.py`, `list_media.py`, and `reindex.py`. Use the venv at `.claude/skills/media-memory/.venv/bin/python`.
+
+The `.claude/hooks/session-start.sh` SessionStart hook auto-provisions the venv and installs deps at the start of every session — no manual setup needed on a fresh checkout.
 
 Required env var: `GEMINI_API_KEY` (same key the MCP server uses).
+
+### Reusing the skill in a new project
+
+To activate this skill on a different repo:
+
+1. Copy `.claude/skills/media-memory/` and `.claude/hooks/session-start.sh` into the target repo.
+2. Merge the `hooks` block from `.claude/settings.json` into the target's `.claude/settings.json` (create it if absent).
+3. Add the `.gitignore` entries: `.chroma/`, `.claude/skills/media-memory/.venv/`, and the `media-memory/**` allowlist block.
+4. Copy this "Multimodal memory" section into the target's `CLAUDE.md` so Claude knows to log/query.
+5. Ensure `GEMINI_API_KEY` is available in that project's environment.
+
+The hook will create the venv and storage dirs on first session start; the skill is then ready to use.
 
 ## Code conventions
 
