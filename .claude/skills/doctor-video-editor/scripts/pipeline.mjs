@@ -648,6 +648,82 @@ async function cmdOverlay(args) {
   log(`wrote ${out}`);
 }
 
+// Concatenate a list of videos into one. All inputs are re-encoded into the
+// concat output so codec/resolution mismatches are resolved gracefully.
+async function concatVideos(inputs, out) {
+  if (inputs.length === 0) throw new Error("concatVideos: no inputs");
+  if (inputs.length === 1) {
+    fs.copyFileSync(inputs[0], out);
+    return out;
+  }
+  const ffArgs = ["-y"];
+  for (const i of inputs) ffArgs.push("-i", i);
+  // Normalize all inputs to the first input's resolution / fps before
+  // concat, so mixed sources don't error out.
+  const firstDims = await ffprobeJson(inputs[0]);
+  const v = (firstDims.streams || []).find((s) => s.codec_type === "video");
+  const W = Number(v?.width || 1080);
+  const H = Number(v?.height || 1920);
+  const r = v?.avg_frame_rate || v?.r_frame_rate || "30/1";
+  const [rn, rd] = r.split("/").map(Number);
+  const fps = Number.isFinite(rn) && Number.isFinite(rd) && rd > 0 ? Math.round((rn / rd) * 1000) / 1000 : 30;
+
+  const filterParts = [];
+  for (let i = 0; i < inputs.length; i++) {
+    filterParts.push(
+      `[${i}:v]scale=${W}:${H}:force_original_aspect_ratio=decrease,` +
+        `pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=${fps}[v${i}]`,
+    );
+    filterParts.push(`[${i}:a]aresample=async=1[a${i}]`);
+  }
+  const concatInputs = inputs.map((_, i) => `[v${i}][a${i}]`).join("");
+  filterParts.push(`${concatInputs}concat=n=${inputs.length}:v=1:a=1[outv][outa]`);
+  ffArgs.push(
+    "-filter_complex", filterParts.join(";"),
+    "-map", "[outv]",
+    "-map", "[outa]",
+    "-c:v", "libx264",
+    "-preset", "medium",
+    "-crf", "20",
+    "-c:a", "aac",
+    "-b:a", "192k",
+    "-movflags", "+faststart",
+    out,
+  );
+  await runFfmpeg(ffArgs);
+  return out;
+}
+
+// Mix a music bed underneath an existing video's audio. Loops the music to
+// match the video length, scales by volume, fades in/out, and applies
+// dynaudnorm afterwards so the dialogue stays intelligible.
+async function mixMusicOnto(input, musicPath, out, opts = {}) {
+  const { volume = 0.12 } = opts;
+  if (!fs.existsSync(musicPath)) throw new Error(`music file not found: ${musicPath}`);
+  const dur = await getDuration(input);
+  const fadeIn = Math.min(1.0, dur * 0.05);
+  const fadeOutStart = Math.max(0, dur - 1.5);
+  await runFfmpeg([
+    "-y",
+    "-i", input,
+    "-i", musicPath,
+    "-filter_complex",
+    `[1:a]aloop=loop=-1:size=2e9,atrim=duration=${dur.toFixed(3)},asetpts=PTS-STARTPTS,` +
+      `volume=${volume.toFixed(3)},` +
+      `afade=t=in:st=0:d=${fadeIn.toFixed(3)},` +
+      `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5[music];` +
+      `[0:a][music]amix=inputs=2:duration=first:dropout_transition=0,dynaudnorm=p=0.71:m=8[outa]`,
+    "-map", "0:v",
+    "-map", "[outa]",
+    "-c:v", "copy",
+    "-c:a", "aac",
+    "-b:a", "192k",
+    "-movflags", "+faststart",
+    out,
+  ]);
+  return out;
+}
+
 async function cmdCompose(args) {
   const input = need(args, "input");
   const overlaysArg = need(args, "overlays");
@@ -675,6 +751,73 @@ async function cmdCompose(args) {
   log(`wrote composited video to ${out}`);
 }
 
+// Process an intro clip: transcribe it, find the first natural sentence
+// boundary, trim everything after it, clean any disfluencies in the kept
+// part, and burn Hebrew subtitles. Returns the path to the finished intro.
+async function processIntro(introVideo, parentOutDir, opts) {
+  const { sourceLang, wordByWord, transcriber } = opts;
+  const introDir = path.join(parentOutDir, "intro");
+  ensureDir(introDir);
+
+  const transcriptPath = path.join(introDir, "transcript.json");
+  await cmdTranscribe({
+    input: introVideo,
+    out: transcriptPath,
+    "source-lang": sourceLang,
+    transcriber,
+  });
+
+  const tr = readJson(transcriptPath);
+
+  // Find the first sentence boundary: a segment ending in . ! ? OR the
+  // first inter-word gap >= 0.6s. Fall back to ~5s if neither exists.
+  const dur = await getDuration(introVideo);
+  let boundary = null;
+  for (const seg of tr.segments || []) {
+    if (/[.!?]$/.test((seg.text || "").trim())) {
+      boundary = seg.end + 0.15;
+      break;
+    }
+  }
+  if (boundary === null) {
+    const w = (tr.words || []).filter((x) => x.type === "word");
+    for (let i = 0; i < w.length - 1; i++) {
+      const gap = w[i + 1].start - w[i].end;
+      if (gap >= 0.6) {
+        boundary = w[i].end + 0.15;
+        break;
+      }
+    }
+  }
+  if (boundary === null) boundary = Math.min(5, dur);
+  boundary = Math.min(boundary, dur);
+  log(`intro: first sentence ends at ${boundary.toFixed(2)}s (source ${dur.toFixed(2)}s)`);
+
+  const cutsPath = path.join(introDir, "cuts.json");
+  writeJson(cutsPath, { cuts: [{ start: boundary, end: dur, reason: "intro-trim" }] });
+
+  const cleanedPath = path.join(introDir, "cleaned.mp4");
+  await cmdApplyCuts({ input: introVideo, cuts: cutsPath, out: cleanedPath, crossfade: 0 });
+
+  const subsDir = path.join(introDir, "subs");
+  await cmdTranslate({
+    transcript: transcriptPath,
+    cuts: cutsPath,
+    "target-langs": "he",
+    "out-dir": subsDir,
+    "word-by-word": wordByWord,
+    crossfade: 0,
+  });
+
+  const finalPath = path.join(introDir, "final.he.mp4");
+  await cmdOverlay({
+    input: cleanedPath,
+    subs: path.join(subsDir, "subs.he.ass"),
+    out: finalPath,
+  });
+  return finalPath;
+}
+
 async function cmdAll(args) {
   const input = need(args, "input");
   const outDir = ensureDir(need(args, "out-dir"));
@@ -691,8 +834,9 @@ async function cmdAll(args) {
   const detector = args.detector;
   const transition = args.transition;
   const pauseThreshold = args["pause-threshold"];
-  const music = args.music;
-  const musicVolume = args["music-volume"];
+  const music = args.music && args.music !== true ? String(args.music) : null;
+  const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
+  const intro = args.intro && args.intro !== true ? String(args.intro) : null;
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
@@ -720,13 +864,17 @@ async function cmdAll(args) {
     detector,
     "pause-threshold": pauseThreshold,
   });
+  // Music is applied AFTER intro concatenation (post-mix) so the bed plays
+  // continuously across the intro→main transition. Skip music in apply-cuts
+  // here whenever there's an intro to concatenate; otherwise mix it in now
+  // for the simpler no-intro flow.
   await cmdApplyCuts({
     input,
     cuts: cutsPath,
     out: cleanedPath,
     crossfade,
     transition,
-    music,
+    music: intro ? null : music,
     "music-volume": musicVolume,
   });
 
@@ -786,6 +934,42 @@ async function cmdAll(args) {
       const subPath = path.join(subsDir, `subs.${lang}.ass`);
       const finalPath = path.join(outDir, `final.${lang}.mp4`);
       await cmdOverlay({ input: videoForSubs, subs: subPath, out: finalPath });
+    }
+  }
+
+  // Post-processing: intro concat + post-music mix. We do this only for
+  // Hebrew (the source language) — if multiple target langs were burned,
+  // the intro concatenation is skipped for the non-source variants.
+  if (burnIn) {
+    const mainFinal = path.join(outDir, "final.he.mp4");
+    if (fs.existsSync(mainFinal)) {
+      let workingPath = mainFinal;
+
+      if (intro && fs.existsSync(intro)) {
+        log(`processing intro clip ${path.basename(intro)}`);
+        const introFinal = await processIntro(intro, outDir, {
+          sourceLang,
+          wordByWord,
+          transcriber,
+        });
+        const combinedPath = path.join(outDir, "final.combined.mp4");
+        log(`concatenating intro + main → ${path.basename(combinedPath)}`);
+        await concatVideos([introFinal, mainFinal], combinedPath);
+        workingPath = combinedPath;
+      }
+
+      if (intro && music) {
+        const withMusic = path.join(outDir, "final.with_music.mp4");
+        log(`mixing music bed across the full timeline`);
+        await mixMusicOnto(workingPath, music, withMusic, { volume: musicVolume });
+        workingPath = withMusic;
+      }
+
+      // Promote the post-processed result to be the canonical final.he.mp4.
+      if (workingPath !== mainFinal) {
+        fs.renameSync(mainFinal, path.join(outDir, "final.main_only.mp4"));
+        fs.renameSync(workingPath, mainFinal);
+      }
     }
   }
 
@@ -956,6 +1140,8 @@ Subcommands:
                [--source-lang auto] [--burn-in] [--aggressive]
                [--word-by-word] [--crossfade <s>] [--transition <name>]
                [--transcriber elevenlabs|gemini] [--detector programmatic|gemini]
+               [--overlays <dir|json>] [--music <audio> [--music-volume 0.12]]
+               [--intro <video>]   # trimmed to first sentence, prepended
 
 Env:
   GEMINI_API_KEY        required for Gemini transcription / translation
