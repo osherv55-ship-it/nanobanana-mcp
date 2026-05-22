@@ -129,11 +129,14 @@ if (Test-Path $overlayDir) {
         }
     }
     # Background music: any audio file (mp3/m4a/wav/aac/flac/ogg) in the
-    # same folder is mixed under the dialogue at -18dB by default.
+    # same folder is mixed under the dialogue with sidechain ducking.
+    # Default volume 0.05 (~-26 dB); override per-run with
+    # $env:DVE_MUSIC_VOLUME = "0.07" for example.
     $musicFile = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp3|m4a|wav|aac|flac|ogg)$' } | Select-Object -First 1
     if ($musicFile) {
-        Note "Music bed: $($musicFile.Name)"
-        $musicArgs = @("--music", $musicFile.FullName)
+        $musicVolume = if ($env:DVE_MUSIC_VOLUME) { $env:DVE_MUSIC_VOLUME } else { "0.05" }
+        Note "Music bed: $($musicFile.Name) @ volume $musicVolume"
+        $musicArgs = @("--music", $musicFile.FullName, "--music-volume", $musicVolume)
     }
 } else {
     Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images / a music file / intro.mov to enable)"

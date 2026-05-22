@@ -354,7 +354,7 @@ async function cmdApplyCuts(args) {
   const requestedCrossfade = parseFloat(args.crossfade ?? "0");
   const transition = (args.transition || "fade").toString();
   const musicPath = args.music && args.music !== true ? String(args.music) : null;
-  const musicVolume = parseFloat(args["music-volume"] ?? "0.08");
+  const musicVolume = parseFloat(args["music-volume"] ?? "0.05");
 
   const { cuts } = readJson(cutsPath);
   const duration = await getDuration(input);
