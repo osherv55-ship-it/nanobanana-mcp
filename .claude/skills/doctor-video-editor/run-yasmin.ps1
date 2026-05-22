@@ -95,9 +95,14 @@ if ($env:GEMINI_API_KEY) {
 }
 
 Section "Downloading Yasmin demo clip from GitHub release"
-$videoPath = Join-Path $desktop "yasmin_raw.mov"
+# Asset can be overridden via $env:YASMIN_VIDEO_ASSET (e.g., "IMG_9246.MOV"
+# for the short clip, "IMG_9247.MOV" for the long interview). Defaults to
+# the long interview since the short clip has no detectable disfluencies.
+$asset = if ($env:YASMIN_VIDEO_ASSET) { $env:YASMIN_VIDEO_ASSET } else { "IMG_9247.MOV" }
+$tag = [System.IO.Path]::GetFileNameWithoutExtension($asset)
+$videoPath = Join-Path $desktop "yasmin_raw_$tag.mov"
 if (-not (Test-Path $videoPath)) {
-    $url = "https://github.com/osherv55-ship-it/nanobanana-mcp/releases/download/YASMIN/IMG_9246.MOV"
+    $url = "https://github.com/osherv55-ship-it/nanobanana-mcp/releases/download/YASMIN/$asset"
     Note "GET $url"
     Invoke-WebRequest -Uri $url -OutFile $videoPath
 } else {
@@ -107,7 +112,7 @@ $sizeMb = [math]::Round((Get-Item $videoPath).Length / 1MB, 1)
 Note "Video: $videoPath ($sizeMb MB)"
 
 Section "Running pipeline (transcribe → cuts → trim → translate → burn-in)"
-$outDir = Join-Path $desktop "yasmin_out"
+$outDir = Join-Path $desktop "yasmin_out_$tag"
 node scripts\pipeline.mjs all `
     --input $videoPath `
     --out-dir $outDir `
