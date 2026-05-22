@@ -124,31 +124,47 @@ async function cmdFindCuts(args) {
   const transcriptPath = need(args, "transcript");
   const out = need(args, "out");
   const aggressive = !!args.aggressive;
+  const videoPath = args.video; // optional but strongly recommended for accuracy
   const model = args.model || DEFAULT_MODEL;
 
   const transcript = readJson(transcriptPath);
-  log(`detecting cuts (aggressive=${aggressive}) over ${transcript.segments.length} segments`);
+  log(`detecting cuts (aggressive=${aggressive}, video=${videoPath ? "yes" : "no"}) over ${transcript.segments.length} segments`);
 
   const sys =
     "You are a video editor specializing in talking-head doctor testimonials. " +
-    "You decide which spans of a transcript should be CUT to produce a clean, " +
-    "professional, fast-paced final edit. You never remove medical claims or " +
-    "key content — only disfluencies and dead air.";
+    "You decide which spans of audio to CUT to produce a clean, professional, " +
+    "fast-paced final edit. You ONLY cut sub-word and sub-phrase disfluencies — " +
+    "filler sounds, audible hesitations, repeated words, silent pauses. " +
+    "You NEVER cut full sentences, even if they sound awkward or off-topic — " +
+    "the editor will decide later whether to remove larger content.";
 
   const policy = aggressive
-    ? "AGGRESSIVE mode: also cut weak rephrasings (when the speaker restates the same idea worse), tangents, and obvious throat-clearing. Be willing to remove up to 25% of total duration."
-    : "CONSERVATIVE mode: cut only obvious disfluencies — filler words (umm/uhh/אה/אם), stutters, repeated words, false starts, audible breaths longer than a beat, and silent pauses longer than 1.2 seconds. Never cut medical content.";
+    ? "AGGRESSIVE mode: in addition to obvious disfluencies, you may also remove repeated phrases (when the same idea is restated within ~3 seconds) and clearly off-topic asides. Cap total removed time at 25% of the video."
+    : "CONSERVATIVE mode (default): ONLY cut these specific things — (a) filler sounds: אממ / אהה / אה / אם / umm / uhh / like, (b) word-level stutters and immediate repetitions of the same word, (c) silent pauses longer than 1.2 seconds, (d) audible breaths longer than 0.6s. DO NOT cut full sentences. DO NOT cut content even if it sounds awkward or off-topic — those decisions belong to the human editor.";
+
+  const promptHeader = videoPath
+    ? [
+        "Look at the attached video, listen to the audio, and produce a list of time ranges to CUT.",
+        "The transcript below is a ROUGH starting point — its timestamps may be off by 0.5–2 seconds.",
+        "Trust your ears over the transcript: locate each disfluency BY LISTENING and report",
+        "millisecond-accurate start/end times aligned to the actual audio.",
+      ]
+    : [
+        "Given ONLY this timestamped transcript, produce a list of time ranges to CUT.",
+        "(For higher accuracy, re-run this step with --video so cuts can be aligned to the actual audio.)",
+      ];
 
   const userPrompt = [
-    "Given this timestamped transcript, produce a list of time ranges to CUT.",
+    ...promptHeader,
     "",
     `Policy: ${policy}`,
     "",
     "Rules:",
-    "- Ranges must be expressed in absolute seconds (matching the transcript timestamps).",
+    "- Ranges must be expressed in absolute seconds from the start of the video.",
     "- Do not overlap ranges. Order them ascending.",
     "- Prefer many short cuts over a few long ones.",
-    "- For each cut include a short reason (filler|stutter|repeat|long-pause|false-start|tangent|breath).",
+    "- For each cut include a short reason (filler|stutter|repeat|long-pause|breath).",
+    "- Do NOT use the reason 'false-start' or 'tangent' — those would imply cutting full content.",
     "",
     "Return STRICT JSON:",
     "{",
@@ -157,13 +173,20 @@ async function cmdFindCuts(args) {
     "  ]",
     "}",
     "",
-    "Transcript:",
+    "Reference transcript:",
     JSON.stringify(transcript, null, 2),
   ].join("\n");
 
+  const parts = [];
+  if (videoPath) {
+    const mimeType = mimeFromPath(videoPath);
+    parts.push(await buildMediaPart(videoPath, mimeType));
+  }
+  parts.push({ text: userPrompt });
+
   const data = await generateJson({
     model,
-    parts: [{ text: userPrompt }],
+    parts,
     systemInstruction: sys,
     temperature: 0.1,
   });
@@ -324,21 +347,26 @@ async function cmdOverlay(args) {
   const input = need(args, "input");
   const subs = need(args, "subs");
   const out = need(args, "out");
+  const fontsDir = args["fonts-dir"] || path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "assets",
+    "fonts",
+  );
 
-  log(`burning ${subs} into ${input} -> ${out}`);
+  log(`burning ${subs} into ${input} -> ${out} (fonts: ${fontsDir})`);
   ensureDir(path.dirname(out));
 
   // ass filter automatically uses the styling embedded in the .ass file.
   // ffmpeg's filter parser is finicky about Windows paths — normalize
   // backslashes to forward slashes (accepted on all platforms), then escape
   // the drive-letter colon and any single quotes.
-  const subsEscaped = subs
-    .replace(/\\/g, "/")
-    .replace(/:/g, "\\:")
-    .replace(/'/g, "\\'");
+  const escape = (p) => p.replace(/\\/g, "/").replace(/:/g, "\\:").replace(/'/g, "\\'");
+  const subsEscaped = escape(subs);
+  const fontsArg = fs.existsSync(fontsDir) ? `:fontsdir='${escape(fontsDir)}'` : "";
   const filter = subs.toLowerCase().endsWith(".ass")
-    ? `ass='${subsEscaped}'`
-    : `subtitles='${subsEscaped}'`;
+    ? `ass='${subsEscaped}'${fontsArg}`
+    : `subtitles='${subsEscaped}'${fontsArg}`;
 
   await runFfmpeg([
     "-y",
@@ -375,7 +403,7 @@ async function cmdAll(args) {
   const subsDir = path.join(outDir, "subs");
 
   await cmdTranscribe({ input, out: transcriptPath, "source-lang": sourceLang, model: args.model });
-  await cmdFindCuts({ transcript: transcriptPath, out: cutsPath, aggressive, model: args.model });
+  await cmdFindCuts({ transcript: transcriptPath, out: cutsPath, video: input, aggressive, model: args.model });
   await cmdApplyCuts({ input, cuts: cutsPath, out: cleanedPath });
   await cmdTranslate({
     transcript: transcriptPath,
