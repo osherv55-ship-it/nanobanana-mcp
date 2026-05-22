@@ -354,7 +354,7 @@ async function cmdApplyCuts(args) {
   const requestedCrossfade = parseFloat(args.crossfade ?? "0");
   const transition = (args.transition || "fade").toString();
   const musicPath = args.music && args.music !== true ? String(args.music) : null;
-  const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
+  const musicVolume = parseFloat(args["music-volume"] ?? "0.08");
 
   const { cuts } = readJson(cutsPath);
   const duration = await getDuration(input);
@@ -450,7 +450,8 @@ async function cmdApplyCuts(args) {
     - (crossfade > 0 && keeps.length > 1 ? (keeps.length - 1) * crossfade : 0);
 
   // Music mixing chain: loop the music file forever, trim to cleaned-output
-  // length, scale by volume, fade in/out, and mix under the speech with amix.
+  // length, scale by volume, fade in/out, sidechain-duck under the speech,
+  // then mix.
   if (musicPath) {
     if (!fs.existsSync(musicPath)) die(`music file not found: ${musicPath}`);
     const fadeIn = Math.min(1.0, cleanedDur * 0.05);
@@ -460,10 +461,14 @@ async function cmdApplyCuts(args) {
         `volume=${musicVolume.toFixed(3)},` +
         `afade=t=in:st=0:d=${fadeIn.toFixed(3)},` +
         `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5` +
-        `[music]`,
+        `[music_pre]`,
+    );
+    filterParts.push(`[outa_speech]asplit=2[speech_out][speech_key]`);
+    filterParts.push(
+      `[music_pre][speech_key]sidechaincompress=threshold=0.05:ratio=8:attack=10:release=300:level_sc=4[music_ducked]`,
     );
     filterParts.push(
-      `[outa_speech][music]amix=inputs=2:duration=first:dropout_transition=0,` +
+      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0,` +
         `dynaudnorm=p=0.71:m=8` +
         `[outa]`,
     );
@@ -696,9 +701,10 @@ async function concatVideos(inputs, out) {
 
 // Mix a music bed underneath an existing video's audio. Loops the music to
 // match the video length, scales by volume, fades in/out, and applies
-// dynaudnorm afterwards so the dialogue stays intelligible.
+// sidechain compression keyed off the dialogue so the bed automatically
+// ducks under speech and rises during pauses.
 async function mixMusicOnto(input, musicPath, out, opts = {}) {
-  const { volume = 0.12 } = opts;
+  const { volume = 0.08 } = opts;
   if (!fs.existsSync(musicPath)) throw new Error(`music file not found: ${musicPath}`);
   const dur = await getDuration(input);
   const fadeIn = Math.min(1.0, dur * 0.05);
@@ -711,8 +717,11 @@ async function mixMusicOnto(input, musicPath, out, opts = {}) {
     `[1:a]aloop=loop=-1:size=2e9,atrim=duration=${dur.toFixed(3)},asetpts=PTS-STARTPTS,` +
       `volume=${volume.toFixed(3)},` +
       `afade=t=in:st=0:d=${fadeIn.toFixed(3)},` +
-      `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5[music];` +
-      `[0:a][music]amix=inputs=2:duration=first:dropout_transition=0,dynaudnorm=p=0.71:m=8[outa]`,
+      `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5[music_pre];` +
+      `[0:a]asplit=2[speech_out][speech_key];` +
+      `[music_pre][speech_key]sidechaincompress=threshold=0.05:ratio=8:attack=10:release=300:level_sc=4[music_ducked];` +
+      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0,` +
+      `dynaudnorm=p=0.71:m=8[outa]`,
     "-map", "0:v",
     "-map", "[outa]",
     "-c:v", "copy",

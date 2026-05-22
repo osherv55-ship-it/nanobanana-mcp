@@ -105,7 +105,7 @@ $musicArgs = @()
 $introArgs = @()
 if (Test-Path $overlayDir) {
     $assets = Get-ChildItem $overlayDir -File | Where-Object {
-        $_.Extension -match '\.(mp4|mov|webm|mkv|jpg|jpeg|png|webp)$' -and $_.BaseName -notmatch '^intro$'
+        $_.Extension -match '\.(mp4|mov|webm|mkv|jpg|jpeg|png|webp)$' -and $_.BaseName -notmatch '^intro'
     }
     if ($assets.Count -gt 0) {
         Note "Overlay folder: $overlayDir ($($assets.Count) visual file(s))"
@@ -113,13 +113,20 @@ if (Test-Path $overlayDir) {
     } else {
         Note "Overlay folder exists but no media inside — skipping overlays"
     }
-    # Intro clip: file named intro.* (any video extension) becomes the prefix.
+    # Intro clip: any file whose basename starts with "intro" (case-insensitive)
+    # — Intro.mov, intro_v1.mp4, Intro-yasmin.mov, etc.
     $introFile = Get-ChildItem $overlayDir -File | Where-Object {
-        $_.BaseName -eq 'intro' -and $_.Extension -match '\.(mp4|mov|webm|mkv|m4v)$'
+        $_.BaseName -match '^intro' -and $_.Extension -match '\.(mp4|mov|webm|mkv|m4v)$'
     } | Select-Object -First 1
     if ($introFile) {
         Note "Intro clip: $($introFile.Name)"
         $introArgs = @("--intro", $introFile.FullName)
+    } else {
+        $allMov = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp4|mov|webm|mkv|m4v)$' } | ForEach-Object { $_.Name }
+        if ($allMov) {
+            Note ("No intro file detected. Video files in folder: " + ($allMov -join ', '))
+            Note "Name a file starting with 'intro' (e.g., intro.mov) to use it as the prefix."
+        }
     }
     # Background music: any audio file (mp3/m4a/wav/aac/flac/ogg) in the
     # same folder is mixed under the dialogue at -18dB by default.

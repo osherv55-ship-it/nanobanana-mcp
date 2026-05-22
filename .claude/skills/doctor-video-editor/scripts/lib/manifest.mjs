@@ -26,9 +26,9 @@ function listMedia(dir) {
   const files = fs
     .readdirSync(dir)
     .filter((f) => !f.startsWith("."))
-    // Files named "intro*" are reserved — they become the video prefix,
-    // not an overlay. Skip them from auto-manifest discovery.
-    .filter((f) => !/^intro\b/i.test(f))
+    // Files starting with "intro" (case-insensitive) are reserved — they
+    // become the video prefix, not an overlay. Skip them.
+    .filter((f) => !/^intro/i.test(f))
     .map((f) => ({
       name: f,
       full: path.join(dir, f),
