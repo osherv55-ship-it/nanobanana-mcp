@@ -43,12 +43,13 @@ export function detectDisfluencies(words, opts = {}) {
   const {
     aggressive = false,
     fillerPadding = 0.05,
-    longPauseThreshold = 1.0,
-    longPauseLeave = 0.15,
+    longPauseThreshold = aggressive ? 0.5 : 1.0,
+    longPauseLeave = aggressive ? 0.10 : 0.15,
     stutterMaxGap = 0.4,
     sideTalkMinDuration = 0.4,
     sideTalk = true,
     breaths = true,
+    nonSpeechEvents = true,
   } = opts;
 
   const fillerSet = new Set();
@@ -122,14 +123,31 @@ export function detectDisfluencies(words, opts = {}) {
     }
   }
 
-  // 4. Audible breaths / sighs (ElevenLabs scribe audio events).
-  if (breaths) {
+  // 4. Audio events — three buckets:
+  //    a) Breaths / sighs / coughs from primary speaker → breath
+  //    b) Any audio event from a NON-primary speaker (background noise, side
+  //       laughter, "(רקע)") → side-noise
+  //    c) Any other non-speech tag (background/noise/click/Hebrew רקע) → audio-event
+  //    Content sounds from primary (laughter, applause, music) are kept.
+  const NON_SPEECH = /breath|inhale|exhale|sigh|cough|gasp|sneeze|click|hum|background|noise|silence|רקע|רעש|נשימה|אנחה/i;
+  const CONTENT_AUDIO = /laugh|applaud|applause|music|sing|צחוק|מחיא/i;
+  if (breaths || nonSpeechEvents) {
     for (const w of words) {
       if (w.type !== "audio_event") continue;
-      const t = String(w.text || "").toLowerCase();
-      if (/breath|inhale|exhale|sigh/.test(t)) {
-        cuts.push({ start: w.start, end: w.end, reason: "breath", note: t });
+      const t = String(w.text || "");
+      const isPrimary = !w.speaker || w.speaker === primarySpeaker;
+      if (isPrimary && CONTENT_AUDIO.test(t) && !NON_SPEECH.test(t)) {
+        continue; // keep meaningful audio from the doctor
       }
+      let reason = "audio-event";
+      if (/breath|inhale|exhale|sigh|נשימה|אנחה/i.test(t)) reason = "breath";
+      else if (!isPrimary) reason = "side-noise";
+      cuts.push({
+        start: Math.max(0, w.start - 0.02),
+        end: w.end + 0.02,
+        reason,
+        note: t,
+      });
     }
   }
 

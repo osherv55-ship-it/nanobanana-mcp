@@ -176,10 +176,14 @@ async function cmdFindCuts(args) {
     if (!hasWords) {
       die("detector=programmatic requires word-level transcript (use --transcriber elevenlabs)");
     }
+    const detectorOpts = { aggressive };
+    if (args["pause-threshold"] !== undefined && args["pause-threshold"] !== true) {
+      detectorOpts.longPauseThreshold = parseFloat(args["pause-threshold"]);
+    }
     log(
-      `detecting cuts programmatically over ${transcript.words.length} words (aggressive=${aggressive})`,
+      `detecting cuts programmatically over ${transcript.words.length} words (aggressive=${aggressive}, pauseThreshold=${detectorOpts.longPauseThreshold ?? (aggressive ? 0.5 : 1.0)}s)`,
     );
-    const result = detectDisfluencies(transcript.words, { aggressive });
+    const result = detectDisfluencies(transcript.words, detectorOpts);
     const removed = result.cuts.reduce((acc, c) => acc + (c.end - c.start), 0);
     writeJson(out, {
       cuts: result.cuts,
@@ -571,6 +575,7 @@ async function cmdAll(args) {
   const transcriber = args.transcriber;
   const detector = args.detector;
   const transition = args.transition;
+  const pauseThreshold = args["pause-threshold"];
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
@@ -595,6 +600,7 @@ async function cmdAll(args) {
     aggressive,
     model: args.model,
     detector,
+    "pause-threshold": pauseThreshold,
   });
   await cmdApplyCuts({
     input,
