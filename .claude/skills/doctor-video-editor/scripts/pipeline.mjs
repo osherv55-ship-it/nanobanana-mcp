@@ -15,6 +15,7 @@ import { detectDisfluencies, remapWords } from "./lib/disfluency.mjs";
 import { detectHiddenDisfluencies } from "./lib/audio-disfluency.mjs";
 import { buildProfile } from "./lib/profile.mjs";
 import { compose as composeOverlays } from "./lib/overlay.mjs";
+import { buildManifestFromDir } from "./lib/manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -617,11 +618,28 @@ async function cmdOverlay(args) {
 
 async function cmdCompose(args) {
   const input = need(args, "input");
-  const overlaysPath = need(args, "overlays");
+  const overlaysArg = need(args, "overlays");
   const out = need(args, "out");
-  log(`composing overlays from ${overlaysPath} onto ${input}`);
   ensureDir(path.dirname(out));
-  await composeOverlays(input, overlaysPath, out);
+
+  // `overlays` may be a JSON manifest or a directory of media assets.
+  let manifestPath = overlaysArg;
+  if (fs.statSync(overlaysArg).isDirectory()) {
+    const dur = await getDuration(input);
+    const manifest = buildManifestFromDir(overlaysArg, dur);
+    if (manifest.overlays.length === 0) {
+      die(`overlay directory ${overlaysArg} has no media files`);
+    }
+    manifestPath = path.join(path.dirname(out), "overlays.json");
+    writeJson(manifestPath, manifest);
+    log(
+      `auto-built manifest from ${overlaysArg}: ${manifest.overlays.length} overlay(s) ` +
+        `(${manifest.detected.videos.length} video, ${manifest.detected.single_images.length} still, ` +
+        `${manifest.detected.pairs.length} before/after) → ${manifestPath}`,
+    );
+  }
+  log(`composing overlays from ${manifestPath} onto ${input}`);
+  await composeOverlays(input, manifestPath, out);
   log(`wrote composited video to ${out}`);
 }
 
@@ -676,20 +694,45 @@ async function cmdAll(args) {
     transition,
   });
 
-  // Optional overlay pass — runs if --overlays is provided OR an
-  // overlays.json sits next to the input video.
-  const overlaysArg = args.overlays;
-  let candidateOverlays = null;
-  if (overlaysArg && overlaysArg !== true) {
-    candidateOverlays = String(overlaysArg);
-  } else {
-    const sidecar = path.join(path.dirname(input), "overlays.json");
-    if (fs.existsSync(sidecar)) candidateOverlays = sidecar;
+  // Optional overlay pass. --overlays may be either:
+  //   - a JSON manifest file (overlays.json)
+  //   - a directory of media files (auto-build manifest from contents)
+  // If neither is passed, fall back to overlays.json or an overlay/ dir
+  // next to the input video.
+  let overlaysArg = args.overlays;
+  if (!overlaysArg || overlaysArg === true) {
+    const sidecarJson = path.join(path.dirname(input), "overlays.json");
+    const sidecarDir = path.join(path.dirname(input), "overlay");
+    if (fs.existsSync(sidecarJson)) overlaysArg = sidecarJson;
+    else if (fs.existsSync(sidecarDir) && fs.statSync(sidecarDir).isDirectory()) overlaysArg = sidecarDir;
+    else overlaysArg = null;
   }
   let videoForSubs = cleanedPath;
-  if (candidateOverlays && fs.existsSync(candidateOverlays)) {
-    await cmdCompose({ input: cleanedPath, overlays: candidateOverlays, out: composedPath });
-    videoForSubs = composedPath;
+  if (overlaysArg) {
+    let manifestPath;
+    const stat = fs.statSync(overlaysArg);
+    if (stat.isDirectory()) {
+      const cleanedDur = await getDuration(cleanedPath);
+      const manifest = buildManifestFromDir(overlaysArg, cleanedDur);
+      if (manifest.overlays.length === 0) {
+        log(`overlay dir ${overlaysArg} has no media — skipping compose`);
+      } else {
+        log(
+          `auto-built overlay manifest from ${overlaysArg}: ` +
+            `${manifest.overlays.length} overlay(s), placed across ${cleanedDur.toFixed(1)}s ` +
+            `(${manifest.detected.videos.length} video, ${manifest.detected.single_images.length} still, ` +
+            `${manifest.detected.pairs.length} before/after)`,
+        );
+        manifestPath = path.join(outDir, "overlays.json");
+        writeJson(manifestPath, manifest);
+      }
+    } else {
+      manifestPath = overlaysArg;
+    }
+    if (manifestPath) {
+      await cmdCompose({ input: cleanedPath, overlays: manifestPath, out: composedPath });
+      videoForSubs = composedPath;
+    }
   }
 
   await cmdTranslate({

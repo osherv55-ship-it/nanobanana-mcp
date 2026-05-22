@@ -92,7 +92,25 @@ if (-not (Test-Path $videoPath)) {
 $sizeMb = [math]::Round((Get-Item $videoPath).Length / 1MB, 1)
 Note "Video: $videoPath ($sizeMb MB)"
 
-Section "Running pipeline (transcribe → cuts → trim → translate → burn-in)"
+Section "Looking for overlay assets folder"
+# Convention: any media files inside <Desktop>/overlay/ are auto-composed
+# onto the cleaned video — videos as B-roll, image pairs named
+# before*/after* as before/after splits, other images as still B-roll.
+$overlayDir = Join-Path $desktop "overlay"
+$overlayArgs = @()
+if (Test-Path $overlayDir) {
+    $assets = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp4|mov|webm|mkv|jpg|jpeg|png|webp)$' }
+    if ($assets.Count -gt 0) {
+        Note "Overlay folder: $overlayDir ($($assets.Count) file(s))"
+        $overlayArgs = @("--overlays", $overlayDir)
+    } else {
+        Note "Overlay folder exists but no media inside — skipping overlays"
+    }
+} else {
+    Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images to enable)"
+}
+
+Section "Running pipeline (transcribe → cuts → trim → overlay → subs → burn-in)"
 $outDir = Join-Path $desktop "yasmin_out_$tag"
 # No hard-coded --aggressive or --pause-threshold here on purpose: the
 # pipeline builds a per-video profile from the transcript and tunes those
@@ -105,6 +123,7 @@ node scripts\pipeline.mjs all `
     --target-langs $targetLangs `
     --word-by-word `
     --crossfade 0.10 `
+    @overlayArgs `
     --burn-in
 
 Section "Done"
