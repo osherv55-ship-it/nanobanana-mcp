@@ -12,6 +12,7 @@ import { buildAss, buildAssWordByWord } from "./lib/ass.mjs";
 import { transcribeFile as elevenlabsTranscribe, toInternalTranscript } from "./lib/elevenlabs.mjs";
 import { extractAudio } from "./lib/audio.mjs";
 import { detectDisfluencies, remapWords } from "./lib/disfluency.mjs";
+import { detectHiddenDisfluencies } from "./lib/audio-disfluency.mjs";
 import { buildProfile } from "./lib/profile.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -200,17 +201,52 @@ async function cmdFindCuts(args) {
         `(aggressive=${detectorOpts.aggressive}, pauseThreshold=${detectorOpts.longPauseThreshold}s)`,
     );
     const result = detectDisfluencies(transcript.words, detectorOpts);
-    const removed = result.cuts.reduce((acc, c) => acc + (c.end - c.start), 0);
+    let allCuts = [...result.cuts];
+
+    // Phase 3: cross-reference audio energy against the transcript to find
+    // disfluencies the ASR silently filtered out (e.g. brief "אה"/"uh" that
+    // ElevenLabs Scribe doesn't tag). The audio file is the one
+    // cmdTranscribe extracted for Scribe, sitting next to the transcript.
+    const audioPath = transcriptPath.replace(/\.json$/i, ".audio.flac");
+    let hiddenCount = 0;
+    if (fs.existsSync(audioPath)) {
+      log(`scanning audio (${path.basename(audioPath)}) for hidden disfluencies...`);
+      try {
+        const hidden = await detectHiddenDisfluencies(audioPath, transcript.words);
+        hiddenCount = hidden.cuts.length;
+        allCuts = allCuts.concat(hidden.cuts);
+      } catch (e) {
+        log(`warning: hidden-disfluency scan failed (${e.message}); continuing without it`);
+      }
+    }
+
+    // Sort + merge overlapping/adjacent cuts across all sources.
+    allCuts.sort((a, b) => a.start - b.start);
+    const merged = [];
+    for (const c of allCuts) {
+      const last = merged[merged.length - 1];
+      if (last && c.start <= last.end + 0.05) {
+        last.end = Math.max(last.end, c.end);
+        const tags = new Set(last.reason.split("+"));
+        tags.add(c.reason);
+        last.reason = [...tags].join("+");
+        if (c.note) last.note = last.note ? `${last.note}, ${c.note}` : c.note;
+      } else {
+        merged.push({ ...c });
+      }
+    }
+
+    const removed = merged.reduce((acc, c) => acc + (c.end - c.start), 0);
     writeJson(out, {
-      cuts: result.cuts,
+      cuts: merged,
       primary_speaker: result.primary_speaker,
       speakers: result.speakers,
-      detector: "programmatic",
+      detector: "programmatic+audio",
       profile,
       detectorOpts,
     });
     log(
-      `wrote ${result.cuts.length} cuts (~${removed.toFixed(1)}s removed, primary=${result.primary_speaker || "n/a"}) to ${out}`,
+      `wrote ${merged.length} cuts (~${removed.toFixed(1)}s removed, primary=${result.primary_speaker || "n/a"}, +${hiddenCount} hidden from audio scan) to ${out}`,
     );
     return;
   }
