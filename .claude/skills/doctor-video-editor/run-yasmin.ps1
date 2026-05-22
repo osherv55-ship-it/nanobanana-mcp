@@ -50,17 +50,15 @@ if (-not (Test-Path "node_modules")) {
     Note "node_modules already present, skipping"
 }
 
-Section "Checking API keys"
+Section "Checking ElevenLabs key"
 if (-not $env:ELEVENLABS_API_KEY) {
     throw "ELEVENLABS_API_KEY env var is not set. Run before invoking this script:`n  `$env:ELEVENLABS_API_KEY = '<your-key>'"
 }
 Note "Probing ElevenLabs key (GET /v1/user)..."
-$keyOk = $false
 try {
     $u = Invoke-RestMethod -Uri "https://api.elevenlabs.io/v1/user" -Headers @{"xi-api-key" = $env:ELEVENLABS_API_KEY} -ErrorAction Stop
     $tier = if ($u.subscription -and $u.subscription.tier) { $u.subscription.tier } else { "unknown" }
     Note "ElevenLabs key OK (tier: $tier)"
-    $keyOk = $true
 } catch {
     $msg = $_.Exception.Message
     if ($_.Exception.Response) {
@@ -74,25 +72,8 @@ try {
     throw "ElevenLabs key check failed:`n  $msg`n`nGo to https://elevenlabs.io/app/settings/api-keys, DELETE the failing key, CREATE A NEW one with 'Speech to Text' permission, then run:`n  `$env:ELEVENLABS_API_KEY = '<new key>'"
 }
 
-# Gemini is only needed when target-langs contains a language other than the
-# source. For this script we default to Hebrew-only (source language) so
-# Gemini becomes optional.
-$useGemini = $false
+# Hebrew subtitles only — no translation step, no Gemini needed.
 $targetLangs = "he"
-if ($env:GEMINI_API_KEY) {
-    Note "Probing Gemini key..."
-    try {
-        $g = Invoke-RestMethod -Uri "https://generativelanguage.googleapis.com/v1beta/models?key=$env:GEMINI_API_KEY" -ErrorAction Stop
-        Note "Gemini key OK ($(($g.models | Measure-Object).Count) models available)"
-        $useGemini = $true
-        $targetLangs = "he,en"
-        Note "Translation enabled → target-langs = $targetLangs"
-    } catch {
-        Write-Warning "Gemini key is set but failed validation; skipping English translation."
-    }
-} else {
-    Note "GEMINI_API_KEY not set — emitting Hebrew subtitles only (no translation)."
-}
 
 Section "Downloading Yasmin demo clip from GitHub release"
 # Asset can be overridden via $env:YASMIN_VIDEO_ASSET (e.g., "IMG_9246.MOV"
