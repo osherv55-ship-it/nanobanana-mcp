@@ -16,6 +16,7 @@ media-memory/**
 
 # scratch / working dirs for video processing demos
 tmp/
+out/
 
 # OS / editor cruft
 .DS_Store
