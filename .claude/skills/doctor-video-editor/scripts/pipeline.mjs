@@ -14,6 +14,7 @@ import { extractAudio } from "./lib/audio.mjs";
 import { detectDisfluencies, remapWords } from "./lib/disfluency.mjs";
 import { detectHiddenDisfluencies } from "./lib/audio-disfluency.mjs";
 import { buildProfile } from "./lib/profile.mjs";
+import { compose as composeOverlays } from "./lib/overlay.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -614,6 +615,16 @@ async function cmdOverlay(args) {
   log(`wrote ${out}`);
 }
 
+async function cmdCompose(args) {
+  const input = need(args, "input");
+  const overlaysPath = need(args, "overlays");
+  const out = need(args, "out");
+  log(`composing overlays from ${overlaysPath} onto ${input}`);
+  ensureDir(path.dirname(out));
+  await composeOverlays(input, overlaysPath, out);
+  log(`wrote composited video to ${out}`);
+}
+
 async function cmdAll(args) {
   const input = need(args, "input");
   const outDir = ensureDir(need(args, "out-dir"));
@@ -638,6 +649,7 @@ async function cmdAll(args) {
   const transcriptPath = path.join(outDir, "transcript.json");
   const cutsPath = path.join(outDir, "cuts.json");
   const cleanedPath = path.join(outDir, "cleaned.mp4");
+  const composedPath = path.join(outDir, "composed.mp4");
   const subsDir = path.join(outDir, "subs");
 
   await cmdTranscribe({
@@ -663,6 +675,23 @@ async function cmdAll(args) {
     crossfade,
     transition,
   });
+
+  // Optional overlay pass — runs if --overlays is provided OR an
+  // overlays.json sits next to the input video.
+  const overlaysArg = args.overlays;
+  let candidateOverlays = null;
+  if (overlaysArg && overlaysArg !== true) {
+    candidateOverlays = String(overlaysArg);
+  } else {
+    const sidecar = path.join(path.dirname(input), "overlays.json");
+    if (fs.existsSync(sidecar)) candidateOverlays = sidecar;
+  }
+  let videoForSubs = cleanedPath;
+  if (candidateOverlays && fs.existsSync(candidateOverlays)) {
+    await cmdCompose({ input: cleanedPath, overlays: candidateOverlays, out: composedPath });
+    videoForSubs = composedPath;
+  }
+
   await cmdTranslate({
     transcript: transcriptPath,
     cuts: cutsPath,
@@ -677,7 +706,7 @@ async function cmdAll(args) {
     for (const lang of targetLangs) {
       const subPath = path.join(subsDir, `subs.${lang}.ass`);
       const finalPath = path.join(outDir, `final.${lang}.mp4`);
-      await cmdOverlay({ input: cleanedPath, subs: subPath, out: finalPath });
+      await cmdOverlay({ input: videoForSubs, subs: subPath, out: finalPath });
     }
   }
 
@@ -863,6 +892,7 @@ Env:
     "apply-cuts": cmdApplyCuts,
     translate: cmdTranslate,
     overlay: cmdOverlay,
+    compose: cmdCompose,
     all: cmdAll,
   };
   const fn = cmds[subcommand];
