@@ -51,14 +51,47 @@ if (-not (Test-Path "node_modules")) {
 }
 
 Section "Checking API keys"
-if (-not $env:GEMINI_API_KEY) {
-    throw "GEMINI_API_KEY env var is not set. Set it in the same PowerShell session before running:`n  `$env:GEMINI_API_KEY = '<your-key>'"
-}
-Note "GEMINI_API_KEY: set"
 if (-not $env:ELEVENLABS_API_KEY) {
-    Write-Warning "ELEVENLABS_API_KEY not set — pipeline will fall back to Gemini-only transcription (less precise on Hebrew fillers + no diarization)."
+    throw "ELEVENLABS_API_KEY env var is not set. Run before invoking this script:`n  `$env:ELEVENLABS_API_KEY = '<your-key>'"
+}
+Note "Probing ElevenLabs key (GET /v1/user)..."
+$keyOk = $false
+try {
+    $u = Invoke-RestMethod -Uri "https://api.elevenlabs.io/v1/user" -Headers @{"xi-api-key" = $env:ELEVENLABS_API_KEY} -ErrorAction Stop
+    $tier = if ($u.subscription -and $u.subscription.tier) { $u.subscription.tier } else { "unknown" }
+    Note "ElevenLabs key OK (tier: $tier)"
+    $keyOk = $true
+} catch {
+    $msg = $_.Exception.Message
+    if ($_.Exception.Response) {
+        try {
+            $stream = $_.Exception.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($stream)
+            $body = $reader.ReadToEnd()
+            $msg = "$msg`n  Body: $body"
+        } catch {}
+    }
+    throw "ElevenLabs key check failed:`n  $msg`n`nGo to https://elevenlabs.io/app/settings/api-keys, DELETE the failing key, CREATE A NEW one with 'Speech to Text' permission, then run:`n  `$env:ELEVENLABS_API_KEY = '<new key>'"
+}
+
+# Gemini is only needed when target-langs contains a language other than the
+# source. For this script we default to Hebrew-only (source language) so
+# Gemini becomes optional.
+$useGemini = $false
+$targetLangs = "he"
+if ($env:GEMINI_API_KEY) {
+    Note "Probing Gemini key..."
+    try {
+        $g = Invoke-RestMethod -Uri "https://generativelanguage.googleapis.com/v1beta/models?key=$env:GEMINI_API_KEY" -ErrorAction Stop
+        Note "Gemini key OK ($(($g.models | Measure-Object).Count) models available)"
+        $useGemini = $true
+        $targetLangs = "he,en"
+        Note "Translation enabled → target-langs = $targetLangs"
+    } catch {
+        Write-Warning "Gemini key is set but failed validation; skipping English translation."
+    }
 } else {
-    Note "ELEVENLABS_API_KEY: set (ElevenLabs Scribe will be used)"
+    Note "GEMINI_API_KEY not set — emitting Hebrew subtitles only (no translation)."
 }
 
 Section "Downloading Yasmin demo clip from GitHub release"
@@ -79,7 +112,7 @@ node scripts\pipeline.mjs all `
     --input $videoPath `
     --out-dir $outDir `
     --source-lang he `
-    --target-langs he,en `
+    --target-langs $targetLangs `
     --word-by-word `
     --crossfade 0.10 `
     --burn-in
