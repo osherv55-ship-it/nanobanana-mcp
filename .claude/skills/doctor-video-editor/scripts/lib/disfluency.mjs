@@ -65,7 +65,23 @@ export function detectDisfluencies(words, opts = {}) {
   const { primary: primarySpeaker, counts: speakerCounts, multiSpeaker } =
     pickPrimarySpeaker(words);
 
+  const contentWords = words.filter((w) => w.type === "word");
   const cuts = [];
+
+  // 0. Lead-in trim: anything that plays BEFORE the first transcribed word
+  // is almost always pre-roll noise (photographer cueing, room sounds, "go")
+  // and not part of the doctor's intended take.
+  if (contentWords.length > 0) {
+    const first = contentWords[0];
+    if (first.start > 0.15) {
+      cuts.push({
+        start: 0,
+        end: Math.max(0, first.start - 0.1),
+        reason: "lead-trim",
+        note: `${first.start.toFixed(2)}s pre-speech`,
+      });
+    }
+  }
 
   // 1. Filler words (exact match against the normalized filler set).
   for (const w of words) {
@@ -82,7 +98,6 @@ export function detectDisfluencies(words, opts = {}) {
   }
 
   // 2. Stutters: immediate same-word or prefix repetition within stutterMaxGap.
-  const contentWords = words.filter((w) => w.type === "word");
   for (let i = 0; i < contentWords.length - 1; i++) {
     const a = contentWords[i];
     const b = contentWords[i + 1];

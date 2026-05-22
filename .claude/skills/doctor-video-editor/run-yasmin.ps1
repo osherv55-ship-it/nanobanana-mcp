@@ -134,9 +134,13 @@ if (Test-Path $overlayDir) {
     # $env:DVE_MUSIC_VOLUME = "0.07" for example.
     $musicFile = Get-ChildItem $overlayDir -File | Where-Object { $_.Extension -match '\.(mp3|m4a|wav|aac|flac|ogg)$' } | Select-Object -First 1
     if ($musicFile) {
-        $musicVolume = if ($env:DVE_MUSIC_VOLUME) { $env:DVE_MUSIC_VOLUME } else { "0.05" }
-        Note "Music bed: $($musicFile.Name) @ volume $musicVolume"
-        $musicArgs = @("--music", $musicFile.FullName, "--music-volume", $musicVolume)
+        if ($env:DVE_MUSIC_VOLUME) {
+            Note "Music bed: $($musicFile.Name) @ volume $($env:DVE_MUSIC_VOLUME) (overridden)"
+            $musicArgs = @("--music", $musicFile.FullName, "--music-volume", $env:DVE_MUSIC_VOLUME)
+        } else {
+            Note "Music bed: $($musicFile.Name) (pipeline default volume + sidechain duck)"
+            $musicArgs = @("--music", $musicFile.FullName)
+        }
     }
 } else {
     Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images / a music file / intro.mov to enable)"

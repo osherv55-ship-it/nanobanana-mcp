@@ -354,7 +354,7 @@ async function cmdApplyCuts(args) {
   const requestedCrossfade = parseFloat(args.crossfade ?? "0");
   const transition = (args.transition || "fade").toString();
   const musicPath = args.music && args.music !== true ? String(args.music) : null;
-  const musicVolume = parseFloat(args["music-volume"] ?? "0.05");
+  const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
 
   const { cuts } = readJson(cutsPath);
   const duration = await getDuration(input);
@@ -465,12 +465,11 @@ async function cmdApplyCuts(args) {
     );
     filterParts.push(`[outa_speech]asplit=2[speech_out][speech_key]`);
     filterParts.push(
-      `[music_pre][speech_key]sidechaincompress=threshold=0.05:ratio=8:attack=10:release=300:level_sc=4[music_ducked]`,
+      // Gentle sidechain ducking: ~6 dB drop under speech, smooth recovery.
+      `[music_pre][speech_key]sidechaincompress=threshold=0.08:ratio=3:attack=30:release=400:level_sc=1[music_ducked]`,
     );
     filterParts.push(
-      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0,` +
-        `dynaudnorm=p=0.71:m=8` +
-        `[outa]`,
+      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0[outa]`,
     );
   }
 
@@ -704,7 +703,7 @@ async function concatVideos(inputs, out) {
 // sidechain compression keyed off the dialogue so the bed automatically
 // ducks under speech and rises during pauses.
 async function mixMusicOnto(input, musicPath, out, opts = {}) {
-  const { volume = 0.08 } = opts;
+  const { volume = 0.12 } = opts;
   if (!fs.existsSync(musicPath)) throw new Error(`music file not found: ${musicPath}`);
   const dur = await getDuration(input);
   const fadeIn = Math.min(1.0, dur * 0.05);
@@ -719,9 +718,9 @@ async function mixMusicOnto(input, musicPath, out, opts = {}) {
       `afade=t=in:st=0:d=${fadeIn.toFixed(3)},` +
       `afade=t=out:st=${fadeOutStart.toFixed(3)}:d=1.5[music_pre];` +
       `[0:a]asplit=2[speech_out][speech_key];` +
-      `[music_pre][speech_key]sidechaincompress=threshold=0.05:ratio=8:attack=10:release=300:level_sc=4[music_ducked];` +
-      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0,` +
-      `dynaudnorm=p=0.71:m=8[outa]`,
+      // Gentle sidechain ducking: ~6 dB drop under speech, smooth recovery.
+      `[music_pre][speech_key]sidechaincompress=threshold=0.08:ratio=3:attack=30:release=400:level_sc=1[music_ducked];` +
+      `[speech_out][music_ducked]amix=inputs=2:duration=first:dropout_transition=0[outa]`,
     "-map", "0:v",
     "-map", "[outa]",
     "-c:v", "copy",
@@ -778,29 +777,37 @@ async function processIntro(introVideo, parentOutDir, opts) {
 
   const tr = readJson(transcriptPath);
 
-  // Find the first sentence boundary: a segment ending in . ! ? OR the
-  // first inter-word gap >= 0.6s. Fall back to ~5s if neither exists.
+  // Find a sensible intro boundary. Strategy: collect every segment that
+  // ends with sentence-terminating punctuation, then pick the first one
+  // that lands at or after MIN_INTRO_SEC (so we cover the doctor's full
+  // self-introduction — name + role — not just her first short greeting).
+  // Fall back to the last sentence break if all are too short, then to
+  // first big pause, then to MIN_INTRO_SEC.
+  const MIN_INTRO_SEC = 6.0;
   const dur = await getDuration(introVideo);
-  let boundary = null;
-  for (const seg of tr.segments || []) {
-    if (/[.!?]$/.test((seg.text || "").trim())) {
-      boundary = seg.end + 0.15;
-      break;
-    }
+  const sentenceEnds = (tr.segments || [])
+    .filter((s) => /[.!?]$/.test((s.text || "").trim()))
+    .map((s) => s.end);
+
+  let boundary = sentenceEnds.find((t) => t >= MIN_INTRO_SEC);
+  if (boundary === undefined && sentenceEnds.length > 0) {
+    boundary = sentenceEnds[sentenceEnds.length - 1];
   }
-  if (boundary === null) {
+  if (boundary === undefined) {
+    // No sentence terminator at all — use the first long pause as a soft
+    // break, biased toward MIN_INTRO_SEC.
     const w = (tr.words || []).filter((x) => x.type === "word");
     for (let i = 0; i < w.length - 1; i++) {
       const gap = w[i + 1].start - w[i].end;
-      if (gap >= 0.6) {
-        boundary = w[i].end + 0.15;
+      if (gap >= 0.6 && w[i].end >= MIN_INTRO_SEC) {
+        boundary = w[i].end;
         break;
       }
     }
   }
-  if (boundary === null) boundary = Math.min(5, dur);
-  boundary = Math.min(boundary, dur);
-  log(`intro: first sentence ends at ${boundary.toFixed(2)}s (source ${dur.toFixed(2)}s)`);
+  if (boundary === undefined) boundary = Math.min(MIN_INTRO_SEC, dur);
+  boundary = Math.min(boundary + 0.15, dur);
+  log(`intro: keeping ${boundary.toFixed(2)}s of ${dur.toFixed(2)}s (sentence-breaks at ${sentenceEnds.map((t) => t.toFixed(2)).join(", ") || "none"})`);
 
   const cutsPath = path.join(introDir, "cuts.json");
   writeJson(cutsPath, { cuts: [{ start: boundary, end: dur, reason: "intro-trim" }] });
