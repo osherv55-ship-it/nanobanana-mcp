@@ -72,6 +72,17 @@ C:\Users\<you>\Desktop\doctors\<doctor-name>\
   single-word cues and RTL direction is anchored, so periods and commas
   stay on the correct side.
 
+### Scaffold a new doctor folder
+
+To start on a new doctor, generate an empty folder pre-populated with a
+README that documents these exact filenames:
+
+```powershell
+cd "$env:USERPROFILE\Desktop\nanobanana-mcp\.claude\skills\doctor-video-editor"
+.\new-doctor-folder.ps1 -Name "etty"
+# → creates <Desktop>\doctors\etty\ with a README.txt inside.
+```
+
 ### Run
 
 **Once on first use** — clone the repo, set env vars (preferably
