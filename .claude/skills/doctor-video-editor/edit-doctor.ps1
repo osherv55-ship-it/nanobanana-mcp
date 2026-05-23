@@ -49,15 +49,55 @@ foreach ($cmd in @("git", "node", "npm")) {
     }
     Note "$cmd ok"
 }
-if (-not $env:ELEVENLABS_API_KEY) {
-    throw "ELEVENLABS_API_KEY env var is not set.`nSet it with: `$env:ELEVENLABS_API_KEY = '<your-key>'"
+function Test-ElevenLabsKey {
+    param([string]$Key)
+    if ([string]::IsNullOrWhiteSpace($Key)) { return $null }
+    try {
+        $r = Invoke-RestMethod -Uri "https://api.elevenlabs.io/v1/user" -Headers @{"xi-api-key" = $Key} -ErrorAction Stop
+        return $r
+    } catch { return $null }
 }
-try {
-    $u = Invoke-RestMethod -Uri "https://api.elevenlabs.io/v1/user" -Headers @{"xi-api-key" = $env:ELEVENLABS_API_KEY} -ErrorAction Stop
-    Note "ElevenLabs key OK (tier: $($u.subscription.tier))"
-} catch {
-    throw "ElevenLabs key check failed: $($_.Exception.Message)`nMake sure the key has Speech to Text permission."
+
+function Get-ValidatedElevenLabsKey {
+    # Try in priority: current session, persistent User env var, prompt.
+    foreach ($candidate in @($env:ELEVENLABS_API_KEY, [Environment]::GetEnvironmentVariable("ELEVENLABS_API_KEY", "User"))) {
+        if (-not [string]::IsNullOrWhiteSpace($candidate)) {
+            $r = Test-ElevenLabsKey $candidate
+            if ($r) {
+                $env:ELEVENLABS_API_KEY = $candidate
+                Note "ElevenLabs key OK (tier: $($r.subscription.tier))"
+                return
+            }
+        }
+    }
+
+    # Nothing worked — prompt and save.
+    Write-Host ""
+    Write-Host "    Saved ElevenLabs key is missing or no longer valid (401 unauthorized)." -ForegroundColor Yellow
+    Write-Host "    Generate a fresh one with Speech-to-Text scope:" -ForegroundColor Yellow
+    Write-Host "       https://elevenlabs.io/app/settings/api-keys" -ForegroundColor Yellow
+    Write-Host ""
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        $secure = Read-Host -Prompt "    Paste ELEVENLABS_API_KEY" -AsSecureString
+        $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+        $plain = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
+        if ([string]::IsNullOrWhiteSpace($plain)) { Write-Warning "Empty input."; continue }
+        $r = Test-ElevenLabsKey $plain
+        if (-not $r) {
+            Write-Warning "Key rejected by ElevenLabs (attempt $attempt of 3). Check that Speech-to-Text scope is enabled."
+            continue
+        }
+        [Environment]::SetEnvironmentVariable("ELEVENLABS_API_KEY", $plain, "User")
+        $env:ELEVENLABS_API_KEY = $plain
+        Note "ElevenLabs key OK (tier: $($r.subscription.tier))"
+        Note "Saved permanently to user environment — won't ask again."
+        return
+    }
+    throw "Failed to obtain a valid ElevenLabs key after 3 attempts."
 }
+
+Get-ValidatedElevenLabsKey
 
 Section "Ensuring skill deps are installed"
 if (-not (Test-Path "node_modules")) {
