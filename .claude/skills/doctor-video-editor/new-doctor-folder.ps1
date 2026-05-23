@@ -3,9 +3,9 @@
 #
 # Usage:
 #   .\new-doctor-folder.ps1 -Name "etty"
-#       → creates <Desktop>\doctors\etty\ with a README.txt inside.
+#       -> creates <Desktop>\doctors\etty\ with a README.txt inside.
 #   .\new-doctor-folder.ps1 -Name "etty" -Parent "D:\videos"
-#       → creates D:\videos\etty\ instead.
+#       -> creates D:\videos\etty\ instead.
 
 param(
     [Parameter(Mandatory=$true, Position=0)]
@@ -35,19 +35,19 @@ if (Test-Path $folder) {
 
 $readme = Join-Path $folder "README.txt"
 $readmeBody = @"
-Doctor video — asset convention
+Doctor video -- asset convention
 ================================
 
 Drop the doctor's assets directly into this folder using the names below.
-The pipeline detects roles by filename — you only need the bits you have.
+The pipeline detects roles by filename -- you only need the bits you have.
 
-  main.mov         REQUIRED — the main interview / promo clip
-  intro.mov        optional — short clip; auto-trimmed to name + role intro
-  b-roll.mov       optional — B-roll #1 (any non-main video name works)
-  b-roll2.mov      optional — B-roll #2
-  photo.jpg        optional — before/after collage shown as overlay
-  photo2.jpg       optional — second collage
-  music.mp3        optional — background bed (any audio extension is fine)
+  main.mov         REQUIRED -- the main interview / promo clip
+  intro.mov        optional -- short clip; auto-trimmed to name + role intro
+  b-roll.mov       optional -- B-roll #1 (any non-main video name works)
+  b-roll2.mov      optional -- B-roll #2
+  photo.jpg        optional -- before/after collage shown as overlay
+  photo2.jpg       optional -- second collage
+  music.mp3        optional -- background bed (any audio extension is fine)
 
 When the assets are in place, run from PowerShell:
 

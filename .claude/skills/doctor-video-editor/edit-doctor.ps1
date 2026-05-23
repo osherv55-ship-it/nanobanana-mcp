@@ -8,12 +8,12 @@
 #
 # Folder convention (flat):
 #   <doctor-folder>/
-#     main.<mov|mp4|...>          REQUIRED — the main interview / promo clip
-#     intro.<mov|mp4|...>         optional — auto-trimmed to ~6s + role intro
-#     <anything-else>.<mov|mp4>   optional — B-roll overlays
-#     before*.<jpg|png>           optional — paired with after*.<jpg|png>
+#     main.<mov|mp4|...>          REQUIRED -- the main interview / promo clip
+#     intro.<mov|mp4|...>         optional -- auto-trimmed to ~6s + role intro
+#     <anything-else>.<mov|mp4>   optional -- B-roll overlays
+#     before*.<jpg|png>           optional -- paired with after*.<jpg|png>
 #     after*.<jpg|png>            optional
-#     music.<mp3|m4a|wav|...>     optional — background bed
+#     music.<mp3|m4a|wav|...>     optional -- background bed
 #
 # Output:
 #   <doctor-folder>/out/final.he.mp4
@@ -71,7 +71,7 @@ function Get-ValidatedElevenLabsKey {
         }
     }
 
-    # Nothing worked — prompt and save.
+    # Nothing worked -- prompt and save.
     Write-Host ""
     Write-Host "    Saved ElevenLabs key is missing or no longer valid (401 unauthorized)." -ForegroundColor Yellow
     Write-Host "    Generate a fresh one with Speech-to-Text scope:" -ForegroundColor Yellow
@@ -91,7 +91,7 @@ function Get-ValidatedElevenLabsKey {
         [Environment]::SetEnvironmentVariable("ELEVENLABS_API_KEY", $plain, "User")
         $env:ELEVENLABS_API_KEY = $plain
         Note "ElevenLabs key OK (tier: $($r.subscription.tier))"
-        Note "Saved permanently to user environment — won't ask again."
+        Note "Saved permanently to user environment -- won't ask again."
         return
     }
     throw "Failed to obtain a valid ElevenLabs key after 3 attempts."

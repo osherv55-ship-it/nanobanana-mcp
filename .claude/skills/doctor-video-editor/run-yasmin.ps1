@@ -72,7 +72,7 @@ try {
     throw "ElevenLabs key check failed:`n  $msg`n`nGo to https://elevenlabs.io/app/settings/api-keys, DELETE the failing key, CREATE A NEW one with 'Speech to Text' permission, then run:`n  `$env:ELEVENLABS_API_KEY = '<new key>'"
 }
 
-# Hebrew subtitles only — no translation step, no Gemini needed.
+# Hebrew subtitles only -- no translation step, no Gemini needed.
 $targetLangs = "he"
 
 Section "Downloading Yasmin demo clip from GitHub release"
@@ -94,7 +94,7 @@ Note "Video: $videoPath ($sizeMb MB)"
 
 Section "Looking for overlay assets + music + intro"
 # Convention: any media files inside <Desktop>/overlay/ are auto-composed
-# onto the cleaned video — videos as B-roll, image pairs named
+# onto the cleaned video -- videos as B-roll, image pairs named
 # before*/after* as before/after splits, other images as still B-roll.
 # Files named intro.* are reserved as the prefix (introduction) clip,
 # auto-trimmed to the first sentence and concatenated in front of the
@@ -111,10 +111,10 @@ if (Test-Path $overlayDir) {
         Note "Overlay folder: $overlayDir ($($assets.Count) visual file(s))"
         $overlayArgs = @("--overlays", $overlayDir)
     } else {
-        Note "Overlay folder exists but no media inside — skipping overlays"
+        Note "Overlay folder exists but no media inside -- skipping overlays"
     }
     # Intro clip: any file whose basename starts with "intro" (case-insensitive)
-    # — Intro.mov, intro_v1.mp4, Intro-yasmin.mov, etc.
+    # -- Intro.mov, intro_v1.mp4, Intro-yasmin.mov, etc.
     $introFile = Get-ChildItem $overlayDir -File | Where-Object {
         $_.BaseName -match '^intro' -and $_.Extension -match '\.(mp4|mov|webm|mkv|m4v)$'
     } | Select-Object -First 1
@@ -143,10 +143,10 @@ if (Test-Path $overlayDir) {
         }
     }
 } else {
-    Note "No overlay folder at $overlayDir — skipping overlays (create the folder and drop B-roll / before-after images / a music file / intro.mov to enable)"
+    Note "No overlay folder at $overlayDir -- skipping overlays (create the folder and drop B-roll / before-after images / a music file / intro.mov to enable)"
 }
 
-Section "Running pipeline (transcribe → cuts → trim → overlay → subs → burn-in)"
+Section "Running pipeline (transcribe -> cuts -> trim -> overlay -> subs -> burn-in)"
 $outDir = Join-Path $desktop "yasmin_out_$tag"
 # No hard-coded --aggressive or --pause-threshold here on purpose: the
 # pipeline builds a per-video profile from the transcript and tunes those

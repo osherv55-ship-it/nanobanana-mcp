@@ -1,4 +1,4 @@
-# Bootstrap for edit-doctor.ps1 — clones/updates the repo, then runs the
+# Bootstrap for edit-doctor.ps1 -- clones/updates the repo, then runs the
 # generic doctor-video editor against $env:DOCTOR_FOLDER.
 #
 # Usage (PowerShell):
@@ -19,7 +19,7 @@ if (-not (Test-Path $env:DOCTOR_FOLDER)) {
 }
 
 # Key handling (load saved / prompt + persist on first use, retry on 401)
-# lives inside edit-doctor.ps1 — single source of truth.
+# lives inside edit-doctor.ps1 -- single source of truth.
 
 Section "Locating repo workspace"
 $desktop = [Environment]::GetFolderPath("Desktop")
