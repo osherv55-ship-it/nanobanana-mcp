@@ -2,6 +2,8 @@
 
 import { spawn } from "node:child_process";
 import { createRequire } from "node:module";
+import fs from "node:fs";
+import path from "node:path";
 
 const require = createRequire(import.meta.url);
 
@@ -25,8 +27,27 @@ export function runFfmpeg(args, { onStderr } = {}) {
     });
     child.on("error", reject);
     child.on("close", (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`ffmpeg exited ${code}\n${err.slice(-2000)}`));
+      if (code === 0) return resolve();
+      // Persist the FULL stderr to a log file next to the output so the
+      // user can copy the actual error instead of scrolling the terminal.
+      // Detect "-o", "-y -i input ... output" style: the output is the last
+      // positional argument that isn't itself a flag value.
+      let outArg = null;
+      for (let i = args.length - 1; i >= 0; i--) {
+        const a = args[i];
+        if (typeof a === "string" && !a.startsWith("-")) { outArg = a; break; }
+      }
+      let logPath = null;
+      if (outArg) {
+        try {
+          logPath = `${outArg}.ffmpeg.log`;
+          fs.mkdirSync(path.dirname(logPath), { recursive: true });
+          fs.writeFileSync(logPath, `ffmpeg ${args.map((a) => (a.includes(" ") ? `"${a}"` : a)).join(" ")}\n\n${err}`);
+        } catch (_) { logPath = null; }
+      }
+      const tail = err.slice(-3000);
+      const suffix = logPath ? `\n(full log: ${logPath})` : "";
+      reject(new Error(`ffmpeg exited ${code}${suffix}\n${tail}`));
     });
   });
 }
