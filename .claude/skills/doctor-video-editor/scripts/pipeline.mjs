@@ -952,6 +952,20 @@ async function cmdAll(args) {
     "music-volume": musicVolume,
   });
 
+  // apply-cuts may have internally downgraded crossfade to 0 (e.g., when a
+  // keep is shorter than the requested crossfade). Read the effective value
+  // back so subtitle remapping doesn't compensate for a crossfade that
+  // wasn't actually applied — that mismatch shifts subtitles by k*crossfade
+  // and is what made captions race ahead of the audio toward the end.
+  let effectiveCrossfade = crossfade;
+  try {
+    const keepsInfo = readJson(cleanedPath + ".keeps.json");
+    if (typeof keepsInfo.crossfade === "number") effectiveCrossfade = keepsInfo.crossfade;
+  } catch (_) {}
+  if (effectiveCrossfade !== crossfade) {
+    log(`crossfade downgraded to ${effectiveCrossfade}s in apply-cuts; using that for subtitle remap`);
+  }
+
   // Optional overlay pass. --overlays may be either:
   //   - a JSON manifest file (overlays.json)
   //   - a directory of media files (auto-build manifest from contents)
@@ -1000,7 +1014,7 @@ async function cmdAll(args) {
     "out-dir": subsDir,
     model: args.model,
     "word-by-word": wordByWord,
-    crossfade,
+    crossfade: effectiveCrossfade,
   });
 
   if (burnIn) {
