@@ -396,9 +396,84 @@ async function cmdApplyCuts(args) {
   );
   ensureDir(path.dirname(out));
 
+  // Cleaned-output duration (sum of keep durations less crossfade overlaps).
+  const cleanedDur = keeps.reduce((acc, k) => acc + (k.end - k.start), 0)
+    - (crossfade > 0 && keeps.length > 1 ? (keeps.length - 1) * crossfade : 0);
+
+  // === Hard-cut path ===
+  // For many keeps on a 4K source, building one giant filter_complex with N
+  // trim+atrim+concat blocks blew up with "Cannot allocate memory". The
+  // memory-light alternative: cut each keep to a small re-encoded temp file
+  // (one ffmpeg invocation per keep, so the filter graph stays tiny), then
+  // concat with the demuxer + stream copy. If music is requested, mix it on
+  // afterward via mixMusicOnto (another small pass).
+  if (!(crossfade > 0 && keeps.length > 1)) {
+    const tmpDir = path.join(path.dirname(out), `.cuts_${path.basename(out, path.extname(out))}_tmp`);
+    if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true, force: true });
+    ensureDir(tmpDir);
+    try {
+      const partFiles = [];
+      for (let i = 0; i < keeps.length; i++) {
+        const { start, end } = keeps[i];
+        const partPath = path.join(tmpDir, `part_${String(i).padStart(3, "0")}.mp4`);
+        if (i === 0 || i % 5 === 0 || i === keeps.length - 1) {
+          log(`  cutting keep ${i + 1}/${keeps.length}: ${start.toFixed(2)}-${end.toFixed(2)}s`);
+        }
+        await runFfmpeg([
+          "-y",
+          "-ss", start.toFixed(3),
+          "-to", end.toFixed(3),
+          "-i", input,
+          "-c:v", "libx264",
+          "-preset", "medium",
+          "-crf", "20",
+          "-c:a", "aac",
+          "-b:a", "192k",
+          "-avoid_negative_ts", "make_zero",
+          "-movflags", "+faststart",
+          partPath,
+        ]);
+        partFiles.push(partPath);
+      }
+
+      const listFile = path.join(tmpDir, "list.txt");
+      fs.writeFileSync(
+        listFile,
+        partFiles.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join("\n"),
+      );
+
+      const concatOut = musicPath
+        ? path.join(tmpDir, "concat_nomusic.mp4")
+        : out;
+      log(`  concatenating ${partFiles.length} parts via stream copy`);
+      await runFfmpeg([
+        "-y",
+        "-f", "concat",
+        "-safe", "0",
+        "-i", listFile,
+        "-c", "copy",
+        "-movflags", "+faststart",
+        concatOut,
+      ]);
+
+      if (musicPath) {
+        log(`  mixing music bed (post-concat)`);
+        await mixMusicOnto(concatOut, musicPath, out, { volume: musicVolume });
+      }
+    } finally {
+      try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (_) {}
+    }
+
+    const mapPath = out + ".keeps.json";
+    writeJson(mapPath, { source: input, duration, keeps, crossfade: 0, music: musicPath ? path.basename(musicPath) : null });
+    log(`wrote cleaned video to ${out} and keep map to ${mapPath}`);
+    return;
+  }
+
+  // === Crossfade path ===
   // xfade requires constant frame rate; `trim` doesn't preserve it. Pin the
   // post-trim segments to the source frame rate so xfade can chain them.
-  const fps = crossfade > 0 ? await detectFps(input) : null;
+  const fps = await detectFps(input);
   const vTail = fps ? `,fps=${fps}` : "";
 
   // When mixing in music, the speech chain outputs to [outa_speech], then a
@@ -417,41 +492,27 @@ async function cmdApplyCuts(args) {
     );
   }
 
-  if (crossfade > 0 && keeps.length > 1) {
-    // Chain xfade for video and acrossfade for audio. After joining clip k+1
-    // onto the running output, the new running duration is
-    // running + new_clip - crossfade.
-    let prevV = "v0";
-    let prevA = "a0";
-    let runningDur = keeps[0].end - keeps[0].start;
-    for (let i = 1; i < keeps.length; i++) {
-      const curDur = keeps[i].end - keeps[i].start;
-      const offset = Math.max(0, runningDur - crossfade);
-      const isLast = i === keeps.length - 1;
-      const outV = isLast ? "outv" : `vx${i}`;
-      const outA = isLast ? speechOutLabel : `ax${i}`;
-      filterParts.push(
-        `[${prevV}][v${i}]xfade=transition=${transition}:duration=${crossfade.toFixed(3)}:offset=${offset.toFixed(3)}[${outV}]`,
-      );
-      filterParts.push(
-        `[${prevA}][a${i}]acrossfade=d=${crossfade.toFixed(3)}[${outA}]`,
-      );
-      prevV = outV;
-      prevA = outA;
-      runningDur = runningDur + curDur - crossfade;
-    }
-  } else {
-    const concatInputs = keeps.map((_, i) => `[v${i}][a${i}]`).join("");
-    filterParts.push(`${concatInputs}concat=n=${keeps.length}:v=1:a=1[outv][${speechOutLabel}]`);
+  // Chain xfade for video and acrossfade for audio.
+  let prevV = "v0";
+  let prevA = "a0";
+  let runningDur = keeps[0].end - keeps[0].start;
+  for (let i = 1; i < keeps.length; i++) {
+    const curDur = keeps[i].end - keeps[i].start;
+    const offset = Math.max(0, runningDur - crossfade);
+    const isLast = i === keeps.length - 1;
+    const outV = isLast ? "outv" : `vx${i}`;
+    const outA = isLast ? speechOutLabel : `ax${i}`;
+    filterParts.push(
+      `[${prevV}][v${i}]xfade=transition=${transition}:duration=${crossfade.toFixed(3)}:offset=${offset.toFixed(3)}[${outV}]`,
+    );
+    filterParts.push(
+      `[${prevA}][a${i}]acrossfade=d=${crossfade.toFixed(3)}[${outA}]`,
+    );
+    prevV = outV;
+    prevA = outA;
+    runningDur = runningDur + curDur - crossfade;
   }
 
-  // Cleaned-output duration (sum of keep durations less crossfade overlaps).
-  const cleanedDur = keeps.reduce((acc, k) => acc + (k.end - k.start), 0)
-    - (crossfade > 0 && keeps.length > 1 ? (keeps.length - 1) * crossfade : 0);
-
-  // Music mixing chain: loop the music file forever, trim to cleaned-output
-  // length, scale by volume, fade in/out, sidechain-duck under the speech,
-  // then mix.
   if (musicPath) {
     if (!fs.existsSync(musicPath)) die(`music file not found: ${musicPath}`);
     const fadeIn = Math.min(1.0, cleanedDur * 0.05);
@@ -465,7 +526,6 @@ async function cmdApplyCuts(args) {
     );
     filterParts.push(`[outa_speech]asplit=2[speech_out][speech_key]`);
     filterParts.push(
-      // Gentle sidechain ducking: ~6 dB drop under speech, smooth recovery.
       `[music_pre][speech_key]sidechaincompress=threshold=0.08:ratio=3:attack=30:release=400:level_sc=1[music_ducked]`,
     );
     filterParts.push(
@@ -491,8 +551,6 @@ async function cmdApplyCuts(args) {
   );
   await runFfmpeg(ffArgs);
 
-  // Also emit a "kept-segments" timing map so subtitle generation can remap
-  // original timestamps onto the cleaned timeline.
   const mapPath = out + ".keeps.json";
   writeJson(mapPath, { source: input, duration, keeps, crossfade, music: musicPath ? path.basename(musicPath) : null });
   log(`wrote cleaned video to ${out} and keep map to ${mapPath}`);
