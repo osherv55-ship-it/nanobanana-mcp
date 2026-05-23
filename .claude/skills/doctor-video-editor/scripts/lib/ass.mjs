@@ -82,7 +82,10 @@ export function buildAss(segments, opts = {}) {
     .filter((c) => c.text.trim().length > 0 && c.end - c.start >= MIN_SECONDS_PER_CUE);
   const lines = cues.map((c) => {
     const text = c.text.replace(/\r?\n/g, " ").trim();
-    return `Dialogue: 0,${fmtTime(c.start)},${fmtTime(c.end)},Default,,0,0,0,,${text}`;
+    // U+200F (Right-to-Left Mark) anchors the cue's bidi direction as RTL so
+    // trailing punctuation, numbers, or stray Latin doesn't drift to the
+    // wrong side of Hebrew/Arabic lines.
+    return `Dialogue: 0,${fmtTime(c.start)},${fmtTime(c.end)},Default,,0,0,0,,‏${text}`;
   });
   return header(opts) + lines.join("\n") + "\n";
 }
@@ -92,13 +95,19 @@ export function buildAss(segments, opts = {}) {
 const WORD_MIN_DURATION = 0.18;   // never shorter than this on screen
 const WORD_HOLD_EXTRA = 0.05;     // small tail to avoid flicker
 const WORD_GAP_FILL = 0.18;       // if next word > this away, let prev hold
+// Latin + Arabic/Hebrew sentence punctuation that should NOT be carried into
+// single-word cues — alone, a trailing period renders to the wrong side of
+// an RTL word (",אני" instead of "אני,").
+const WORD_TRAIL_PUNCT = /[.,!?;:،۔؟]+$/;
 
 export function buildAssWordByWord(words, opts = {}) {
   const lines = [];
   const list = words.filter((w) => w.type === "word" || w.type === undefined);
   for (let i = 0; i < list.length; i++) {
     const w = list[i];
-    const text = String(w.text || "").replace(/\s+/g, " ").trim();
+    let text = String(w.text || "").replace(/\s+/g, " ").trim();
+    if (!text) continue;
+    text = text.replace(WORD_TRAIL_PUNCT, "").trim();
     if (!text) continue;
     const next = list[i + 1];
     let start = Math.max(0, w.start);
@@ -110,7 +119,7 @@ export function buildAssWordByWord(words, opts = {}) {
     }
     if (end - start < WORD_MIN_DURATION) end = start + WORD_MIN_DURATION;
     lines.push(
-      `Dialogue: 0,${fmtTime(start)},${fmtTime(end)},Default,,0,0,0,,{\\fad(30,30)}${text}`,
+      `Dialogue: 0,${fmtTime(start)},${fmtTime(end)},Default,,0,0,0,,{\\fad(30,30)}‏${text}`,
     );
   }
   return header(opts) + lines.join("\n") + "\n";

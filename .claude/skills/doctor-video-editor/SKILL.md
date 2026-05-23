@@ -42,7 +42,84 @@ If both keys are set, ElevenLabs is used by default. Force a backend with `--tra
 
 On Windows, all `node scripts/pipeline.mjs ...` commands below work identically from PowerShell or cmd. Paths may use either forward or backslashes — the pipeline normalizes them internally for ffmpeg's filter syntax.
 
-## End-to-end run
+## Permanent workflow (recommended)
+
+One folder per doctor, drop assets in, run one command. The pipeline auto-
+profiles the speaker, tightens pauses to their natural rhythm, catches the
+"אה" the ASR filtered out via audio energy analysis, places overlays
+evenly across the timeline, ducks the music under speech, prefixes the
+intro, and burns Hebrew word-by-word subtitles.
+
+### Folder convention (flat)
+
+```
+C:\Users\<you>\Desktop\doctors\<doctor-name>\
+  main.mov                  REQUIRED — the main interview / promo clip
+  intro.mov                 optional — auto-trimmed to ~6s (name + role)
+  <broll-1>.mov             optional — any non-main video becomes B-roll
+  <broll-2>.mov             optional
+  before1.jpg / after1.jpg  optional — matched as a before/after split
+  before2.jpg / after2.jpg  optional — second pair
+  music.mp3                 optional — sidechain-ducked background bed
+```
+
+- Role detection is by filename prefix:
+  - `main*` → main video (largest video wins if no explicit `main.*`)
+  - `intro*` → intro prefix
+  - `before*` + matching `after*` → before/after split
+  - everything else with a video / image extension → B-roll
+- Hebrew subtitles only by default — punctuation is auto-stripped from
+  single-word cues and RTL direction is anchored, so periods and commas
+  stay on the correct side.
+
+### Run
+
+**Once on first use** — clone the repo, set env vars (preferably
+permanently via *System Properties → Environment Variables*):
+
+```powershell
+$env:ELEVENLABS_API_KEY = "<your-key with Speech to Text permission>"
+```
+
+**Per video** — one of these:
+
+```powershell
+# Option A: invoke the script directly (after first clone)
+cd "$env:USERPROFILE\Desktop\nanobanana-mcp\.claude\skills\doctor-video-editor"
+.\edit-doctor.ps1 -Folder "$env:USERPROFILE\Desktop\doctors\yasmin"
+```
+
+```powershell
+# Option B: one-shot bootstrap (auto-clones / auto-updates the repo)
+$env:DOCTOR_FOLDER = "$env:USERPROFILE\Desktop\doctors\yasmin"
+iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+```
+
+### Outputs
+
+Everything lands in `<doctor-folder>/out/`:
+
+| File | Notes |
+|---|---|
+| `final.he.mp4` | The deliverable — intro + main, overlays composed, subs burned, music mixed |
+| `cleaned.mp4` | Main video after cuts, before overlays |
+| `composed.mp4` | Cleaned + overlays, before subtitle burn |
+| `transcript.json` | Word-level ElevenLabs Scribe output |
+| `cuts.json` | Programmatic cut list + the auto-tuned profile that produced it |
+| `subs/subs.he.{ass,srt}` | Subtitle sidecars |
+| `intro/` | Sub-pipeline workspace for the intro clip |
+
+### Tuning knobs (optional env vars)
+
+| Env var | Effect | Default |
+|---|---|---|
+| `DVE_MUSIC_VOLUME` | Music bed loudness pre-ducking | `0.12` (~-18 dB) |
+
+To override per-run: `$env:DVE_MUSIC_VOLUME = "0.06"` (quieter) before invoking.
+
+---
+
+## End-to-end run (legacy)
 
 Polished default (ElevenLabs transcription, programmatic cuts, smooth transitions, word-by-word source-language captions):
 
