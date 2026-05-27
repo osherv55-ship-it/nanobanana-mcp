@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import express from "express";
 import crypto from "node:crypto";
+import path from "node:path";
+import { promises as fs } from "node:fs";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
@@ -21,8 +23,13 @@ const PERPLEXITY_TIMEOUT_MS = parseInt(process.env.PERPLEXITY_TIMEOUT_MS || "300
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
-const OPENAI_IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || "gpt-image-1";
+const OPENAI_IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || "gpt-image-2-2026-04-21";
 const OPENAI_TIMEOUT_MS = parseInt(process.env.OPENAI_TIMEOUT_MS || "180000", 10);
+
+// Local-file reads are off by default — when the server is deployed to a shared host
+// (Cloud Run, etc.) we don't want tool callers to exfiltrate arbitrary files. Set
+// ALLOW_LOCAL_FILES=true on a self-hosted local server to enable file:// / path inputs.
+const ALLOW_LOCAL_FILES = process.env.ALLOW_LOCAL_FILES === "true";
 
 if (!GEMINI_API_KEY) {
   console.error("FATAL: GEMINI_API_KEY environment variable is not set.");
@@ -90,15 +97,47 @@ async function callGemini(parts, { aspectRatio, imageSize } = {}) {
   };
 }
 
-async function fetchImageAsBase64(input) {
-  if (!/^https?:\/\//.test(input)) {
-    throw new Error("edit_image requires an HTTPS URL (local file paths are not accessible from a remote server).");
+const EXT_TO_MIME = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+};
+
+async function readLocalImage(filePath) {
+  if (!ALLOW_LOCAL_FILES) {
+    throw new Error("Local file paths are disabled. Set ALLOW_LOCAL_FILES=true on the server or pass an HTTPS URL instead.");
   }
-  const res = await fetch(input);
-  if (!res.ok) throw new Error(`Failed to fetch image: HTTP ${res.status}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  const mimeType = (res.headers.get("content-type") || "image/jpeg").split(";")[0];
+  const ext = path.extname(filePath).toLowerCase();
+  const mimeType = EXT_TO_MIME[ext];
+  if (!mimeType) {
+    throw new Error(`Unsupported image extension '${ext}'. Allowed: ${Object.keys(EXT_TO_MIME).join(", ")}.`);
+  }
+  let buf;
+  try {
+    buf = await fs.readFile(filePath);
+  } catch (err) {
+    throw new Error(`Could not read local image at ${filePath}: ${err.message}`);
+  }
   return { base64: buf.toString("base64"), mimeType };
+}
+
+async function fetchImageAsBase64(input) {
+  if (/^https?:\/\//.test(input)) {
+    const res = await fetch(input);
+    if (!res.ok) throw new Error(`Failed to fetch image: HTTP ${res.status}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    const mimeType = (res.headers.get("content-type") || "image/jpeg").split(";")[0];
+    return { base64: buf.toString("base64"), mimeType };
+  }
+  if (input.startsWith("file://")) {
+    return readLocalImage(new URL(input).pathname);
+  }
+  if (path.isAbsolute(input) || input.startsWith("./") || input.startsWith("../") || /^[A-Za-z]:[\\/]/.test(input)) {
+    return readLocalImage(input);
+  }
+  throw new Error("Image input must be an HTTPS URL, a file:// URL, or an absolute local path.");
 }
 
 // ---- OpenAI Image (gpt-image-1) helpers ----
@@ -335,11 +374,11 @@ function buildServer() {
       },
       {
         name: "edit_image",
-        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Requires a publicly accessible HTTPS URL for the source image.",
+        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Accepts an HTTPS URL, a file:// URL, or an absolute local path (local paths only when the server has ALLOW_LOCAL_FILES=true).",
         inputSchema: {
           type: "object",
           properties: {
-            imageUrl: { type: "string", description: "HTTPS URL of source image (publicly accessible)." },
+            imageUrl: { type: "string", description: "HTTPS URL, file:// URL, or absolute local path of source image." },
             instruction: { type: "string", description: "What to change. Be specific and explicitly preserve elements that should stay unchanged." },
             aspectRatio: { type: "string", enum: ASPECT_RATIOS, description: "Output aspect ratio. Defaults to match input." },
             imageSize: { type: "string", enum: IMAGE_SIZES, description: "Output resolution. Default 1K." },
@@ -349,7 +388,7 @@ function buildServer() {
       },
       {
         name: "gpt_image_generate",
-        description: "Generate an image from a text prompt using OpenAI's gpt-image-1 (the same model that powers ChatGPT image generation). Stronger than Gemini for text inside images, complex compositions, and photoreal portraits. Costs per image (low ~$0.01, medium ~$0.04, high ~$0.17). Requires OPENAI_API_KEY.",
+        description: "Generate an image from a text prompt using OpenAI's gpt-image-2 (the same model that powers ChatGPT image generation). Stronger than Gemini for text inside images, complex compositions, and photoreal product/lifestyle shots. Costs per image (low ~$0.006, medium ~$0.05, high ~$0.21). Requires OPENAI_API_KEY.",
         inputSchema: {
           type: "object",
           properties: {
@@ -364,13 +403,13 @@ function buildServer() {
       },
       {
         name: "gpt_image_edit",
-        description: "Edit one or more existing images with a text instruction using OpenAI's gpt-image-1. Supports multi-image composition (pass multiple URLs to combine elements). Requires publicly accessible HTTPS URLs for source images. Costs per call. Requires OPENAI_API_KEY.",
+        description: "Edit one or more existing images with a text instruction using OpenAI's gpt-image-2. Supports multi-image composition (pass multiple sources to combine elements). Each source can be an HTTPS URL, a file:// URL, or an absolute local path (local paths require ALLOW_LOCAL_FILES=true on the server). Costs per call. Requires OPENAI_API_KEY.",
         inputSchema: {
           type: "object",
           properties: {
-            imageUrls: { type: "array", items: { type: "string" }, description: "One or more HTTPS URLs of source images. Multiple URLs are combined into a single edited output." },
+            imageUrls: { type: "array", items: { type: "string" }, description: "One or more source images (HTTPS URL, file:// URL, or absolute local path). Multiple sources are combined into a single edited output." },
             instruction: { type: "string", description: "What to change. Be explicit about what to preserve and what to alter." },
-            mask_url: { type: "string", description: "Optional HTTPS URL of a PNG mask (transparent = editable region). Only used with a single source image." },
+            mask_url: { type: "string", description: "Optional PNG mask (transparent = editable region). HTTPS URL, file:// URL, or absolute local path. Only used with a single source image." },
             size: { type: "string", enum: GPT_IMAGE_SIZES, description: "Output size. Default 'auto' (matches input)." },
             quality: { type: "string", enum: GPT_IMAGE_QUALITIES, description: "Render quality / cost tier. Default 'auto'." },
             output_format: { type: "string", enum: GPT_IMAGE_FORMATS, description: "png (default), jpeg, or webp." },
@@ -519,5 +558,7 @@ app.delete("/mcp", (_req, res) => res.status(405).json({ error: "Method Not Allo
 
 app.listen(PORT, () => {
   console.log(`Nanobanana MCP server (${MODEL}) listening on port ${PORT}`);
+  console.log(`OpenAI image model: ${OPENAI_IMAGE_MODEL}`);
+  console.log(`Local file inputs: ${ALLOW_LOCAL_FILES ? "ALLOWED" : "blocked (set ALLOW_LOCAL_FILES=true to enable)"}`);
   console.log(`Auth: ${MCP_AUTH_TOKEN ? "Bearer token required" : "UNAUTHENTICATED"}`);
 });
