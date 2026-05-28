@@ -48,6 +48,8 @@ The pipeline detects roles by filename -- you only need the bits you have.
   photo.jpg        optional -- before/after collage shown as overlay
   photo2.jpg       optional -- second collage
   music.mp3        optional -- background bed (any audio extension is fine)
+  corrections.txt  optional -- name / term corrections, one rule per line
+                              (e.g.  Lermer|Lerner   -- fixes ASR mishears)
 
 When the assets are in place, run from PowerShell:
 

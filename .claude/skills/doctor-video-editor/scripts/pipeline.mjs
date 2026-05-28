@@ -73,6 +73,40 @@ function readJson(filePath) {
 
 // ---------- subcommands ----------
 
+// Apply per-doctor name / term corrections to a transcript. Reads a
+// corrections.txt file (one rule per line: `wrong|right`, '#' comments
+// ignored) and substitutes in full_text, segments[].text, and words[].text.
+function applyCorrections(transcript, correctionsFile) {
+  if (!correctionsFile || !fs.existsSync(correctionsFile)) return false;
+  const lines = fs.readFileSync(correctionsFile, "utf8")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith("#"));
+  const rules = [];
+  for (const line of lines) {
+    const idx = line.indexOf("|");
+    if (idx < 0) continue;
+    const wrong = line.slice(0, idx).trim();
+    const right = line.slice(idx + 1).trim();
+    if (wrong) rules.push({ wrong, right });
+  }
+  if (rules.length === 0) return false;
+  const apply = (s) => {
+    let r = String(s ?? "");
+    for (const { wrong, right } of rules) r = r.split(wrong).join(right);
+    return r;
+  };
+  if (transcript.full_text) transcript.full_text = apply(transcript.full_text);
+  if (Array.isArray(transcript.segments)) {
+    for (const seg of transcript.segments) if (seg.text) seg.text = apply(seg.text);
+  }
+  if (Array.isArray(transcript.words)) {
+    for (const w of transcript.words) if (w.text) w.text = apply(w.text);
+  }
+  log(`applied ${rules.length} correction rule(s) from ${path.basename(correctionsFile)}`);
+  return true;
+}
+
 async function cmdTranscribe(args) {
   const input = need(args, "input");
   const out = need(args, "out");
@@ -103,6 +137,8 @@ async function cmdTranscribe(args) {
       tagAudioEvents: true,
     });
     const data = toInternalTranscript(raw);
+    const inputDir = path.dirname(path.resolve(input));
+    applyCorrections(data, path.join(inputDir, "corrections.txt"));
     writeJson(out, data);
     log(
       `wrote transcript (${data.transcriber}, ${data.words.length} words / ${data.segments.length} segments, lang=${data.detected_language}) to ${out}`,
@@ -155,6 +191,8 @@ async function cmdTranscribe(args) {
     die(`transcript response missing 'segments' array: ${JSON.stringify(data).slice(0, 300)}`);
   }
   data.transcriber = "gemini";
+  const inputDir2 = path.dirname(path.resolve(input));
+  applyCorrections(data, path.join(inputDir2, "corrections.txt"));
   writeJson(out, data);
   log(`wrote transcript (gemini, ${data.segments.length} segments) to ${out}`);
 }
@@ -938,17 +976,16 @@ async function cmdAll(args) {
     detector,
     "pause-threshold": pauseThreshold,
   });
-  // Music is applied AFTER intro concatenation (post-mix) so the bed plays
-  // continuously across the intro→main transition. Skip music in apply-cuts
-  // here whenever there's an intro to concatenate; otherwise mix it in now
-  // for the simpler no-intro flow.
+  // Music is mixed at the very end (after intro concat + overlay compose)
+  // so the bed plays continuously across the whole timeline and isn't
+  // disrupted by the intro→main transition or by overlay re-encoding.
   await cmdApplyCuts({
     input,
     cuts: cutsPath,
     out: cleanedPath,
     crossfade,
     transition,
-    music: intro ? null : music,
+    music: null,
     "music-volume": musicVolume,
   });
 
@@ -966,11 +1003,8 @@ async function cmdAll(args) {
     log(`crossfade downgraded to ${effectiveCrossfade}s in apply-cuts; using that for subtitle remap`);
   }
 
-  // Optional overlay pass. --overlays may be either:
-  //   - a JSON manifest file (overlays.json)
-  //   - a directory of media files (auto-build manifest from contents)
-  // If neither is passed, fall back to overlays.json or an overlay/ dir
-  // next to the input video.
+  // Resolve overlay source (JSON manifest or directory). Auto-detect a
+  // sidecar overlays.json / overlay/ folder next to the input.
   let overlaysArg = args.overlays;
   if (!overlaysArg || overlaysArg === true) {
     const sidecarJson = path.join(path.dirname(input), "overlays.json");
@@ -978,33 +1012,6 @@ async function cmdAll(args) {
     if (fs.existsSync(sidecarJson)) overlaysArg = sidecarJson;
     else if (fs.existsSync(sidecarDir) && fs.statSync(sidecarDir).isDirectory()) overlaysArg = sidecarDir;
     else overlaysArg = null;
-  }
-  let videoForSubs = cleanedPath;
-  if (overlaysArg) {
-    let manifestPath;
-    const stat = fs.statSync(overlaysArg);
-    if (stat.isDirectory()) {
-      const cleanedDur = await getDuration(cleanedPath);
-      const manifest = buildManifestFromDir(overlaysArg, cleanedDur);
-      if (manifest.overlays.length === 0) {
-        log(`overlay dir ${overlaysArg} has no media — skipping compose`);
-      } else {
-        log(
-          `auto-built overlay manifest from ${overlaysArg}: ` +
-            `${manifest.overlays.length} overlay(s), placed across ${cleanedDur.toFixed(1)}s ` +
-            `(${manifest.detected.videos.length} video, ${manifest.detected.single_images.length} still, ` +
-            `${manifest.detected.pairs.length} before/after)`,
-        );
-        manifestPath = path.join(outDir, "overlays.json");
-        writeJson(manifestPath, manifest);
-      }
-    } else {
-      manifestPath = overlaysArg;
-    }
-    if (manifestPath) {
-      await cmdCompose({ input: cleanedPath, overlays: manifestPath, out: composedPath });
-      videoForSubs = composedPath;
-    }
   }
 
   await cmdTranslate({
@@ -1017,22 +1024,25 @@ async function cmdAll(args) {
     crossfade: effectiveCrossfade,
   });
 
+  // Burn subs onto the cleaned main video first (no overlays yet). The
+  // overlay composer runs LATER on the combined (intro + main) video so
+  // overlays are distributed across the whole timeline — including the
+  // intro portion — instead of clustering on just the main clip.
   if (burnIn) {
     for (const lang of targetLangs) {
       const subPath = path.join(subsDir, `subs.${lang}.ass`);
-      const finalPath = path.join(outDir, `final.${lang}.mp4`);
-      await cmdOverlay({ input: videoForSubs, subs: subPath, out: finalPath });
+      const subbedMain = path.join(outDir, `final.${lang}.mp4`);
+      await cmdOverlay({ input: cleanedPath, subs: subPath, out: subbedMain });
     }
   }
 
-  // Post-processing: intro concat + post-music mix. We do this only for
-  // Hebrew (the source language) — if multiple target langs were burned,
-  // the intro concatenation is skipped for the non-source variants.
+  // Post-processing: intro concat → overlays → music mix. Hebrew only.
   if (burnIn) {
     const mainFinal = path.join(outDir, "final.he.mp4");
     if (fs.existsSync(mainFinal)) {
       let workingPath = mainFinal;
 
+      // 1. Intro: process + concat in front
       if (intro && fs.existsSync(intro)) {
         log(`processing intro clip ${path.basename(intro)}`);
         const introFinal = await processIntro(intro, outDir, {
@@ -1042,11 +1052,43 @@ async function cmdAll(args) {
         });
         const combinedPath = path.join(outDir, "final.combined.mp4");
         log(`concatenating intro + main → ${path.basename(combinedPath)}`);
-        await concatVideos([introFinal, mainFinal], combinedPath);
+        await concatVideos([introFinal, workingPath], combinedPath);
         workingPath = combinedPath;
       }
 
-      if (intro && music) {
+      // 2. Overlays: compose across the FULL timeline (intro + main if intro
+      //    was prepended; just main otherwise). Manifest uses the current
+      //    workingPath's duration so timestamps span the whole video.
+      if (overlaysArg) {
+        let manifestPath;
+        const stat = fs.statSync(overlaysArg);
+        if (stat.isDirectory()) {
+          const fullDur = await getDuration(workingPath);
+          const manifest = buildManifestFromDir(overlaysArg, fullDur);
+          if (manifest.overlays.length === 0) {
+            log(`overlay dir ${overlaysArg} has no media — skipping compose`);
+          } else {
+            log(
+              `auto-built overlay manifest from ${overlaysArg}: ` +
+                `${manifest.overlays.length} overlay(s), placed across ${fullDur.toFixed(1)}s ` +
+                `(${manifest.detected.videos.length} video, ${manifest.detected.single_images.length} still, ` +
+                `${manifest.detected.pairs.length} before/after)`,
+            );
+            manifestPath = path.join(outDir, "overlays.json");
+            writeJson(manifestPath, manifest);
+          }
+        } else {
+          manifestPath = overlaysArg;
+        }
+        if (manifestPath) {
+          const composedOut = path.join(outDir, "final.composed.mp4");
+          await cmdCompose({ input: workingPath, overlays: manifestPath, out: composedOut });
+          workingPath = composedOut;
+        }
+      }
+
+      // 3. Music: mix at the very end so the bed spans intro + main + overlays.
+      if (music) {
         const withMusic = path.join(outDir, "final.with_music.mp4");
         log(`mixing music bed across the full timeline`);
         await mixMusicOnto(workingPath, music, withMusic, { volume: musicVolume });
