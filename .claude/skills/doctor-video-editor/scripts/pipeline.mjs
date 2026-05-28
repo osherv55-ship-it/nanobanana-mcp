@@ -1043,10 +1043,11 @@ async function cmdAll(args) {
   const music = args.music && args.music !== true ? String(args.music) : null;
   const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
   const intro = args.intro && args.intro !== true ? String(args.intro) : null;
-  // Vertical conversion: 'blur' | 'crop' | 'fit' | 'off'. Default 'blur'
-  // produces Instagram Reels / TikTok 1080x1920 with a blurred backdrop.
-  // Set to 'off' to keep the source orientation.
-  const verticalMode = (args["vertical-mode"] || "blur").toString().toLowerCase();
+  // Vertical conversion: 'crop' | 'blur' | 'fit' | 'off'. Default 'crop'
+  // produces Instagram Reels / TikTok 1080x1920 by center-cropping (most
+  // natural look for talking heads). Use 'blur' for a backdrop-blurred
+  // pillar-box, 'fit' for letterbox, 'off' to keep the source orientation.
+  const verticalMode = (args["vertical-mode"] || "crop").toString().toLowerCase();
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
