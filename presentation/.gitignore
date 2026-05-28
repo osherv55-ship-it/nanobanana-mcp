@@ -1,0 +1,4 @@
+previews/
+images/
+build/__pycache__/
+build/gen.py
