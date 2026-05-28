@@ -840,6 +840,88 @@ async function mixMusicOnto(input, musicPath, out, opts = {}) {
   return out;
 }
 
+// Convert a (typically horizontal) video into vertical 9:16 format suitable
+// for Instagram Reels / TikTok / YouTube Shorts. Modes:
+//   - 'blur' (default): centered foreground with a scaled-up blurred copy
+//     filling the rest of the frame. Modern Reels look.
+//   - 'crop': center crop to 9:16, scaled to target. Loses side content.
+//   - 'fit':  letterbox with black bars top/bottom.
+// Sources already vertical-or-taller-than-9:16 are scaled+cropped to the
+// exact target without any background fill.
+async function makeVertical(input, output, opts = {}) {
+  const { mode = "blur", targetWidth = 1080, targetHeight = 1920 } = opts;
+  const meta = await ffprobeJson(input);
+  const v = (meta.streams || []).find((s) => s.codec_type === "video");
+  if (!v) throw new Error(`no video stream in ${input}`);
+  const W = Number(v.width), H = Number(v.height);
+
+  // If already at exact target — nothing to do.
+  if (W === targetWidth && H === targetHeight) {
+    fs.copyFileSync(input, output);
+    return;
+  }
+
+  // If source is already vertical/portrait (taller than 9:16 ratio), just
+  // scale+center-crop to the exact target.
+  if (W * targetHeight <= H * targetWidth) {
+    await runFfmpeg([
+      "-y",
+      "-i", input,
+      "-vf",
+      `scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,` +
+        `crop=${targetWidth}:${targetHeight}`,
+      "-map", "0:v:0",
+      "-map", "0:a?",
+      "-c:v", "libx264",
+      "-preset", "medium",
+      "-crf", "20",
+      "-c:a", "copy",
+      "-movflags", "+faststart",
+      output,
+    ]);
+    return;
+  }
+
+  const ffArgs = ["-y", "-i", input];
+  if (mode === "crop") {
+    ffArgs.push(
+      "-vf",
+      `crop=trunc(ih*${targetWidth}/${targetHeight}/2)*2:ih,` +
+        `scale=${targetWidth}:${targetHeight}`,
+    );
+  } else if (mode === "fit") {
+    ffArgs.push(
+      "-vf",
+      `scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,` +
+        `pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:color=black`,
+    );
+  } else {
+    // 'blur' (default): split → blurred bg fills frame, fg scaled to target width
+    ffArgs.push(
+      "-filter_complex",
+      `[0:v]split=2[bg][fg];` +
+        `[bg]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,` +
+        `crop=${targetWidth}:${targetHeight},boxblur=20:5[bgb];` +
+        `[fg]scale=${targetWidth}:-2[fgs];` +
+        `[bgb][fgs]overlay=(W-w)/2:(H-h)/2[v]`,
+      "-map", "[v]",
+    );
+  }
+  if (mode === "crop" || mode === "fit") {
+    ffArgs.push("-map", "0:v:0");
+  }
+  ffArgs.push(
+    "-map", "0:a?",
+    "-c:v", "libx264",
+    "-preset", "medium",
+    "-crf", "20",
+    "-c:a", "copy",
+    "-movflags", "+faststart",
+    output,
+  );
+  await runFfmpeg(ffArgs);
+}
+
 async function cmdCompose(args) {
   const input = need(args, "input");
   const overlaysArg = need(args, "overlays");
@@ -961,6 +1043,10 @@ async function cmdAll(args) {
   const music = args.music && args.music !== true ? String(args.music) : null;
   const musicVolume = parseFloat(args["music-volume"] ?? "0.12");
   const intro = args.intro && args.intro !== true ? String(args.intro) : null;
+  // Vertical conversion: 'blur' | 'crop' | 'fit' | 'off'. Default 'blur'
+  // produces Instagram Reels / TikTok 1080x1920 with a blurred backdrop.
+  // Set to 'off' to keep the source orientation.
+  const verticalMode = (args["vertical-mode"] || "blur").toString().toLowerCase();
 
   if (targetLangs.length === 0) {
     die("--target-langs is required for 'all' (comma-separated, e.g. en,he)");
@@ -1105,6 +1191,14 @@ async function cmdAll(args) {
         log(`mixing music bed across the full timeline`);
         await mixMusicOnto(workingPath, music, withMusic, { volume: musicVolume });
         workingPath = withMusic;
+      }
+
+      // 4. Vertical conversion for Reels / TikTok / Shorts.
+      if (verticalMode && verticalMode !== "off") {
+        const verticalOut = path.join(outDir, "final.vertical.mp4");
+        log(`converting to vertical 1080x1920 (mode: ${verticalMode})`);
+        await makeVertical(workingPath, verticalOut, { mode: verticalMode });
+        workingPath = verticalOut;
       }
 
       // Promote the post-processed result to be the canonical final.he.mp4.

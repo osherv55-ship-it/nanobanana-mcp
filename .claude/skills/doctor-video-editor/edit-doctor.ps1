@@ -171,6 +171,9 @@ if ($overlayFiles.Count -gt 0) {
 
 $outDir = Join-Path $Folder "out"
 
+$verticalMode = if ($env:DVE_VERTICAL) { $env:DVE_VERTICAL } else { "blur" }
+Note "Vertical: $verticalMode (Reels 1080x1920; override with `$env:DVE_VERTICAL = 'off|crop|fit|blur')"
+
 Section "Running pipeline"
 try {
     node scripts\pipeline.mjs all `
@@ -180,6 +183,7 @@ try {
         --target-langs he `
         --word-by-word `
         --crossfade 0.10 `
+        --vertical-mode $verticalMode `
         @overlayArgs `
         @musicArgs `
         @introArgs `
