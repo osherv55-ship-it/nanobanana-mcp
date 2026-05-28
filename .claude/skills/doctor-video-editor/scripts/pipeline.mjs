@@ -78,7 +78,12 @@ function readJson(filePath) {
 // ignored) and substitutes in full_text, segments[].text, and words[].text.
 function applyCorrections(transcript, correctionsFile) {
   if (!correctionsFile || !fs.existsSync(correctionsFile)) return false;
-  const lines = fs.readFileSync(correctionsFile, "utf8")
+  let content = fs.readFileSync(correctionsFile, "utf8");
+  // PowerShell 5.1's Set-Content -Encoding UTF8 writes a BOM. Strip it so
+  // the first rule's `wrong` text doesn't carry an invisible U+FEFF that
+  // would prevent any match against the transcript.
+  if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1);
+  const lines = content
     .split(/\r?\n/)
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith("#"));
@@ -96,6 +101,8 @@ function applyCorrections(transcript, correctionsFile) {
     for (const { wrong, right } of rules) r = r.split(wrong).join(right);
     return r;
   };
+  let hits = 0;
+  const seen = JSON.stringify(transcript);
   if (transcript.full_text) transcript.full_text = apply(transcript.full_text);
   if (Array.isArray(transcript.segments)) {
     for (const seg of transcript.segments) if (seg.text) seg.text = apply(seg.text);
@@ -103,7 +110,12 @@ function applyCorrections(transcript, correctionsFile) {
   if (Array.isArray(transcript.words)) {
     for (const w of transcript.words) if (w.text) w.text = apply(w.text);
   }
-  log(`applied ${rules.length} correction rule(s) from ${path.basename(correctionsFile)}`);
+  // Count actual replacements by comparing before/after.
+  for (const { wrong } of rules) {
+    const before = (seen.match(new RegExp(wrong.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
+    hits += before;
+  }
+  log(`applied ${rules.length} correction rule(s) from ${path.basename(correctionsFile)} (${hits} match(es) in transcript): ${rules.map(r => `${r.wrong}→${r.right}`).join(", ")}`);
   return true;
 }
 
