@@ -186,6 +186,57 @@ async function callSonarDeepResearch(query, opts = {}) {
   return text;
 }
 
+// ---- Clothing shopping (style-aware) helpers ----
+// Builds a stylist-grade research brief for Sonar from structured shopping inputs.
+// The heavy lifting (live web search, citations) is Sonar's; this just shapes the
+// query + system persona so results come back as concrete, purchasable items.
+function buildClothingShoppingPrompt(args) {
+  const {
+    request,
+    style_preferences,
+    budget,
+    sizes,
+    gender,
+    region,
+    occasion,
+    avoid,
+  } = args;
+
+  const constraints = [];
+  if (style_preferences) constraints.push(`Style preferences: ${style_preferences}`);
+  if (budget) constraints.push(`Budget: ${budget}`);
+  if (sizes) constraints.push(`Size(s): ${sizes}`);
+  if (gender) constraints.push(`Fit/gender section: ${gender}`);
+  if (region) constraints.push(`Shopper region (ship-to + currency): ${region}`);
+  if (occasion) constraints.push(`Occasion / use case: ${occasion}`);
+  if (avoid) constraints.push(`Avoid: ${avoid}`);
+
+  const userQuery = [
+    `Shopping request: ${request}`,
+    "",
+    constraints.length ? constraints.join("\n") : "(no extra constraints given)",
+    "",
+    "Find specific, currently-purchasable clothing items from real online retailers that match the request and the style preferences above.",
+  ].join("\n");
+
+  const system = [
+    "You are a personal shopping stylist. The user wants to BUY clothes online that fit their taste, budget, size and region.",
+    "Search current retailer and marketplace listings and return a concrete shortlist of 5-8 items.",
+    "For EACH item provide, as a markdown list entry:",
+    "- Item name + brand",
+    "- Price with currency (note it must be verified at checkout — it may be stale)",
+    "- Retailer name and a DIRECT product-page URL (not a homepage or search page)",
+    "- Available sizes if visible, otherwise say 'check listing'",
+    "- One sentence on why it matches the user's stated style",
+    "Prioritise items that ship to the user's region. Respect the budget — do not pad the list with items far above it.",
+    "If you cannot confirm a direct product URL for an item, say so rather than inventing a link.",
+    "End with a short 'How to style these together' note (2-3 sentences) and a one-line reminder to verify price, stock and shipping before buying.",
+    "Never fabricate prices, stock status, or links.",
+  ].join("\n");
+
+  return { userQuery, system };
+}
+
 // ---- MCP server factory (one per request, stateless) ----
 function buildServer() {
   const server = new Server(
@@ -238,6 +289,26 @@ function buildServer() {
           required: ["query"],
         },
       },
+      {
+        name: "shop_for_clothes",
+        description: "Personal clothing-shopping stylist. Given a request plus the shopper's style preferences, budget, size and region, it searches live online retailers (via Perplexity Sonar) and returns a shortlist of 5-8 specific, purchasable items with direct product links, prices and styling notes. Use this to DISCOVER and recommend clothes to buy — it does not place orders or handle payment. Pair it with the media-memory skill to persist style preferences and with generate_image to visualize the recommended looks. Slow (30s+). Supports Hebrew.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            request: { type: "string", description: "What the shopper wants to find, e.g. 'a winter capsule of 5 pieces' or 'a linen shirt for a beach wedding'." },
+            style_preferences: { type: "string", description: "The shopper's taste: aesthetics, brands, colors, silhouettes, materials they love. Pull this from the stored style profile (media-memory) when available." },
+            budget: { type: "string", description: "Budget per item or total, with currency, e.g. 'under $80 each' or '₪500 total'." },
+            sizes: { type: "string", description: "Sizes/measurements, e.g. 'M tops, 32 waist, EU 42 shoes'." },
+            gender: { type: "string", description: "Fit / retailer section to search, e.g. 'women', 'men', 'unisex'." },
+            region: { type: "string", description: "Where to ship and which currency to price in, e.g. 'Israel / ILS' or 'US / USD'." },
+            occasion: { type: "string", description: "Context the clothes are for, e.g. 'office', 'wedding guest', 'everyday casual'." },
+            avoid: { type: "string", description: "Things to exclude, e.g. 'no fast fashion', 'no synthetics', 'no logos'." },
+            reasoning_effort: { type: "string", enum: REASONING_EFFORTS, description: "Search depth. Higher = more thorough but slower. Default: model default." },
+            search_domain_filter: { type: "array", items: { type: "string" }, description: "Restrict to / exclude retailer domains. Use '-' prefix to exclude (e.g. ['zara.com','-ebay.com'])." },
+          },
+          required: ["request"],
+        },
+      },
     ],
   }));
 
@@ -251,6 +322,20 @@ function buildServer() {
           stripThinking: args.strip_thinking === true,
           searchRecencyFilter: args.search_recency_filter,
           searchDomainFilter: args.search_domain_filter,
+        });
+        return { content: [{ type: "text", text }] };
+      }
+
+      if (name === "shop_for_clothes") {
+        if (!args.request) {
+          throw new Error("shop_for_clothes requires a 'request' describing what to shop for.");
+        }
+        const { userQuery, system } = buildClothingShoppingPrompt(args);
+        const text = await callSonarDeepResearch(userQuery, {
+          system,
+          reasoningEffort: args.reasoning_effort,
+          searchDomainFilter: args.search_domain_filter,
+          stripThinking: true,
         });
         return { content: [{ type: "text", text }] };
       }
