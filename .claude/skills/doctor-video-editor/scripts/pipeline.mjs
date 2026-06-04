@@ -76,6 +76,12 @@ function readJson(filePath) {
 // Apply per-doctor name / term corrections to a transcript. Reads a
 // corrections.txt file (one rule per line: `wrong|right`, '#' comments
 // ignored) and substitutes in full_text, segments[].text, and words[].text.
+// Apply per-doctor name / term corrections to a transcript. Reads a
+// corrections.txt file (one rule per line: `wrong|right`, '#' comments
+// ignored) and substitutes in full_text, segments[].text, and words[].text.
+// Multi-word rules (containing spaces) are handled with a sliding-window
+// matcher over words[] that splices the new tokens in place, distributing
+// their start/end times proportionally across the original span.
 function applyCorrections(transcript, correctionsFile) {
   if (!correctionsFile || !fs.existsSync(correctionsFile)) return false;
   let content = fs.readFileSync(correctionsFile, "utf8");
@@ -96,26 +102,92 @@ function applyCorrections(transcript, correctionsFile) {
     if (wrong) rules.push({ wrong, right });
   }
   if (rules.length === 0) return false;
-  const apply = (s) => {
+
+  // Plain substring substitution — used on free-form fields (full_text,
+  // segments[].text) where multi-word spans appear naturally.
+  const applyString = (s) => {
     let r = String(s ?? "");
     for (const { wrong, right } of rules) r = r.split(wrong).join(right);
     return r;
   };
+
+  // Multi-word sliding-window matcher for the words[] array. Replaces a
+  // run of matching word tokens with the rule's RHS tokens, distributing
+  // start/end proportionally across the same time span. Single-word rules
+  // skip this and use plain substitution below.
+  const stripTrailPunct = (s) => String(s ?? "").replace(/[.,!?;:،۔؟]+$/, "");
+  const applyMultiWord = (words, wrongText, rightText) => {
+    const wrongTokens = wrongText.split(/\s+/).filter(Boolean);
+    const rightTokens = rightText.split(/\s+/).filter(Boolean);
+    if (wrongTokens.length === 0 || rightTokens.length === 0) return 0;
+    const replacements = [];
+    // Indices of "word"-type entries (ignore spacing / audio_event).
+    const contentIdx = [];
+    words.forEach((w, i) => { if (w.type === "word") contentIdx.push(i); });
+    let k = 0;
+    while (k <= contentIdx.length - wrongTokens.length) {
+      let ok = true;
+      for (let j = 0; j < wrongTokens.length; j++) {
+        if (stripTrailPunct(words[contentIdx[k + j]].text) !== wrongTokens[j]) { ok = false; break; }
+      }
+      if (!ok) { k++; continue; }
+      const firstWord = words[contentIdx[k]];
+      const lastWord = words[contentIdx[k + wrongTokens.length - 1]];
+      const totalDur = Math.max(0.04, lastWord.end - firstWord.start);
+      const lastPunctMatch = String(lastWord.text || "").match(/[.,!?;:،۔؟]+$/);
+      const lastPunct = lastPunctMatch ? lastPunctMatch[0] : "";
+      const newWords = rightTokens.map((tok, j) => ({
+        text: j === rightTokens.length - 1 ? tok + lastPunct : tok,
+        start: firstWord.start + (totalDur * j) / rightTokens.length,
+        end: firstWord.start + (totalDur * (j + 1)) / rightTokens.length,
+        type: "word",
+        speaker: firstWord.speaker || null,
+      }));
+      replacements.push({
+        startIdx: contentIdx[k],
+        endIdx: contentIdx[k + wrongTokens.length - 1] + 1,
+        newWords,
+      });
+      k += wrongTokens.length;
+    }
+    // Splice in reverse so earlier indices stay valid.
+    for (let i = replacements.length - 1; i >= 0; i--) {
+      const r = replacements[i];
+      words.splice(r.startIdx, r.endIdx - r.startIdx, ...r.newWords);
+    }
+    return replacements.length;
+  };
+
   let hits = 0;
-  const seen = JSON.stringify(transcript);
-  if (transcript.full_text) transcript.full_text = apply(transcript.full_text);
+  if (transcript.full_text) {
+    const before = transcript.full_text;
+    transcript.full_text = applyString(transcript.full_text);
+    if (before !== transcript.full_text) hits++;
+  }
   if (Array.isArray(transcript.segments)) {
-    for (const seg of transcript.segments) if (seg.text) seg.text = apply(seg.text);
+    for (const seg of transcript.segments) {
+      if (!seg.text) continue;
+      const before = seg.text;
+      seg.text = applyString(seg.text);
+      if (before !== seg.text) hits++;
+    }
   }
   if (Array.isArray(transcript.words)) {
-    for (const w of transcript.words) if (w.text) w.text = apply(w.text);
+    for (const { wrong, right } of rules) {
+      const isMultiWord = /\s/.test(wrong) || /\s/.test(right);
+      if (isMultiWord) {
+        const n = applyMultiWord(transcript.words, wrong, right);
+        if (n > 0) hits += n;
+      } else {
+        for (const w of transcript.words) {
+          if (!w.text) continue;
+          const newText = w.text.split(wrong).join(right);
+          if (newText !== w.text) { w.text = newText; hits++; }
+        }
+      }
+    }
   }
-  // Count actual replacements by comparing before/after.
-  for (const { wrong } of rules) {
-    const before = (seen.match(new RegExp(wrong.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
-    hits += before;
-  }
-  log(`applied ${rules.length} correction rule(s) from ${path.basename(correctionsFile)} (${hits} match(es) in transcript): ${rules.map(r => `${r.wrong}→${r.right}`).join(", ")}`);
+  log(`applied ${rules.length} correction rule(s) from ${path.basename(correctionsFile)} (${hits} match(es)): ${rules.map(r => `${r.wrong}→${r.right}`).join(", ")}`);
   return true;
 }
 
