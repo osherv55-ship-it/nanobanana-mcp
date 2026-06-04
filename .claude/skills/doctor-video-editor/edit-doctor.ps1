@@ -174,6 +174,15 @@ $outDir = Join-Path $Folder "out"
 $verticalMode = if ($env:DVE_VERTICAL) { $env:DVE_VERTICAL } else { "crop" }
 Note "Vertical: $verticalMode (Reels 1080x1920; override with `$env:DVE_VERTICAL = 'off|crop|blur|fit')"
 
+# Aggressive disfluency mode — opt-in via $env:DVE_AGGRESSIVE = "1".
+# Forces wider filler list (כאילו/יעני/like/etc.), tighter pause threshold,
+# and a more sensitive audio scan (catches quieter / shorter 'אה' sounds).
+$aggressiveArgs = @()
+if ($env:DVE_AGGRESSIVE -eq "1" -or $env:DVE_AGGRESSIVE -eq "true") {
+    Note "Aggressive mode ENABLED (broader fillers, tighter cuts, more sensitive audio scan)"
+    $aggressiveArgs = @("--aggressive")
+}
+
 Section "Running pipeline"
 try {
     node scripts\pipeline.mjs all `
@@ -184,6 +193,7 @@ try {
         --word-by-word `
         --crossfade 0.10 `
         --vertical-mode $verticalMode `
+        @aggressiveArgs `
         @overlayArgs `
         @musicArgs `
         @introArgs `

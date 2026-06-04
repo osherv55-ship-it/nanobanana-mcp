@@ -15,11 +15,12 @@ import { runFfmpeg } from "./ffmpeg.mjs";
 
 export async function detectHiddenDisfluencies(audioPath, words, opts = {}) {
   const {
-    silenceDb = -38,
-    silenceMinDur = 0.04,
-    minGapForCheck = 0.2,
-    minFillerDur = 0.06,
-    maxFillerDur = 0.8,
+    aggressive = false,
+    silenceDb = aggressive ? -42 : -38,
+    silenceMinDur = aggressive ? 0.03 : 0.04,
+    minGapForCheck = aggressive ? 0.15 : 0.2,
+    minFillerDur = aggressive ? 0.04 : 0.06,
+    maxFillerDur = aggressive ? 1.0 : 0.8,
     paddingSec = 0.03,
   } = opts;
 

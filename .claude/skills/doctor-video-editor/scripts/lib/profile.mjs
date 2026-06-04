@@ -85,18 +85,18 @@ export function buildProfile(words, opts = {}) {
   else if (fillerCount >= 8 || fillerRate >= 8) style = "raw";
   else style = "natural";
 
-  // Tuned detector parameters
-  // — longPauseThreshold: cuts anything longer than the SPEAKER'S OWN
-  //   natural inter-sentence pause. Polished speakers get a 35%
-  //   tighter threshold (they're already snappy by design, so we
-  //   tighten further to lift the pace). Raw speakers get a 30% looser
-  //   threshold to avoid chopping their natural rhythm.
-  let pauseMul = 1.0;
+  // Tuned detector parameters.
+  // longPauseThreshold cuts anything longer than the speaker's own
+  // natural inter-sentence pause, multiplied by a style-dependent factor:
+  //   - polished: 0.65 — already snappy, tighten further to lift pace
+  //   - natural:  0.85 — modest tightening
+  //   - raw:      0.55 — raw speakers' "natural" pauses are bloated by
+  //               filler-filled hesitations, so cut HARDER not looser
+  let pauseMul = 0.85;
   if (style === "polished") pauseMul = 0.65;
-  else if (style === "raw") pauseMul = 1.3;
-  const longPauseThreshold = clamp(naturalPause * pauseMul, 0.35, 1.5);
-  // — longPauseLeave: scales with threshold; tighter in polished mode.
-  const leaveMul = style === "polished" ? 0.12 : 0.2;
+  else if (style === "raw") pauseMul = 0.55;
+  const longPauseThreshold = clamp(naturalPause * pauseMul, 0.3, 1.5);
+  const leaveMul = style === "polished" ? 0.12 : (style === "raw" ? 0.1 : 0.18);
   const longPauseLeave = clamp(longPauseThreshold * leaveMul, 0.05, 0.2);
   // — aggressive filler list: activated when fillers are frequent enough
   //   that the speaker likely uses "soft" fillers (כאילו/יעני/like/...).

@@ -264,7 +264,9 @@ async function cmdFindCuts(args) {
     if (fs.existsSync(audioPath)) {
       log(`scanning audio (${path.basename(audioPath)}) for hidden disfluencies...`);
       try {
-        const hidden = await detectHiddenDisfluencies(audioPath, transcript.words);
+        const hidden = await detectHiddenDisfluencies(audioPath, transcript.words, {
+          aggressive: detectorOpts.aggressive,
+        });
         hiddenCount = hidden.cuts.length;
         allCuts = allCuts.concat(hidden.cuts);
       } catch (e) {
