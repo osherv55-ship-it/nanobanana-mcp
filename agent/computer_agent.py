@@ -35,7 +35,9 @@ MODEL = os.environ.get("AGENT_MODEL", "claude-opus-4-8")
 TARGET_W = 1280
 MAX_STEPS = 60
 
-pyautogui.FAILSAFE = True   # עכבר לפינה שמאלית-עליונה = עצירה
+# הערה: ה-failsafe של פינת-מסך כבוי, כי הסוכן לוחץ לגיטימית על כפתורים בפינות.
+# עצירת חירום: Ctrl+C בחלון ה-PowerShell.
+pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.3
 
 SCREEN_W, SCREEN_H = pyautogui.size()
@@ -150,12 +152,18 @@ def main():
     tools = [{"type": TOOL_TYPE, "name": "computer",
               "display_width_px": SEND_W, "display_height_px": SEND_H, "display_number": 1}]
     system = ("את סוכן שמפעיל מחשב Windows כדי לערוך וידאו ב-CapCut. "
-              "פעלי צעד-צעד, צלמי מסך לפני כל פעולה כדי לוודא מה רואים, "
-              "ואל תניחי הנחות — אם משהו לא ברור, צלמי מסך ובדקי.")
+              "הנח ש-CapCut כבר פתוח ובפוקוס. אם את רואה אפליקציה אחרת (Chrome, הגדרות, וואטסאפ) — "
+              "אל תתעסקי איתה; הביאי את CapCut לפוקוס בלחיצה על האייקון שלו בשורת המשימות התחתונה, ואז המשיכי. "
+              "אל תפתחי תפריט התחל, אל תשתמשי בחיפוש של Windows, ואל תיבהלי מפופ-אפים — סגרי/התעלמי והמשיכי במשימה. "
+              "פעלי צעד-צעד, צלמי מסך לפני כל פעולה כדי לוודא מה רואים, ואל תניחי הנחות.")
     messages = [{"role": "user", "content": args.goal}]
 
     print(f"מסך {SCREEN_W}x{SCREEN_H} → נשלח {SEND_W}x{SEND_H} | מודל {MODEL}")
-    print("⚠️ עכבר לפינה שמאלית-עליונה = עצירת חירום\n")
+    print("⚠️ עצירת חירום: Ctrl+C בחלון הזה.")
+    for s in (3, 2, 1):
+        print(f"   מתחיל בעוד {s}... (הביאי את CapCut לפוקוס)")
+        time.sleep(1)
+    print()
 
     for step in range(args.max_steps):
         resp = client.beta.messages.create(
@@ -186,4 +194,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[עצירה ידנית — Ctrl+C]")
