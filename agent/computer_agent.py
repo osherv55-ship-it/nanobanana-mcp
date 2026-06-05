@@ -16,6 +16,7 @@ computer_agent.py — סוכן "עם עיניים" שמפעיל פיזית את 
 """
 import argparse
 import base64
+import getpass
 import io
 import os
 import sys
@@ -138,10 +139,14 @@ def main():
     ap.add_argument("--max-steps", type=int, default=MAX_STEPS)
     args = ap.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        sys.exit("חסר ANTHROPIC_API_KEY בסביבה.")
+    # מפתח ה-API: מהסביבה אם קיים, אחרת מבקשים להדביק (ההקלדה מוסתרת, לא נשמר בשום מקום)
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if not api_key or api_key.startswith("sk-ant-...") or api_key == "sk-ant-...":
+        api_key = getpass.getpass("הדבק כאן את מפתח ה-Anthropic API (sk-ant-...) ו-Enter: ").strip()
+    if not api_key.startswith("sk-ant-"):
+        sys.exit("המפתח לא תקין (אמור להתחיל ב-sk-ant-).")
 
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic(api_key=api_key)
     tools = [{"type": TOOL_TYPE, "name": "computer",
               "display_width_px": SEND_W, "display_height_px": SEND_H, "display_number": 1}]
     system = ("את סוכן שמפעיל מחשב Windows כדי לערוך וידאו ב-CapCut. "
