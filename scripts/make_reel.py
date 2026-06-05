@@ -44,9 +44,37 @@ XFADE = 0.5           # משך מעבר Dissolve
 CARD_DUR = 2.5        # משך כרטיס פתיח/סגירה
 ZOOM = 0.03           # זום איטי 1.00 -> 1.03
 
-# גופנים בווינדוס (Arial תומך עברית; אפשר להחליף)
-FONT_BOLD = r"C:\Windows\Fonts\arialbd.ttf"
-FONT_REG = r"C:\Windows\Fonts\arial.ttf"
+# מועמדי פונטים. עברית: עדיף פונט יוקרתי שהורד (Frank Ruhl Libre / Heebo / Assistant);
+# נופלים חזרה ל-David/Arial אם לא נמצא. אפשר גם לכפות עם --font / --title-font.
+HEBREW_FONT_CANDIDATES = [
+    r".\fonts\FrankRuhlLibre-Medium.ttf",
+    r".\fonts\Heebo-Medium.ttf",
+    r".\fonts\Assistant-SemiBold.ttf",
+    r".\fonts\Rubik-Medium.ttf",
+    r"C:\Windows\Fonts\FrankRuhlLibre-Medium.ttf",
+    r"C:\Windows\Fonts\Heebo-Medium.ttf",
+    r"C:\Windows\Fonts\Rubik-Medium.ttf",
+    r"C:\Windows\Fonts\davidbd.ttf",
+    r"C:\Windows\Fonts\arialbd.ttf",
+]
+TITLE_FONT_CANDIDATES = [
+    r".\fonts\PlayfairDisplay-SemiBold.ttf",
+    r".\fonts\Cormorant-SemiBold.ttf",
+    r"C:\Windows\Fonts\georgia.ttf",
+    r"C:\Windows\Fonts\times.ttf",
+    r"C:\Windows\Fonts\arialbd.ttf",
+]
+FONT_HEB = r"C:\Windows\Fonts\arialbd.ttf"   # נקבע ב-main לפי resolve_font
+FONT_TITLE = r"C:\Windows\Fonts\arialbd.ttf"
+
+
+def resolve_font(explicit, candidates):
+    if explicit and os.path.exists(explicit):
+        return explicit
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return candidates[-1]
 
 
 def _font(path, size):
@@ -68,26 +96,37 @@ def make_card(main, sub=None, path="_card.png"):
     """כרטיס מסך-מלא: רקע שחור + טקסט כסוף ממורכז."""
     img = Image.new("RGB", (W, H), BLACK)
     d = ImageDraw.Draw(img)
-    _draw_centered(d, main, _font(FONT_BOLD, 96), H // 2 - 90, SILVER)
+    rtl_main = any("֐" <= ch <= "׿" for ch in main)
+    _draw_centered(d, main, _font(FONT_TITLE, 96), H // 2 - 90, SILVER, rtl=rtl_main)
     if sub:
-        _draw_centered(d, sub, _font(FONT_REG, 40), H // 2 + 40, SILVER)
+        _draw_centered(d, sub, _font(FONT_TITLE, 40), H // 2 + 40, SILVER)
     img.save(path)
     return path
 
 
 def make_caption(text, path="_caption.png"):
-    """רצועת כיתוב שקופה עם טקסט עברי כסוף בתחתית."""
+    """רצועת כיתוב שקופה עם טקסט עברי כסוף בתחתית (פונט יוקרתי)."""
     img = Image.new("RGBA", (W, 260), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    # פס שחור חצי-שקוף לקריאות
-    d.rectangle([0, 0, W, 260], fill=(0, 0, 0, 120))
-    font = _font(FONT_BOLD, 46)
+    d.rectangle([0, 0, W, 260], fill=(0, 0, 0, 120))  # פס שחור חצי-שקוף לקריאות
+    font = _font(FONT_HEB, 50)
     disp = get_display(text)
     bbox = d.textbbox((0, 0), disp, font=font)
     tw = bbox[2] - bbox[0]
-    d.text(((W - tw) / 2, 100), disp, font=font, fill=SILVER)
+    d.text(((W - tw) / 2, 95), disp, font=font, fill=SILVER)
     img.save(path)
     return path
+
+
+def animate_overlay(clip, anim, y=1480):
+    """אנימציית כניסה לכיתוב: fade / rise / zoom."""
+    if anim == "rise":
+        return (clip.set_position(lambda t: ("center", int(y + 45 * max(0, 1 - t / 0.5))))
+                    .crossfadein(0.4).crossfadeout(0.4))
+    if anim == "zoom":
+        return (clip.resize(lambda t: 1.0 + 0.07 * max(0, 1 - t / 0.5))
+                    .set_position(("center", y)).crossfadein(0.4).crossfadeout(0.4))
+    return clip.set_position(("center", y)).crossfadein(0.5).crossfadeout(0.5)  # fade
 
 
 def load_clip(path):
@@ -127,7 +166,16 @@ def main():
     ap.add_argument("--order", default="", help="סדר קבצים מופרד בפסיקים (ללא סיומת). ריק=לפי שם.")
     ap.add_argument("--zoom", action="store_true", help="הפעלת זום איטי (כבוי כברירת מחדל, לריצה היציבה ביותר)")
     ap.add_argument("--spec", default="", help="נתיב ל-template_spec.json (מ-analyze_template.py) — מחיל את קצב/מבנה התבנית")
+    ap.add_argument("--font", default="", help="נתיב לפונט עברי לכיתוב (.ttf) — למשל fonts\\FrankRuhlLibre-Medium.ttf")
+    ap.add_argument("--title-font", default="", help="נתיב לפונט הכותרת (.ttf)")
+    ap.add_argument("--caption-anim", default="rise", choices=["fade", "rise", "zoom"], help="אנימציית כניסת הכיתוב")
     args = ap.parse_args()
+
+    global FONT_HEB, FONT_TITLE
+    FONT_HEB = resolve_font(args.font, HEBREW_FONT_CANDIDATES)
+    FONT_TITLE = resolve_font(args.title_font, TITLE_FONT_CANDIDATES)
+    print("פונט כיתוב:", FONT_HEB)
+    print("פונט כותרת:", FONT_TITLE)
 
     files = sorted(glob.glob(os.path.join(args.input, "*.MOV")) +
                    glob.glob(os.path.join(args.input, "*.mov")) +
@@ -163,9 +211,8 @@ def main():
     first_dur = seq[0][1] if seq else CLIP_DUR
 
     # כיתוב כסוף מעל הגוף (מופיע אחרי הקליפ הראשון, ~4ש')
-    cap = (ImageClip(make_caption(args.caption))
-           .set_duration(4).set_start(first_dur)
-           .set_position(("center", 1480)))
+    cap = ImageClip(make_caption(args.caption)).set_duration(4).set_start(first_dur)
+    cap = animate_overlay(cap, args.caption_anim, y=1480)
     body_clip = CompositeVideoClip([body_clip, cap], size=(W, H))
 
     # כרטיסי פתיח/סגירה
