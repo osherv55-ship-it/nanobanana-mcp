@@ -16,6 +16,7 @@ make_reel.py — בונה ריל אנכי luxury (1080x1920) מתיקיית קל
 """
 
 import argparse
+import json
 import os
 import sys
 import glob
@@ -125,6 +126,7 @@ def main():
     ap.add_argument("--caption", default="התארחנו אצל רשת רונית רפאל להדרכה מתקדמת — פיסול פנים בטכניקות מתקדמות")
     ap.add_argument("--order", default="", help="סדר קבצים מופרד בפסיקים (ללא סיומת). ריק=לפי שם.")
     ap.add_argument("--zoom", action="store_true", help="הפעלת זום איטי (כבוי כברירת מחדל, לריצה היציבה ביותר)")
+    ap.add_argument("--spec", default="", help="נתיב ל-template_spec.json (מ-analyze_template.py) — מחיל את קצב/מבנה התבנית")
     args = ap.parse_args()
 
     files = sorted(glob.glob(os.path.join(args.input, "*.MOV")) +
@@ -138,21 +140,31 @@ def main():
         sys.exit(f"לא נמצאו קליפים ב-{args.input}")
     print(f"נמצאו {len(files)} קליפים")
 
-    # גוף הריל: כל קליפ -> cover -> 2.6ש' -> זום -> crossfade
+    # רצף הסצנות: לפי spec של תבנית (משכים + מספר סצנות), אחרת קליפ אחד לכל קובץ ב-CLIP_DUR
+    if args.spec:
+        spec = json.load(open(args.spec, encoding="utf-8"))
+        durs = spec.get("segment_durations") or []
+        seq = [(files[i % len(files)], durs[i]) for i in range(len(durs))]
+        print(f"מחיל תבנית: {len(durs)} סצנות לפי {os.path.basename(args.spec)}")
+    else:
+        seq = [(f, CLIP_DUR) for f in files]
+
+    # גוף הריל: כל סצנה -> cover -> משך -> (זום) -> crossfade
     body = []
-    for i, f in enumerate(files):
+    for i, (f, dur) in enumerate(seq):
         c = load_clip(f)
-        c = cover_resize(c).subclip(0, min(CLIP_DUR, c.duration))
+        c = cover_resize(c).subclip(0, min(dur, c.duration))
         if args.zoom:
             c = slow_zoom(c)
         if i > 0:
             c = c.crossfadein(XFADE)
         body.append(c)
     body_clip = concatenate_videoclips(body, method="compose", padding=-XFADE)
+    first_dur = seq[0][1] if seq else CLIP_DUR
 
     # כיתוב כסוף מעל הגוף (מופיע אחרי הקליפ הראשון, ~4ש')
     cap = (ImageClip(make_caption(args.caption))
-           .set_duration(4).set_start(CLIP_DUR)
+           .set_duration(4).set_start(first_dur)
            .set_position(("center", 1480)))
     body_clip = CompositeVideoClip([body_clip, cap], size=(W, H))
 
