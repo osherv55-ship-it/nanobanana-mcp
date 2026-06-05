@@ -26,9 +26,9 @@ import pyautogui
 from PIL import Image
 import anthropic
 
-# --- מפרט הכלי computer-use (אם Anthropic עדכנו גרסה — בדקי בתיעוד והחליפי כאן) ---
-TOOL_TYPE = "computer_20250124"
-BETA_HEADER = "computer-use-2025-01-24"
+# --- מפרט הכלי computer-use (Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5) ---
+TOOL_TYPE = "computer_20251124"
+BETA_HEADER = "computer-use-2025-11-24"
 MODEL = os.environ.get("AGENT_MODEL", "claude-opus-4-8")
 
 # רזולוציית יעד שנשלחת למודל (דיוק טוב יותר ברזולוציה בינונית). הקואורדינטות מומרות חזרה למסך האמיתי.
