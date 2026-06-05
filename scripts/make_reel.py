@@ -92,9 +92,10 @@ def cover_resize(clip):
 
 
 def slow_zoom(clip):
-    base = clip
-    return base.resize(lambda t: 1.0 + ZOOM * (t / max(clip.duration, 0.01))) \
-               .crop(x_center=W / 2, y_center=H / 2, width=W, height=H)
+    """זום איטי חסין: מגדילים עם הזמן וקובעים על קנבס 1080x1920 (הקנבס חותך את העודף)."""
+    dur = max(clip.duration, 0.01)
+    zoomed = clip.resize(lambda t: 1.0 + ZOOM * (t / dur)).set_position("center")
+    return CompositeVideoClip([zoomed], size=(W, H)).set_duration(clip.duration)
 
 
 def main():
@@ -105,6 +106,7 @@ def main():
     ap.add_argument("--subtitle", default="ADVANCED FACIAL SCULPTING")
     ap.add_argument("--caption", default="התארחנו אצל רשת רונית רפאל להדרכה מתקדמת — פיסול פנים בטכניקות מתקדמות")
     ap.add_argument("--order", default="", help="סדר קבצים מופרד בפסיקים (ללא סיומת). ריק=לפי שם.")
+    ap.add_argument("--zoom", action="store_true", help="הפעלת זום איטי (כבוי כברירת מחדל, לריצה היציבה ביותר)")
     args = ap.parse_args()
 
     files = sorted(glob.glob(os.path.join(args.input, "*.MOV")) +
@@ -123,7 +125,8 @@ def main():
     for i, f in enumerate(files):
         c = VideoFileClip(f).without_audio()
         c = cover_resize(c).subclip(0, min(CLIP_DUR, c.duration))
-        c = slow_zoom(c)
+        if args.zoom:
+            c = slow_zoom(c)
         if i > 0:
             c = c.crossfadein(XFADE)
         body.append(c)
