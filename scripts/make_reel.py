@@ -20,6 +20,11 @@ import os
 import sys
 import glob
 
+import PIL.Image
+# תאימות: moviepy 1.0.3 משתמש ב-Image.ANTIALIAS שהוסר ב-Pillow 10+
+if not hasattr(PIL.Image, "ANTIALIAS"):
+    PIL.Image.ANTIALIAS = PIL.Image.LANCZOS
+
 from PIL import Image, ImageDraw, ImageFont
 try:
     from bidi.algorithm import get_display
