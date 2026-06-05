@@ -89,6 +89,19 @@ def make_caption(text, path="_caption.png"):
     return path
 
 
+def load_clip(path):
+    """טוען קליפ ומתקן מימדים לפי הפריים האמיתי (פותר סיבוב/מתיחה של קבצי iPhone)."""
+    clip = VideoFileClip(path)
+    try:
+        clip.rotation = 0  # למנוע סיבוב כפול ע"י moviepy (ffmpeg כבר מסובב)
+    except Exception:
+        pass
+    fh, fw = clip.get_frame(0).shape[:2]   # גובה, רוחב אמיתיים של הפריים
+    if (round(clip.w), round(clip.h)) != (fw, fh):
+        clip = clip.resize((fw, fh))       # מצמיד את ה-size לפריים האמיתי
+    return clip.without_audio()
+
+
 def cover_resize(clip):
     """ממלא 1080x1920 (cover) + חיתוך מרכז."""
     scale = max(W / clip.w, H / clip.h)
@@ -128,7 +141,7 @@ def main():
     # גוף הריל: כל קליפ -> cover -> 2.6ש' -> זום -> crossfade
     body = []
     for i, f in enumerate(files):
-        c = VideoFileClip(f).without_audio()
+        c = load_clip(f)
         c = cover_resize(c).subclip(0, min(CLIP_DUR, c.duration))
         if args.zoom:
             c = slow_zoom(c)
