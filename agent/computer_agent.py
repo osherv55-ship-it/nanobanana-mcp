@@ -38,6 +38,7 @@ MODEL = os.environ.get("AGENT_MODEL", "claude-opus-4-8")
 # רזולוציית יעד שנשלחת למודל (דיוק טוב יותר ברזולוציה בינונית). הקואורדינטות מומרות חזרה למסך האמיתי.
 TARGET_W = 1280
 MAX_STEPS = 120
+KEEP_IMAGES = 3   # כמה צילומי מסך אחרונים לשמור בהיסטוריה (חיסכון בטוקנים)
 
 # הערה: ה-failsafe של פינת-מסך כבוי, כי הסוכן לוחץ לגיטימית על כפתורים בפינות.
 # עצירת חירום: Ctrl+C בחלון ה-PowerShell.
@@ -134,6 +135,21 @@ def run_action(action, inp):
     return True
 
 
+def prune_images(messages, keep=KEEP_IMAGES):
+    """משאיר רק את `keep` צילומי המסך האחרונים בהיסטוריה; מחליף ישנים בטקסט — חיסכון בטוקנים."""
+    locs = []
+    for m in messages:
+        if isinstance(m.get("content"), list):
+            for b in m["content"]:
+                if isinstance(b, dict) and b.get("type") == "tool_result":
+                    for ci, c in enumerate(b.get("content", [])):
+                        if isinstance(c, dict) and c.get("type") == "image":
+                            locs.append((b, ci))
+    for b, ci in locs[:-keep] if keep > 0 else locs:
+        b["content"][ci] = {"type": "text", "text": "[צילום מסך קודם הוסר לחיסכון]"}
+    return messages
+
+
 def tool_result(tool_use_id, screenshot=True, text=None):
     content = []
     if text:
@@ -194,6 +210,7 @@ def main():
     print()
 
     for step in range(args.max_steps):
+        prune_images(messages)   # שומר רק צילומי מסך אחרונים — חיסכון בעלות
         resp = client.beta.messages.create(
             model=MODEL, max_tokens=4096, system=system,
             tools=tools, messages=messages, betas=[BETA_HEADER],
