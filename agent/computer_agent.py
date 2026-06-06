@@ -21,6 +21,7 @@ import io
 import os
 import sys
 import time
+import traceback
 
 import pyautogui
 from PIL import Image
@@ -29,6 +30,25 @@ try:
     import pyperclip   # הקלדה דרך clipboard — חסינה לפריסת מקלדת עברית
 except Exception:
     pyperclip = None
+
+
+class Tee:
+    """כותב כל פלט גם למסך וגם לקובץ לוג — כדי שגם אם החלון נסגר, נשאר תיעוד."""
+    def __init__(self, *streams):
+        self.streams = streams
+    def write(self, data):
+        for s in self.streams:
+            try:
+                s.write(data)
+                s.flush()
+            except Exception:
+                pass
+    def flush(self):
+        for s in self.streams:
+            try:
+                s.flush()
+            except Exception:
+                pass
 
 # --- מפרט הכלי computer-use (Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5) ---
 TOOL_TYPE = "computer_20251124"
@@ -261,7 +281,26 @@ def main():
 
 
 if __name__ == "__main__":
+    # לוג לקובץ: כל פלט ושגיאה נשמרים ל-agent_log.txt ליד הסקריפט — לאבחון גם אם החלון נסגר.
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _logf = open(os.path.join(_here, "agent_log.txt"), "w", encoding="utf-8")
+    _logf.write(f"=== הרצה חדשה {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n")
+    sys.stdout = Tee(sys.__stdout__, _logf)
+    sys.stderr = Tee(sys.__stderr__, _logf)
     try:
         main()
     except KeyboardInterrupt:
         print("\n[עצירה ידנית — Ctrl+C]")
+    except Exception:
+        print("\n[!] שגיאה — הפרטים המלאים:")
+        traceback.print_exc()
+    finally:
+        try:
+            _logf.flush(); _logf.close()
+        except Exception:
+            pass
+        # משאיר את החלון פתוח כדי שאפשר לקרוא את הפלט (גם אם קרסה ההרצה).
+        try:
+            input("\n--- ההרצה הסתיימה. הלוג נשמר ב-agent_log.txt. Enter לסגירה ---")
+        except Exception:
+            pass
