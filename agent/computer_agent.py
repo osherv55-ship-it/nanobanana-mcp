@@ -36,9 +36,9 @@ BETA_HEADER = "computer-use-2025-11-24"
 MODEL = os.environ.get("AGENT_MODEL", "claude-opus-4-8")
 
 # רזולוציית יעד שנשלחת למודל (דיוק טוב יותר ברזולוציה בינונית). הקואורדינטות מומרות חזרה למסך האמיתי.
-TARGET_W = 1280
+TARGET_W = 1024
 MAX_STEPS = 120
-KEEP_IMAGES = 3   # כמה צילומי מסך אחרונים לשמור בהיסטוריה (חיסכון בטוקנים)
+KEEP_IMAGES = 2   # כמה צילומי מסך אחרונים לשמור בהיסטוריה (חיסכון בטוקנים)
 
 # הערה: ה-failsafe של פינת-מסך כבוי, כי הסוכן לוחץ לגיטימית על כפתורים בפינות.
 # עצירת חירום: Ctrl+C בחלון ה-PowerShell.
@@ -209,10 +209,13 @@ def main():
         time.sleep(1)
     print()
 
+    # Prompt caching: בסיס הידע (~2000 טוקנים) נשלח פעם אחת ונקרא מקאש בכל הצעדים הבאים → 90% חיסכון.
+    system_blocks = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
+
     for step in range(args.max_steps):
         prune_images(messages)   # שומר רק צילומי מסך אחרונים — חיסכון בעלות
         resp = client.beta.messages.create(
-            model=MODEL, max_tokens=4096, system=system,
+            model=MODEL, max_tokens=4096, system=system_blocks,
             tools=tools, messages=messages, betas=[BETA_HEADER],
         )
         messages.append({"role": "assistant", "content": resp.content})
