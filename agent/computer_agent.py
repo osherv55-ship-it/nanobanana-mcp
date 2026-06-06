@@ -25,6 +25,10 @@ import time
 import pyautogui
 from PIL import Image
 import anthropic
+try:
+    import pyperclip   # הקלדה דרך clipboard — חסינה לפריסת מקלדת עברית
+except Exception:
+    pyperclip = None
 
 # --- מפרט הכלי computer-use (Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5) ---
 TOOL_TYPE = "computer_20251124"
@@ -33,7 +37,7 @@ MODEL = os.environ.get("AGENT_MODEL", "claude-opus-4-8")
 
 # רזולוציית יעד שנשלחת למודל (דיוק טוב יותר ברזולוציה בינונית). הקואורדינטות מומרות חזרה למסך האמיתי.
 TARGET_W = 1280
-MAX_STEPS = 60
+MAX_STEPS = 120
 
 # הערה: ה-failsafe של פינת-מסך כבוי, כי הסוכן לוחץ לגיטימית על כפתורים בפינות.
 # עצירת חירום: Ctrl+C בחלון ה-PowerShell.
@@ -104,7 +108,12 @@ def run_action(action, inp):
         pyautogui.dragTo(x, y, duration=0.4)
         return True
     if action == "type":
-        pyautogui.write(inp.get("text", ""), interval=0.02)
+        text = inp.get("text", "")
+        if pyperclip is not None:           # הדבקה מה-clipboard (חסין לעברית/autocomplete)
+            pyperclip.copy(text)
+            pyautogui.hotkey("ctrl", "v")
+        else:
+            pyautogui.write(text, interval=0.03)
         return True
     if action == "key":
         press_key(inp.get("text", ""))
@@ -155,6 +164,9 @@ def main():
               "הנח ש-CapCut כבר פתוח ובפוקוס. אם את רואה אפליקציה אחרת (Chrome, הגדרות, וואטסאפ) — "
               "אל תתעסקי איתה; הביאי את CapCut לפוקוס בלחיצה על האייקון שלו בשורת המשימות התחתונה, ואז המשיכי. "
               "אל תפתחי תפריט התחל, אל תשתמשי בחיפוש של Windows, ואל תיבהלי מפופ-אפים — סגרי/התעלמי והמשיכי במשימה. "
+              "הקלדה (action 'type') מתבצעת דרך הדבקה מ-clipboard, אז היא חסינה לפריסת מקלדת עברית — אל תבזבזי צעדים על החלפת שפה. "
+              "כדי לנקות שדה: Ctrl+A ואז הקלידי (ההדבקה תחליף את הנבחר). "
+              "לייבוא קבצים בחלון פתיחה: לחצי על שורת הכתובת למעלה, הקלידי את נתיב התיקייה ו-Enter, ואז Ctrl+A לבחירת כל הקבצים ו-Enter. "
               "פעלי צעד-צעד, צלמי מסך לפני כל פעולה כדי לוודא מה רואים, ואל תניחי הנחות.")
     messages = [{"role": "user", "content": args.goal}]
 
