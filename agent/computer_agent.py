@@ -160,7 +160,7 @@ def main():
     client = anthropic.Anthropic(api_key=api_key)
     tools = [{"type": TOOL_TYPE, "name": "computer",
               "display_width_px": SEND_W, "display_height_px": SEND_H, "display_number": 1}]
-    system = ("את סוכן שמפעיל מחשב Windows כדי לערוך וידאו ב-CapCut. "
+    base = ("את סוכן שמפעיל מחשב Windows כדי לערוך וידאו ב-CapCut. "
               "הנח ש-CapCut כבר פתוח ובפוקוס. אם את רואה אפליקציה אחרת (Chrome, הגדרות, וואטסאפ) — "
               "אל תתעסקי איתה; הביאי את CapCut לפוקוס בלחיצה על האייקון שלו בשורת המשימות התחתונה, ואז המשיכי. "
               "אל תפתחי תפריט התחל, אל תשתמשי בחיפוש של Windows, ואל תיבהלי מפופ-אפים — סגרי/התעלמי והמשיכי במשימה. "
@@ -168,7 +168,23 @@ def main():
               "כדי לנקות שדה: Ctrl+A ואז הקלידי (ההדבקה תחליף את הנבחר). "
               "לייבוא קבצים בחלון פתיחה: לחצי על שורת הכתובת למעלה, הקלידי את נתיב התיקייה ו-Enter, ואז Ctrl+A לבחירת כל הקבצים ו-Enter. "
               "פעלי צעד-צעד, צלמי מסך לפני כל פעולה כדי לוודא מה רואים, ואל תניחי הנחות.")
+
+    here = os.path.dirname(os.path.abspath(__file__))
+
+    def _read(name):
+        p = os.path.join(here, name)
+        return open(p, encoding="utf-8").read().strip() if os.path.exists(p) else ""
+
+    knowledge = _read("capcut_knowledge.md")
+    memory = _read("capcut_memory.md")
+    system = base
+    if knowledge:
+        system += "\n\n=== ידע מקצועי על CapCut ===\n" + knowledge
+    if memory:
+        system += "\n\n=== מה שלמדת בסשנים קודמים (זיכרון) ===\n" + memory
+
     messages = [{"role": "user", "content": args.goal}]
+    transcript = []   # נצבר טקסט של הסוכן ללמידה בסוף
 
     print(f"מסך {SCREEN_W}x{SCREEN_H} → נשלח {SEND_W}x{SEND_H} | מודל {MODEL}")
     print("⚠️ עצירת חירום: Ctrl+C בחלון הזה.")
@@ -187,6 +203,7 @@ def main():
         for block in resp.content:
             if block.type == "text" and block.text.strip():
                 print(f"[Claude] {block.text.strip()}")
+                transcript.append(block.text.strip())
 
         if resp.stop_reason != "tool_use":
             print("\n✅ הסוכן סיים.")
@@ -203,6 +220,24 @@ def main():
         messages.append({"role": "user", "content": results})
     else:
         print("\n[!] הגענו למקסימום צעדים. אפשר להעלות עם --max-steps.")
+
+    # למידה: סיכום תמציתי של ידע ממשק לשימוש חוזר → נוסף ל-capcut_memory.md
+    try:
+        if transcript:
+            note = client.messages.create(
+                model=MODEL, max_tokens=600,
+                messages=[{"role": "user", "content":
+                    "להלן יומן פעולות של סוכן שעבד ב-CapCut. כתוב 4-8 בולטים תמציתיים בעברית "
+                    "של ידע ממשק לשימוש חוזר (מיקומי כפתורים/תפריטים שראית, זרימות שעבדו, מכשולים שנתקלת בהם ואיך לעקוף). "
+                    "רק בולטים מעשיים, בלי הקדמות:\n\n" + "\n".join(transcript)[:12000]}],
+            )
+            text = "".join(b.text for b in note.content if b.type == "text").strip()
+            if text:
+                with open(os.path.join(here, "capcut_memory.md"), "a", encoding="utf-8") as f:
+                    f.write(f"\n## {time.strftime('%Y-%m-%d %H:%M')} — מטרה: {args.goal[:80]}\n{text}\n")
+                print("\n🧠 נשמרו תובנות ל-capcut_memory.md")
+    except Exception as e:
+        print(f"[הערה: שמירת זיכרון נכשלה — {e}]")
 
 
 if __name__ == "__main__":
