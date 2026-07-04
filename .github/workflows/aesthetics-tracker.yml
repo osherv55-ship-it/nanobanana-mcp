@@ -19,6 +19,10 @@ jobs:
       - name: Run weekly tracker with Claude Code
         uses: anthropics/claude-code-action@v1
         with:
+          # Either secret works — set whichever is easier to create:
+          # ANTHROPIC_API_KEY (from platform.claude.com, browser-only) or
+          # CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token` in a terminal).
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: '--allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebSearch,WebFetch"'
           prompt: |
