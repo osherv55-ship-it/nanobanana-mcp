@@ -237,16 +237,18 @@ function buildServer() {
       },
       {
         name: "edit_image",
-        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Requires a publicly accessible HTTPS URL for the source image.",
+        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Provide the source image either as a publicly accessible HTTPS URL (imageUrl) or as inline base64 data (imageBase64 + mimeType).",
         inputSchema: {
           type: "object",
           properties: {
-            imageUrl: { type: "string", description: "HTTPS URL of source image (publicly accessible)." },
+            imageUrl: { type: "string", description: "HTTPS URL of source image (publicly accessible). Provide this or imageBase64." },
+            imageBase64: { type: "string", description: "Base64-encoded source image data (no data: URI prefix). Use when the image is not publicly reachable. Requires mimeType." },
+            mimeType: { type: "string", description: "MIME type of imageBase64 (e.g. image/png, image/jpeg). Required with imageBase64." },
             instruction: { type: "string", description: "What to change. Be specific and explicitly preserve elements that should stay unchanged." },
             aspectRatio: { type: "string", enum: ASPECT_RATIOS, description: "Output aspect ratio. Defaults to match input." },
             imageSize: { type: "string", enum: IMAGE_SIZES, description: "Output resolution. Default 1K." },
           },
-          required: ["imageUrl", "instruction"],
+          required: ["instruction"],
         },
       },
       {
@@ -286,7 +288,16 @@ function buildServer() {
       if (name === "generate_image") {
         parts = [{ text: args.prompt }];
       } else if (name === "edit_image") {
-        const { base64, mimeType } = await fetchImageAsBase64(args.imageUrl);
+        let base64, mimeType;
+        if (args.imageBase64) {
+          if (!args.mimeType) throw new Error("mimeType is required when passing imageBase64.");
+          base64 = args.imageBase64;
+          mimeType = args.mimeType;
+        } else if (args.imageUrl) {
+          ({ base64, mimeType } = await fetchImageAsBase64(args.imageUrl));
+        } else {
+          throw new Error("edit_image requires either imageUrl or imageBase64 + mimeType.");
+        }
         parts = [
           { inline_data: { mime_type: mimeType, data: base64 } },
           { text: args.instruction },
