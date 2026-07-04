@@ -34,8 +34,9 @@ const OPENAI_TIMEOUT_MS = parseInt(process.env.OPENAI_TIMEOUT_MS || "180000", 10
 const ALLOW_LOCAL_FILES = process.env.ALLOW_LOCAL_FILES === "true";
 
 if (!GEMINI_API_KEY) {
-  console.error("FATAL: GEMINI_API_KEY environment variable is not set.");
-  process.exit(1);
+  // Don't exit: continuous deployment must be able to roll out a revision
+  // before secrets are configured on the service. The tools error per-call.
+  console.warn("WARNING: GEMINI_API_KEY not set — generate_image / edit_image will error if called.");
 }
 if (!MCP_AUTH_TOKEN) {
   console.warn("WARNING: MCP_AUTH_TOKEN not set — server is unauthenticated.");
@@ -84,6 +85,9 @@ async function geminiFetch(url, init) {
 }
 
 async function callGemini(parts, { aspectRatio, imageSize } = {}) {
+  if (!GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY environment variable is required for generate_image / edit_image.");
+  }
   const generationConfig = { responseModalities: ["TEXT", "IMAGE"] };
   if (aspectRatio || imageSize) {
     generationConfig.imageConfig = {

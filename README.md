@@ -14,7 +14,7 @@ Remote [MCP](https://modelcontextprotocol.io) server (Node 20+, Express, statele
 
 | Variable | Required | Default | Purpose |
 |---|---|---|---|
-| `GEMINI_API_KEY` | yes | — | Google AI Studio key for image generation/editing. |
+| `GEMINI_API_KEY` | for `generate_image` / `edit_image` | — | Google AI Studio key. The server boots without it (tools error per-call), so CD rollouts aren't blocked. |
 | `MCP_AUTH_TOKEN` | recommended | none (unauthenticated!) | Bearer token required on `/mcp`. |
 | `PERPLEXITY_API_KEY` | for `deep_research` | — | Perplexity API key; only needed when the tool is called. |
 | `OPENAI_API_KEY` | for `gpt_image_*` | — | OpenAI API key; only needed when those tools are called. |

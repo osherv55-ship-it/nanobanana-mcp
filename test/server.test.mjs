@@ -96,3 +96,27 @@ test("GET /mcp is not allowed in stateless mode", async () => {
   const res = await fetch(`${BASE}/mcp`);
   assert.equal(res.status, 405);
 });
+
+test("server boots without GEMINI_API_KEY (CD-friendly)", async () => {
+  const port = PORT + 1;
+  const env = { ...process.env, PORT: String(port) };
+  delete env.GEMINI_API_KEY;
+  delete env.MCP_AUTH_TOKEN;
+  const bare = spawn("node", ["server.js"], { env, stdio: ["ignore", "pipe", "pipe"] });
+  try {
+    const deadline = Date.now() + 10_000;
+    while (true) {
+      try {
+        const res = await fetch(`http://127.0.0.1:${port}/`);
+        if (res.ok) break;
+      } catch {
+        if (Date.now() > deadline) throw new Error("keyless server did not start within 10s");
+        await new Promise((r) => setTimeout(r, 100));
+      }
+    }
+    const health = await (await fetch(`http://127.0.0.1:${port}/`)).json();
+    assert.equal(health.status, "ok");
+  } finally {
+    bare.kill();
+  }
+});
