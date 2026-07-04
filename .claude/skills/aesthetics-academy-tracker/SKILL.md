@@ -100,6 +100,23 @@ academy. The deliverable of every run is a **Hebrew report** committed to
 (חשבונות שנוספו/הוסרו והסיבה; "אין שינוי" אם אין)
 ```
 
+## Scheduling (weekly routine)
+
+The tracker is meant to run weekly via a Claude Code Remote trigger
+(`create_trigger` on the claude-code-remote MCP server) — creating it requires
+a user-approved permission, so if it does not exist yet, recreate it with:
+
+- **name:** `Aesthetics Academy Tracker — weekly`
+- **cron_expression:** `23 6 * * 0` (Sunday ~06:23 UTC ≈ 09:23 Israel)
+- **create_new_session_on_fire:** `true`
+- **notifications:** `{"push": true, "email": true}`
+- **prompt:** a standalone Hebrew instruction to read this SKILL.md and run
+  the full workflow above, committing the report to a fresh
+  `claude/aesthetics-tracker-run-<date>` branch and ending with a Hebrew
+  summary of the top findings + links.
+
+Verify with `list_triggers` before creating — don't duplicate.
+
 ## Quality bar
 
 - No link — no item. Never invent URLs or engagement numbers.
