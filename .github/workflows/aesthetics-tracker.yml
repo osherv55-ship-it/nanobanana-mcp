@@ -1,0 +1,36 @@
+name: Aesthetics Academy Tracker (weekly)
+
+on:
+  schedule:
+    - cron: "23 6 * * 0" # Sunday ~06:23 UTC ≈ 09:23 Israel
+  workflow_dispatch: {}
+
+jobs:
+  tracker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run weekly tracker with Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          # Either secret works — set whichever is easier to create:
+          # ANTHROPIC_API_KEY (from platform.claude.com, browser-only) or
+          # CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token` in a terminal).
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: '--allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebSearch,WebFetch"'
+          prompt: |
+            הרץ סבב מעקב שבועי של סוכן ה-aesthetics-academy-tracker.
+
+            קרא את ‎.claude/skills/aesthetics-academy-tracker/SKILL.md ופעל לפיו במדויק:
+            1. קרא את watchlist.json ואת הדוח האחרון ב-reports/aesthetics-tracker/ כדי לא לחזור על קישורים ורעיונות.
+            2. חפש (WebSearch) פרסומים ויראליים חדשים מהחשבונות ברשימה, מה-trend_queries, ומחדשות רגולציה/מוצרים/כנסים מהשבועיים האחרונים. רק פריטים עם קישור עובד.
+            3. כתוב דוח חדש בעברית לפי התבנית ל-reports/aesthetics-tracker/YYYY-MM-DD.md (תאריך של היום).
+            4. עדכן את watchlist.json אם התגלו חשבונות חזקים חדשים.
+            5. צור ענף claude/aesthetics-tracker-run-<תאריך>, בצע commit של הדוח והרשימה, ודחוף אותו (git push -u origin <branch>). אל תדחוף ל-main.

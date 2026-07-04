@@ -1,0 +1,83 @@
+{
+  "updated": "2026-07-04",
+  "excluded": [
+    { "name": "Dr. Monica Elman / Elman Academy", "reason": "user request 2026-07-04 — not interesting, do not re-add" },
+    { "name": "Maccabi Aesthetica (מכבי אסתטיקה)", "reason": "user request 2026-07-04 — not interesting, do not re-add" }
+  ],
+  "israel": [
+    { "name": "Dr. Zerach Academy (האקדמיה של ד\"ר זרח)", "instagram": "https://www.instagram.com/dr.zerach_academy/", "followers_approx": "2.6K", "type": "academy", "notes": "Academy account small but clinic brand @zmedicalclub has 68K; graduate-testimonial reels, first-injection-day accompaniment format", "website": "https://academy.drzerach.co.il/", "facebook": "https://www.facebook.com/p/Dr-Zerach-Academy-100083294965388/", "related_accounts": ["https://www.instagram.com/zmedicalclub/", "https://www.instagram.com/dr.zerach/"] },
+    { "name": "INAAMED — המכללה הלאומית לרפואה אסתטית", "instagram": "https://www.instagram.com/inaa_med/", "type": "academy", "notes": "Doctors-only national college (est. 2014); event-recap reels, Nicolae Testemitanu USMF representation", "website": "https://www.inaamed.co.il/", "facebook": "https://www.facebook.com/inaamed/", "linkedin": "https://www.linkedin.com/company/inaamed" },
+    { "name": "ADA — Dr. Sharon Davidson aesthetics college", "instagram": "https://www.instagram.com/dr.sharondavidson/", "followers_approx": "5.2K", "type": "academy+injector-educator", "notes": "Small-group (6-8 doctors) hands-on courses on real models; 'guess the treatment' reels", "website": "https://estmed.co.il/", "facebook": "https://www.facebook.com/medical.aesthetics.sarona/" },
+    { "name": "Dr. Ella Egozi — המרכז להכשרת רופאים לרפואה אסתטית", "instagram": "https://www.instagram.com/dr_ella_egozi/", "followers_approx": "18K", "type": "academy+injector-educator", "notes": "Dermatologist; myth-busting and Q&A reels, treatment demos", "website": "https://drellaegozi.co.il/" },
+    { "name": "Dr. Daphna Mansfeld (DocMD)", "instagram": "https://www.instagram.com/docmd_tlv/", "type": "injector-educator", "notes": "Small-group certification course; 'natural vs fake look' educational reels", "website": "https://www.docmd.co.il/", "facebook": "https://www.facebook.com/daphna.mansfeld.md/" },
+    { "name": "Promedics Academy (פרומדיקס)", "type": "distributor-education", "notes": "Distributor training arm; workshops with Israeli and international KOLs; active on IG/FB/YouTube", "website": "https://training.promedics.co.il/" },
+    { "name": "IDS (ids4u) — FacEsthetics", "type": "academy", "notes": "3-day multidisciplinary course incl. cadaver-head lab + live-patient demos", "website": "https://www.ids4u.co.il/" },
+    { "name": "BeautyFly Medical (ביוטיפליי)", "type": "distributor-education", "notes": "Two-week intensive injector bootcamp for doctors (22 modalities hands-on)", "website": "https://beautyflymedical.co.il/training-for-doctors/" },
+    { "name": "Allergan Medical Institute Israel (Allergan Aesthetics / AbbVie)", "type": "manufacturer-education", "notes": "Local AMI arm: hands-on trainings, roundtables, national conferences, e-learning", "website": "https://www.allerganaesthetics.co.il/he/providers/education" },
+    { "name": "Dr. Elias Khourieh (Super Doctor)", "instagram": "https://www.instagram.com/dr.elias_khourieh/", "followers_approx": "100K+", "type": "creator-doctor", "notes": "Haifa/Pardes Hanna aesthetics clinic; biggest Israeli aesthetic-doctor social following (IG+TikTok); teaching role unverified", "tiktok": "https://www.tiktok.com/@dr.elias_khourieh", "facebook": "https://www.facebook.com/superdoctor.elias/" },
+    { "name": "Dr. Irena Krupnik — מרכז הכשרת רופאים (ד\"ר אירנה קרופניק)", "instagram": "https://www.instagram.com/dr_krupnik/", "type": "academy+injector-educator", "notes": "User-requested add. Physician training center in Holon since the 90s, 2,580+ graduates; training account @drkrupnik_group (הכשרות רופאים, hair transplant, PRP); FB course-promo videos, TV advertorials", "website": "https://www.drkrupnik.co.il/", "facebook": "https://www.facebook.com/drkrupnik.co.il/", "youtube": "https://www.youtube.com/@irenakrupnik5470", "related_accounts": ["https://www.instagram.com/drkrupnik_group/"] }
+  ],
+  "pending": [
+    { "name": "שי טלם (Shay Telem)", "status": "user requested 2026-07-04 but not found in aesthetic medicine after extensive search (15+ query variants, HE+EN). Need exact Instagram handle or spelling from user before adding." }
+  ],
+  "clinics_israel": [
+    { "name": "Naturalaser (נטוראלייזר)", "instagram": "https://www.instagram.com/naturalaser_/", "followers_approx": "74K", "type": "clinic", "notes": "Top Israeli clinic account: patient-named before/afters, branded techniques (שיטת הפפיון, NaturalTouch, NaturaLift, Ikin TechNIQUE), celeb-reaction reels, well-aging positioning", "tiktok": "https://www.tiktok.com/@naturalaser", "website": "https://naturalaser.co.il/" },
+    { "name": "K-Care (קיי קר) — Dr. Mazor Shabi", "instagram": "https://www.instagram.com/k.care.k/", "followers_approx": "76K", "type": "clinic", "notes": "Doctor+manager duo branding; non-surgical nose sculpting reels, price-led hooks, HE/EN bilingual", "tiktok": "https://www.tiktok.com/@k.care.k", "website": "https://www.kcare.co.il/", "related_accounts": ["https://www.instagram.com/dr.mazor_shabi_aesthetics/"] },
+    { "name": "VIV Clinic (הרצליה)", "instagram": "https://www.instagram.com/viv.clinic/", "followers_approx": "20K", "type": "clinic", "notes": "Large medical center positioning; niche differentiators (hyperhidrosis, Sofwave); magazine-style content", "website": "https://www.viv.co.il/" },
+    { "name": "Roses Clinic (רוזס קליניק)", "instagram": "https://www.instagram.com/rosesclinic/", "type": "clinic-chain+academy", "notes": "National chain + physician academy; growth/expansion announcements as social proof", "website": "https://rosesclinic.co.il/" },
+    { "name": "Orchidea (אורכידאה)", "instagram": "https://www.instagram.com/orchidea_clinical/", "type": "clinic-chain", "notes": "Multi-platform presence (IG/TikTok/FB/YT)", "tiktok": "https://www.tiktok.com/@orchideaclinica" },
+    { "name": "Dr. Shvetz (ד\"ר יעקב שווץ)", "instagram": "https://www.instagram.com/dr.shvetz/", "followers_approx": "12K", "type": "clinic", "notes": "Stats-as-hook reels, patient testimonials, branch-opening content", "website": null },
+    { "name": "Pazit Barel (פזית בראל)", "tiktok": "https://www.tiktok.com/@pazitbarelclinic", "type": "clinic-tiktok", "notes": "TikTok-native: 'fixing others' botched injections' format — trust engine" },
+    { "name": "Dr. Idan Strul (ד\"ר עידן סטרול)", "tiktok": "https://www.tiktok.com/@idan.strul.md", "type": "doctor-tiktok", "notes": "Medical myth-busting in plain Hebrew (e.g. botox eyelid droop)" },
+    { "name": "Care Laser (קר לייזר)", "instagram": "https://www.instagram.com/care_laser/", "followers_approx": "8K", "type": "clinic-chain", "notes": "35 branches but small following — proof persona beats brand" },
+    { "name": "Beauty Clinic Super-Pharm", "instagram": "https://www.instagram.com/beauty_clinic_super_pharm/", "followers_approx": "6.6K", "type": "clinic-chain", "notes": "Corporate benchmark: 11 branches, weak social — cautionary example" }
+  ],
+  "clinics_global": [
+    { "name": "Epione Beverly Hills — Dr. Simon Ourian", "instagram": "https://www.instagram.com/simonourianmd1/", "followers_approx": "3.5-4M", "type": "clinic", "notes": "Most-followed cosmetic doctor on IG; Kardashian clients; signature named treatment (Neustem) filmed identically every time", "tiktok": "https://www.tiktok.com/@simonourianmd1" },
+    { "name": "Dr. Jason Diamond (Diamond Face Institute)", "instagram": "https://www.instagram.com/drjasondiamond/", "followers_approx": "393K", "type": "clinic", "notes": "Doctor-disagrees-with-trend authority reels; celebrity mystique" },
+    { "name": "SEV Laser", "tiktok": "https://www.tiktok.com/@sevlaser", "type": "clinic-chain", "notes": "Creator-UGC flywheel: micro-creators get treatments, post 'come with me' POVs" },
+    { "name": "LaserAway", "tiktok": "https://www.tiktok.com/@laseraway", "type": "clinic-chain", "notes": "Nurse-tok humor + tech-education (skin-tone safety) + paid creator programs" },
+    { "name": "Taktouk Clinic — Dr. Wassim Taktouk", "instagram": "https://www.instagram.com/drwassimtaktouk/", "followers_approx": "46K", "type": "clinic", "notes": "'Ethical no-sayer' press-darling positioning; luxury Knightsbridge interiors" },
+    { "name": "Ouronyx (London/Dubai)", "instagram": "https://www.instagram.com/ouronyx/", "followers_approx": "31K", "type": "clinic", "notes": "Ultra-luxury clinic-tour cinematics; anti fast-beauty editorial" },
+    { "name": "111 Harley St. — Dr. Yannis", "instagram": "https://www.instagram.com/dryannisofficial/", "followers_approx": "18K", "type": "clinic", "notes": "Clinic-to-product flywheel with 111SKIN celebrity masks" },
+    { "name": "Dr. Rita Rakus", "instagram": "https://www.instagram.com/drritarakus_/", "followers_approx": "18K", "type": "clinic", "notes": "Founder as her own walking before/after ('my routine at 75')" },
+    { "name": "GoodSkin Clinics", "instagram": "https://www.instagram.com/goodskinclinics/", "followers_approx": "47K", "type": "clinic", "notes": "Trademarked look philosophy: The Untouched Look®" },
+    { "name": "Dr. Sandra Lee (Dr. Pimple Popper)", "tiktok": "https://www.tiktok.com/@drpimplepopper", "followers_approx": "17.1M", "type": "clinic", "notes": "Oddly-satisfying process ASMR beats results content for raw reach" },
+    { "name": "Ever/Body (NYC)", "instagram": "https://www.instagram.com/everbody/", "followers_approx": "46K", "type": "clinic-chain", "notes": "Demystified cosmetic derm; amplification via city lifestyle accounts" }
+  ],
+  "global": [
+    { "name": "Allergan Medical Institute (AMI)", "instagram": "https://www.instagram.com/allergan_medical_institute/", "followers_approx": "135K", "type": "manufacturer-education", "notes": "Biggest academy account in the niche; FOMO-driven reels + faculty spotlights (Shorty Awards case study)", "website": "https://news.abbvie.com/2025-02-12-Allergan-Aesthetics-To-Launch-Three-New-State-of-the-Art-Training-Centers-in-the-U-S-Expanding-Access-to-High-Quality-Aesthetics-Training" },
+    { "name": "Dr. Tim Pearce", "instagram": "https://www.instagram.com/drtimpearce/", "followers_approx": "388K", "type": "injector-educator", "notes": "Benchmark personal brand: complications/safety content, Aesthetics Mastery Show on YouTube", "website": "https://drtimpearce.com/", "youtube": "https://www.youtube.com/drtimpearce" },
+    { "name": "Dr. Mauricio de Maio (MD Codes)", "instagram": "https://www.instagram.com/mauriciodemaio/", "followers_approx": "181K", "type": "injector-educator", "notes": "Methodology-branded content (MD Codes LIVE Tour), emotional-attributes framing", "website": "https://www.mdcodes.com/" },
+    { "name": "Dr. Arthur Swift (Swift Beauty / BeautiPHIcation)", "instagram": "https://www.instagram.com/swiftbeauty/", "followers_approx": "131K", "type": "injector-educator", "notes": "Phi/beauty-math explainers, edutainment lecture clips", "website": "https://swiftbeauty.com/" },
+    { "name": "IMCAS Congress", "instagram": "https://www.instagram.com/imcascongress/", "followers_approx": "131K", "type": "congress", "notes": "Congress highlight reels; Academy video library funnel", "website": "https://www.imcas.com/" },
+    { "name": "Merz Aesthetics", "instagram": "https://www.instagram.com/merzaesthetics/", "followers_approx": "115K", "type": "manufacturer-education", "notes": "Education arm rebranded MAX (Merz Aesthetics Exchange); corporate account carries the weight", "website": "https://www.merz-institute.com/" },
+    { "name": "Derma Medical", "instagram": "https://www.instagram.com/derma_medical/", "followers_approx": "103K", "type": "academy", "notes": "Creator-style academy account; classroom injection reels + separate models account (@dermamedical.models)", "website": "https://dermamedical.co.uk/" },
+    { "name": "AMWC Conference", "instagram": "https://www.instagram.com/amwcconference/", "followers_approx": "82K", "type": "congress", "notes": "Cinematic recap reels, KOL speaker announcements", "website": "https://www.amwc-conference.com/" },
+    { "name": "GAIN by Galderma (USA)", "instagram": "https://www.instagram.com/gainbygalderma.usa/", "followers_approx": "63K", "type": "manufacturer-education", "notes": "Injection-technique/product-science reels for professionals", "website": "https://www.galderma.com/news/10-years-gain-inspiring-aesthetic-education-and-excellence" },
+    { "name": "Dr. Raj Acquilla", "instagram": "https://www.instagram.com/rajacquilla/", "followers_approx": "55K", "type": "injector-educator", "notes": "Facial anatomy/assessment teaching, global masterclass tour", "website": "https://ra-summit.com/" },
+    { "name": "Empire Medical Training", "instagram": "https://www.instagram.com/empiremedicaltraining/", "followers_approx": "44K", "type": "academy", "notes": "Myth-busting science posts + business-of-aesthetics content", "website": "https://www.empiremedicaltraining.com/" },
+    { "name": "Harley Academy", "instagram": "https://www.instagram.com/harley_academy/", "followers_approx": "28K", "type": "academy", "notes": "Trainee testimonial reels, career-journey stories, regulation explainers; strong content-marketing blog", "website": "https://www.harleyacademy.com/", "youtube": "https://www.youtube.com/c/HarleyAcademy" },
+    { "name": "Dr. Tapan Patel (PHI College)", "instagram": "https://www.instagram.com/drtapanp/", "followers_approx": "28K", "type": "injector-educator", "notes": "Full-length live injection demos on YouTube, widely reshared", "website": "https://www.phicollege.com/" },
+    { "name": "Dr. Kate Goldie", "instagram": "https://www.instagram.com/drkategoldie/", "followers_approx": "9K", "type": "injector-educator", "notes": "Regenerative-aesthetics thought leadership; AMWC course director", "website": "https://kategoldieexperience.com/page/courses" },
+    { "name": "Interface Aesthetics", "instagram": "https://www.instagram.com/interfaceaesthetics/", "followers_approx": "8K", "type": "academy", "notes": "Prestige positioning: awards, surgeon-led masterclass promos", "website": "https://interfaceaesthetics.co.uk/" },
+    { "name": "Emily Stone (aesthetic nurse creator)", "tiktok": "https://www.tiktok.com/@emily_stonee", "type": "creator", "notes": "Injector-reacts + career-path explainers; strong student-recruitment formats" },
+    { "name": "Viva La MedSpa", "tiktok": "https://www.tiktok.com/@vivalamedspa", "type": "creator", "notes": "Trend roundups / in-and-out tier lists for injectables" }
+  ],
+  "trend_queries": [
+    "aesthetic medicine viral reel",
+    "nurse injector viral tiktok",
+    "polynucleotides PDRN exosomes skincare trend",
+    "collagen banking Sculptra trend",
+    "baby botox preventative botox trend",
+    "GLP-1 Ozempic face aesthetic treatment",
+    "new neurotoxin filler FDA approval",
+    "IMCAS AMWC aesthetic congress highlights",
+    "קורס הזרקות רפואה אסתטית",
+    "בוטוקס חומצה היאלורונית טרנד"
+  ],
+  "hashtags": {
+    "english": ["#medicalaesthetics", "#aestheticmedicine", "#aestheticnurse", "#nurseinjector", "#injectables", "#dermalfillers", "#babybotox", "#traptox", "#skinboosters", "#polynucleotides", "#exosomes", "#collagenbanking", "#medspa", "#IMCAS", "#AMWC"],
+    "hebrew_test_set": ["#רפואה_אסתטית", "#בוטוקס", "#חומצה_היאלורונית", "#הזרקות", "#אסתטיקה_רפואית", "#קורס_הזרקות"]
+  }
+}

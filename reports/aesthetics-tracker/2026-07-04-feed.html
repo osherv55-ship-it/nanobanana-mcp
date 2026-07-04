@@ -1,0 +1,348 @@
+<title>דף מעקב — רפואה אסתטית | 04.07.2026</title>
+<div id="app" dir="rtl" lang="he">
+<style>
+  :root{
+    --ground:#FAF9F7; --card:#FFFFFF; --ink:#1E2725; --muted:#5C6B66;
+    --line:#DFE6E2; --accent:#0E6B5C; --accent-soft:#E4F0ED;
+    --rose:#B76E79; --rose-soft:#F6EAEC; --gold:#8A6D2F; --gold-soft:#F3EDDD;
+    --plum:#7D5A86; --plum-soft:#F0E8F2; --steel:#4A6B8A; --steel-soft:#E6EDF4;
+    --chip:#EFECE6; --shadow:0 1px 3px rgba(30,39,37,.07);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#141C1A; --card:#1C2624; --ink:#E7ECE9; --muted:#9DABA5;
+      --line:#2C3835; --accent:#4BAE9A; --accent-soft:#1E322E;
+      --rose:#D49AA3; --rose-soft:#33262A; --gold:#C9A45C; --gold-soft:#2E2A1D;
+      --plum:#B393BC; --plum-soft:#2C2430; --steel:#8FAEC9; --steel-soft:#1F2A34;
+      --chip:#243030; --shadow:0 1px 3px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#141C1A; --card:#1C2624; --ink:#E7ECE9; --muted:#9DABA5;
+    --line:#2C3835; --accent:#4BAE9A; --accent-soft:#1E322E;
+    --rose:#D49AA3; --rose-soft:#33262A; --gold:#C9A45C; --gold-soft:#2E2A1D;
+    --plum:#B393BC; --plum-soft:#2C2430; --steel:#8FAEC9; --steel-soft:#1F2A34;
+    --chip:#243030; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{
+    --ground:#FAF9F7; --card:#FFFFFF; --ink:#1E2725; --muted:#5C6B66;
+    --line:#DFE6E2; --accent:#0E6B5C; --accent-soft:#E4F0ED;
+    --rose:#B76E79; --rose-soft:#F6EAEC; --gold:#8A6D2F; --gold-soft:#F3EDDD;
+    --plum:#7D5A86; --plum-soft:#F0E8F2; --steel:#4A6B8A; --steel-soft:#E6EDF4;
+    --chip:#EFECE6; --shadow:0 1px 3px rgba(30,39,37,.07);
+  }
+  html,body{background:var(--ground);}
+  #app{
+    font-family:"Segoe UI","Helvetica Neue","Arial Hebrew",Arial,sans-serif;
+    color:var(--ink); background:var(--ground);
+    max-width:1180px; margin:0 auto; padding:28px 20px 80px;
+  }
+  #app *{box-sizing:border-box;}
+  header.hd{border-bottom:2px solid var(--accent); padding-bottom:20px; margin-bottom:20px;}
+  .kicker{color:var(--accent); font-weight:600; font-size:13px; letter-spacing:.4px; margin:0 0 6px;}
+  h1{font-size:clamp(26px,4vw,38px); line-height:1.15; margin:0 0 10px; font-weight:700; text-wrap:balance;}
+  .sub{color:var(--muted); font-size:15px; margin:0; max-width:62ch; line-height:1.55;}
+  .stats{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 14px; box-shadow:var(--shadow);}
+  .stat b{font-size:20px; font-variant-numeric:tabular-nums; color:var(--accent); display:block; line-height:1.1;}
+  .stat span{font-size:12px; color:var(--muted);}
+  .filters{position:sticky; top:0; z-index:5; background:var(--ground); padding:12px 0; display:flex; flex-direction:column; gap:8px; border-bottom:1px solid var(--line); margin-bottom:18px;}
+  .frow{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .flabel{font-size:12px; color:var(--muted); min-width:64px;}
+  .chipbtn{
+    border:1px solid var(--line); background:var(--card); color:var(--ink);
+    border-radius:999px; padding:6px 14px; font-size:13px; cursor:pointer;
+    font-family:inherit; transition:background .15s,border-color .15s;
+  }
+  .chipbtn:hover{border-color:var(--accent);}
+  .chipbtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .chipbtn.on{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600;}
+  .count{font-size:13px; color:var(--muted); margin-inline-start:auto; font-variant-numeric:tabular-nums;}
+  .jump{
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent);
+    border-radius:999px; padding:6px 14px; font-size:13px; font-weight:700;
+    text-decoration:none; display:inline-block; transition:filter .15s;
+  }
+  .jump:hover{filter:brightness(.93);}
+  .jump:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  h2.sec{scroll-margin-top:110px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(295px,1fr)); gap:14px;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+  }
+  .tags{display:flex; gap:6px; flex-wrap:wrap;}
+  .tag{font-size:11px; padding:3px 9px; border-radius:999px; font-weight:600;}
+  .tag.reg-il{background:var(--rose-soft); color:var(--rose);}
+  .tag.reg-gl{background:var(--accent-soft); color:var(--accent);}
+  .tag.reg-vi{background:var(--gold-soft); color:var(--gold);}
+  .tag.reg-cl{background:var(--plum-soft); color:var(--plum);}
+  .tag.reg-cg{background:var(--steel-soft); color:var(--steel);}
+  .tag.plat{background:var(--chip); color:var(--muted); direction:ltr;}
+  .acct{font-weight:700; font-size:15px; line-height:1.3;}
+  .desc{font-size:13.5px; line-height:1.55; margin:0;}
+  .why{font-size:12.5px; line-height:1.5; color:var(--muted); margin:0; border-inline-start:3px solid var(--accent); padding-inline-start:9px;}
+  .card a.go{
+    margin-top:auto; align-self:flex-start; text-decoration:none;
+    background:var(--accent-soft); color:var(--accent); font-weight:600; font-size:13px;
+    padding:7px 14px; border-radius:7px; transition:filter .15s;
+  }
+  .card a.go:hover{filter:brightness(.93);}
+  .card a.go:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  h2.sec{font-size:22px; margin:44px 0 6px; font-weight:700;}
+  .secsub{color:var(--muted); font-size:14px; margin:0 0 16px; max-width:65ch; line-height:1.5;}
+  ol.ideas{padding-inline-start:22px; display:flex; flex-direction:column; gap:12px; margin:0;}
+  ol.ideas li{font-size:14.5px; line-height:1.6;}
+  ol.ideas b.hook{display:block; color:var(--accent); font-size:15px;}
+  ol.ideas .idesc{color:var(--muted); font-size:13.5px;}
+  ul.news{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;}
+  ul.news li{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:13px 16px; font-size:14px; line-height:1.55; box-shadow:var(--shadow);}
+  ul.news a{color:var(--accent); font-weight:600; text-decoration:none;}
+  ul.news a:hover{text-decoration:underline;}
+  .strategy{background:var(--accent); color:#fff; border-radius:12px; padding:22px 24px; margin-top:40px;}
+  .strategy h2{margin:0 0 8px; font-size:20px;}
+  .strategy p{margin:0; font-size:14.5px; line-height:1.65; opacity:.95;}
+  footer.ft{margin-top:44px; color:var(--muted); font-size:12px; line-height:1.6; border-top:1px solid var(--line); padding-top:14px;}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<header class="hd">
+  <p class="kicker">סוכן מעקב · אקדמיות לרפואה אסתטית</p>
+  <h1>דף מעקב — פרסומים חמים בישראל ובעולם</h1>
+  <p class="sub">כל כרטיס הוא פוסט אמיתי עם קישור ישיר. סננו לפי קטגוריה או פלטפורמה, ולחצו על "פתיחת הפוסט" כדי לצפות במקור. שני מסלולים: <b>אקדמיה</b> (הכשרת רופאים) ו<b>קליניקה</b> (גלואנאס מול המתחרות). עודכן: 04.07.2026.</p>
+  <div class="stats">
+    <div class="stat"><b id="stTotal">0</b><span>פוסטים עם קישור</span></div>
+    <div class="stat"><b id="stIl">0</b><span>אקדמיות ישראל 🇮🇱</span></div>
+    <div class="stat"><b id="stGl">0</b><span>אקדמיות עולם 🌍</span></div>
+    <div class="stat"><b id="stVi">0</b><span>ויראלי 2026 🔥</span></div>
+    <div class="stat"><b id="stCl">0</b><span>קליניקות ישראל 🏥</span></div>
+    <div class="stat"><b id="stCg">0</b><span>קליניקות עולם 💎</span></div>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="frow">
+    <span class="flabel">קטגוריה:</span>
+    <button class="chipbtn on" data-g="reg" data-v="all">הכול</button>
+    <button class="chipbtn" data-g="reg" data-v="il">🇮🇱 אקדמיות ישראל</button>
+    <button class="chipbtn" data-g="reg" data-v="gl">🌍 אקדמיות עולם</button>
+    <button class="chipbtn" data-g="reg" data-v="vi">🔥 ויראלי 2026</button>
+    <button class="chipbtn" data-g="reg" data-v="cl">🏥 קליניקות ישראל</button>
+    <button class="chipbtn" data-g="reg" data-v="cg">💎 קליניקות עולם</button>
+    <span class="count" id="cnt"></span>
+  </div>
+  <div class="frow">
+    <span class="flabel">פלטפורמה:</span>
+    <button class="chipbtn on" data-g="plat" data-v="all">הכול</button>
+    <button class="chipbtn" data-g="plat" data-v="Instagram">Instagram</button>
+    <button class="chipbtn" data-g="plat" data-v="TikTok">TikTok</button>
+    <button class="chipbtn" data-g="plat" data-v="YouTube">YouTube</button>
+    <button class="chipbtn" data-g="plat" data-v="Facebook">Facebook</button>
+  </div>
+  <div class="frow">
+    <span class="flabel">קפיצה אל:</span>
+    <a class="jump" href="#ideas-academy">💡 רעיונות לאקדמיה</a>
+    <a class="jump" href="#ideas-clinic">🏥 רעיונות לגלואנאס</a>
+    <a class="jump" href="#newsjack">📰 ניוזג'קינג</a>
+  </div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<h2 class="sec" id="newsjack">📰 ניוזג'קינג — חדשות לרכוב עליהן השבוע</h2>
+<p class="secsub">אירועים אמיתיים מהתעשייה שאפשר להפוך לפוסט תוך יום — לפני שכולם קופצים עליהם.</p>
+<ul class="news">
+  <li><a href="https://www.newbeauty.com/view/new-neurotoxins-and-filler-cosmetic-injectables-in-2026" target="_blank" rel="noopener">"בוטוקס ניסיון" — TrenibotulinumtoxinE בבדיקת FDA</a> · רעלן שמחזיק 2–3 שבועות בלבד. רעיון: "הטיפול שייתן למטופלים לנסות בוטוקס לשבועיים — ומה זה אומר על המקצוע".</li>
+  <li><a href="https://fortune.com/2026/06/24/gen-x-ozempic-face-surgery-botox-filler/" target="_blank" rel="noopener">גל ה-GLP-1 / "פני אוזמפיק" (Fortune)</a> · ‏63% ממטופלי האסתטיקה על GLP-1 הם מטופלים ראשונים. פער תוכן ענק בעברית: "לטפל במטופל האוזמפיק".</li>
+  <li><a href="https://www.fda.gov/news-events/press-announcements/fda-warns-companies-over-illegal-marketing-botox-and-related-products" target="_blank" rel="noopener">אכיפת FDA נגד בוטוקס ופילרים מזויפים</a> · תוכן מוכן: "למה הכשרה ומוצרים מקוריים מצילים חיים".</li>
+  <li><a href="https://www.suissemedicare.ch/en/after-imcas-paris-and-amwc-monaco-2026-the-new-paradigm-of-aesthetic-medicine/" target="_blank" rel="noopener">פרדיגמת 2026: רגנרציה במקום תיקון (IMCAS/AMWC)</a> · יחד עם <a href="https://www.galderma.com/news/we-are-all-sculptra" target="_blank" rel="noopener">קמפיין Sculptra</a> — "בנק הקולגן" הוא הבאזז של השנה.</li>
+  <li><a href="https://www.ynet.co.il/health/article/sjldlqv2o" target="_blank" rel="noopener">ynet: קטינים נחשפים לתרבות ההזרקות</a> · הזדמנות לתוכן אתיקה שממצב את האקדמיה כמבוגר האחראי בחדר.</li>
+</ul>
+
+<h2 class="sec" id="ideas-academy">💡 עשרת רעיונות התוכן לאקדמיה</h2>
+<p class="secsub">מסונתז מכמה מודלים (Claude + ‏Gemini בשני מעברים — מציע ומבקר), מדורג לפי אימפקט צפוי.</p>
+<ol class="ideas">
+  <li><b class="hook">"אזורים אדומים בפנים: המקומות שאסור לטעות בהם בהזרקה"</b><span class="idesc">רילס אנטומיה-לבטיחות — הליין שבנה 388 אלף עוקבים לטים פירס וריק לגמרי בעברית. הפורמט החזק ביותר לאקדמיה רפואית.</span></li>
+  <li><b class="hook">"5 סימני אזהרה שהמזריק שלכם לא מוסמך"</b><span class="idesc">רוכב על דרמת ה-botched, מייצר שיתופי DM ("תראי את זה"), וממצב בוגרים כבחירה הבטוחה.</span></li>
+  <li><b class="hook">"מהרפואה הציבורית לאסתטיקה: הרופאים ששינו כיוון"</b><span class="idesc">סדרת עדויות בוגרים לפי התמחות (משפחה / שיניים / אחיות) — ההנעה המדויקת של קהל היעד.</span></li>
+  <li><b class="hook">"מאחורי הקלעים של 'לפני ואחרי': התכנון שמביא תוצאה מושלמת"</b><span class="idesc">מאסטרקלאס ייעוץ — להראות את החשיבה לפני ההזרקה. אף אחד לא עושה את זה; שיעור שמירות גבוה.</span></li>
+  <li><b class="hook">"רופא מנתח לפני-אחרי: מה באמת עבד כאן?"</b><span class="idesc">Injector Reacts בעברית — סמכות + טרנספורמציה באותו קליפ של 20 שניות.</span></li>
+  <li><b class="hook">"פני אוזמפיק? מה שאף אחד לא מספר למטופלים"</b><span class="idesc">ניוזג'ק הגל הכי חם של 2026 — פתרונות מבוססי-ראיות לאובדן נפח.</span></li>
+  <li><b class="hook">"יום בחיי רופאה אסתטית: מה באמת קורה מעבר למרפאה?"</b><span class="idesc">לואו-פיי day-in-the-life — עונה על שאלת הקריירה האמיתית של מתלבטים.</span></li>
+  <li><b class="hook">"טרנדים באסתטיקה: מה חובה ללמוד ומה עדיף לדלג?"</b><span class="idesc">‏Tier-list ‏(S עד F) על TrapTox, בייבי בוטוקס, fox eyes — מייצר ויכוח בתגובות.</span></li>
+  <li><b class="hook">"ההזרקה הראשונה שלי: מהרעד בידיים ועד הביטחון"</b><span class="idesc">דוקו-סדרה של יום ההזרקה הראשון — שדרוג הפורמט המוכח של ד"ר זרח.</span></li>
+  <li><b class="hook">"מבחן הרופאים: איזה טיפול בוצע כאן?"</b><span class="idesc">חידון אינטראקטיבי לקהל מקצועי; התשובה בתגובה נעוצה — מנוע תגובות.</span></li>
+</ol>
+
+<h2 class="sec" id="ideas-clinic">🏥 רעיונות תוכן לקליניקה — גלואנאס</h2>
+<p class="secsub">מבוסס על ניתוח המתחרות בישראל ובעולם (מסונתז מכמה מודלים). מותאם לקליניקת בוטיק: תקציב הפקה נמוך, אופטימיזציה להזמנת תורים ולא רק לחשיפה.</p>
+<ol class="ideas">
+  <li><b class="hook">"למה סירבתי לטיפול הזה היום?"</b><span class="idesc">פרסונת ה"לא-אומרת" (בהשראת Taktouk ו-GoodSkin) — תוכן על מה שאתן מסרבות לעשות בונה אמון פרימיום ומייצר יח"צ. מגמת 2026: שקיפות מנצחת זוהר.</span></li>
+  <li><b class="hook">"באתי לתקן: מה השתבש בהזרקה הקודמת"</b><span class="idesc">ליין תיקון הזרקות כושלות (הליין של פזית בראל) — ממצב מומחיות ורוכב על דרמת ה-botched בלי להיות רכלני.</span></li>
+  <li><b class="hook">"טיפול החתימה של גלואנאס"</b><span class="idesc">שיטת אוריאן: לבחור טיפול דגל אחד, לתת לו שם ממותג בעברית, ולצלם כל תוצאה בדיוק באותה תאורה וזווית — תוך חודשיים הפיד מזוהה ממרחק. נטוראלייזר כבר עושה את זה ("שיטת הפפיון") — צריך שם חזק משלכן.</span></li>
+  <li><b class="hook">"בואי איתי לטיפול בגלואנאס"</b><span class="idesc">גלגל ה-UGC של SEV/LaserAway בקטן: להזמין 2–3 מיקרו-יוצרות בחודש לטיפול בתמורה לסרטון POV. הלקוחות מייצרות את הפרסום.</span></li>
+  <li><b class="hook">"מיתוסים על בוטוקס שחייבים לנפץ עכשיו"</b><span class="idesc">ניפוץ מיתוסים בעברית פשוטה (הליין של ד"ר סטרול) — טוקינג-הד לואו-פיי, 20 שניות, כתוביות. מנוע הצמיחה הזול ביותר.</span></li>
+  <li><b class="hook">"השגרה שלי בגיל X"</b><span class="idesc">המייסדת כלפני/אחרי המהלכת (שיטת ריטה רקוס) — מה אני עושה לעצמי ומה לא. תוכן מנטרל חשדנות עם שיעור שמירות גבוה.</span></li>
+  <li><b class="hook">"רגע של דיוק" — ASMR קליני</b><span class="idesc">קלוז-אפ מרתק של תהליך (סימון, הכנת מזרק, ג'ל אולטרסאונד) בהשראת Dr. Pimple Popper — תוכן תהליכי מנצח תוכן תוצאות בחשיפה גולמית.</span></li>
+  <li><b class="hook">"פעם ראשונה בגלואנאס? זה מה שמחכה לך"</b><span class="idesc">סיור first-timer מרגיע: מהקבלה ועד חדר הטיפולים — מוריד חרדה וממיר ישירות להזמנת תור. לסיים בקישור וואטסאפ.</span></li>
+</ol>
+
+<div class="strategy" style="margin-top:28px;">
+  <h2>🎯 המהלך המרכזי לגלואנאס</h2>
+  <p>הנתון החזק בשוק הישראלי: פרסונה מנצחת מותג בפער עצום (ד"ר חוריה 160K לבדו מול סופר-פארם 6.6K עם 11 סניפים). המהלך: להפוך את המזריקה המובילה של גלואנאס ל"מומחית השקופה" — פנים קבועות, טוקינג-הד לואו-פיי, שילוב של אתיקה ("מה אני מסרבת לעשות"), חינוך (ניפוץ מיתוסים) וטיפול חתימה ממותג שמצולם תמיד אותו דבר. כל סרטון נגמר ב-CTA אחד: הודעת וואטסאפ לתיאום ייעוץ.</p>
+</div>
+
+<div class="strategy">
+  <h2>🎯 המהלך האסטרטגי המרכזי — לאקדמיה</h2>
+  <p>בכל השוק הישראלי חשבונות האקדמיות זעירים (2–5 אלף עוקבים) בעוד החשבונות האישיים של המייסדים גדולים פי 5–30. המסקנה: לבנות את התוכן סביב פנים ושם של מרצה מוביל — לא סביב לוגו. במקביל, מרחב ההאשטגים העברי (#רפואה_אסתטית ונגזרות) עדיין ריק — הזדמנות first-mover אמיתית. כלל עבודה: כל פוסט צרכני ויראלי מסתיים בפיבוט "בדיוק בגלל זה הכשרה חשובה" עם הפניה לקורס.</p>
+</div>
+
+<footer class="ft">
+  הקישורים נאספו מתוצאות חיפוש חיות (יולי 2026) — לא נבנו ידנית. חלק מקישורי אינסטגרם/פייסבוק עשויים לדרוש התחברות לצפייה. מקור הנתונים המלא: <span dir="ltr">reports/aesthetics-tracker/2026-07-04.md</span> בריפו. נוצר על ידי סוכן ה-aesthetics-academy-tracker.
+</footer>
+
+<script>
+const POSTS=[
+ // ---------- ישראל ----------
+ {r:"il",p:"Instagram",a:"האקדמיה של ד\"ר זרח",t:"רילס תדמית: מה לומדים בתוכנית של האקדמיה לאסתטיקה רפואית",w:"המתחרה הישראלי הישיר — כך הוא מוכר את הקורס שלו ברילס",u:"https://www.instagram.com/dr.zerach_academy/reel/DHtDnlTNa9R/"},
+ {r:"il",p:"Instagram",a:"האקדמיה של ד\"ר זרח",t:"\"באקדמיה של ד\"ר זרח אנחנו מלמדים את...\" — הצגת שיטת הלימוד",w:"פורמט הסבר-שיטה ישיר למצלמה שאפשר לאמץ ולשפר",u:"https://www.instagram.com/dr.zerach_academy/reel/DFpifV1IfRn/"},
+ {r:"il",p:"Instagram",a:"האקדמיה של ד\"ר זרח",t:"עדות בוגרת: ד\"ר מיכל הלפרין מספרת על הקורס",w:"עדויות בוגרים עם שם ופנים — הפורמט החזק ביותר בשוק הישראלי",u:"https://www.instagram.com/dr.zerach_academy/reel/DC4Ai2yINrz/"},
+ {r:"il",p:"Instagram",a:"ד\"ר אירנה קרופניק",t:"\"קורס אסתטיקה והזרקות לרופאים עם ד\"ר אירנה קרופניק\" — פוסט קידום קורס",w:"מתחרה ישירה: מרכז הכשרה בחולון עם 2,580+ בוגרים — כך היא מגייסת",u:"https://www.instagram.com/p/DBN2ztqOs19/"},
+ {r:"il",p:"Facebook",a:"ד\"ר אירנה קרופניק",t:"סרטון קורס: \"פרקטיקה בכל מפגש, תעודה מוכרת\" — הבטחות הליבה של המסלול",w:"המסרים שהיא מוכרת בהם: פרקטיקה + תעודה — כדאי לבדל מולם",u:"https://www.facebook.com/drkrupnik.co.il/videos/2629626610623204/"},
+ {r:"il",p:"YouTube",a:"ד\"ר אירנה קרופניק",t:"טיפולים אסתטיים בתוכנית \"מעושרות\" (ערוץ 10) — מחזור תוכן טלוויזיוני",w:"טלוויזיה כמנוע אמון — פורמט שעובד חזק בקהל הישראלי",u:"https://www.youtube.com/watch?v=6RkUVFR7MNE"},
+ {r:"il",p:"Instagram",a:"ד\"ר אלה אגוזי",t:"רילס חינוכי — הסבר טיפול דרמטולוגי-אסתטי",w:"הקצב הגבוה בישראל של רילס חינוכיים; 18 אלף עוקבים על תוכן בלבד",u:"https://www.instagram.com/dr_ella_egozi/reel/C86gzrroCf3/"},
+ {r:"il",p:"Instagram",a:"ד\"ר אלה אגוזי",t:"רילס הסבר: \"מה...\" — פורמט שאלה-תשובה קצר",w:"ניפוץ מיתוסים בעברית — פורמט שקל לשכפל שבועית",u:"https://www.instagram.com/dr_ella_egozi/reel/DA8Zcs7ITgR/"},
+ {r:"il",p:"Facebook",a:"INAAMED — המכללה הלאומית",t:"סרטון: \"תחום הרפואה האסתטית מסקרן...\" — היכרות עם הלימודים",w:"כך המכללה המוסדית מגייסת רופאים — הטון פורמלי, יש מקום לחדשנות",u:"https://www.facebook.com/inaamed/videos/467798115149713/"},
+ {r:"il",p:"Facebook",a:"INAAMED",t:"\"הצצה לאירועי השבוע במכללה\" — מאחורי הקלעים",w:"פורמט BTS מוסדי — משעמם יחסית, קל לעקוף עם POV אישי",u:"https://www.facebook.com/inaamed/videos/592579602240663/"},
+ {r:"il",p:"Facebook",a:"ד\"ר שרון דוידסון (ADA)",t:"סרטון: פיסול פנים אנטי-אייג'ינג",w:"המתחרה עם קבוצות הלימוד הקטנות (6–8) — תוכן קליני שמזין את מותג המכללה",u:"https://m.facebook.com/dr.sharondavidson/videos/886956472171305/"},
+ {r:"il",p:"Facebook",a:"ד\"ר שרון דוידסון",t:"פוסט עם שרשור תגובות פעיל",w:"סיגנל מעורבות נדיר בנישה בפייסבוק הישראלי",u:"https://www.facebook.com/dr.sharondavidson/posts/2819858618057877?comment_id=2820067604703645"},
+ {r:"il",p:"Instagram",a:"ד\"ר אליאס חוריה (Super Doctor)",t:"לפני/אחרי דרמטי של פילר — הפוסט הוויראלי הקלאסי שלו",w:"בעל העוקב הגדול בישראל בנישה (100K+) — הבנצ'מרק המקומי לוויראליות",u:"https://www.instagram.com/dr.elias_khourieh/p/Cs6jiHHI9rS/"},
+ {r:"il",p:"TikTok",a:"ד\"ר אליאס חוריה",t:"טיפול בוטוקס למיגרנה — הסרטון העדכני ביותר שלו",w:"שימוש רפואי (מיגרנה) כתוכן — זווית סמכות שמושכת גם קהל רחב",u:"https://www.tiktok.com/@dr.elias_khourieh/video/7591541918820044040"},
+ {r:"il",p:"TikTok",a:"ד\"ר אליאס חוריה",t:"\"סוף האתגר\" — סרטון אתגר עם תיוג ויראלי",w:"אסטרטגיית ההאשטגים שלו (#viral #fyp) עקבית בכל סרטון",u:"https://www.tiktok.com/@dr.elias_khourieh/video/7479817633043598600"},
+ {r:"il",p:"TikTok",a:"ד\"ר אליאס חוריה",t:"קרם \"סופר דוקטור\" — קידום מוצר עצמי",w:"דוגמה להרחבת מותג אישי למוצרים — שלב שמעבר לקליניקה",u:"https://www.tiktok.com/@dr.elias_khourieh/video/7334368643473607937"},
+ {r:"il",p:"YouTube",a:"פרומדיקס",t:"ד\"ר רומיאו ג'ובראן ממליץ על מזותרפיית RRS",w:"מפיץ שמייצר תוכן עם רופאים-לקוחות — מודל שת\"פ רלוונטי לאקדמיה",u:"https://www.youtube.com/watch?v=MyEidkRx67U"},
+ {r:"il",p:"YouTube",a:"פרומדיקס",t:"ד\"ר להבית אקרמן מסבירה על מתיחת חוטים Aptos",w:"תוכן הדרכה של יצרן/מפיץ — פורמט שאקדמיה יכולה לעשות טוב יותר",u:"https://www.youtube.com/watch?v=-2wD2olcqOk"},
+ // ---------- קליניקות ישראל ----------
+ {r:"cl",p:"Instagram",a:"נטוראלייזר (74K)",t:"Full Face Lifting + הסרת סנטר כפול — לפני/אחרי מלוטש",w:"המובילה בישראל: כל תוצאה מצולמת באותו סטנדרט — נכס מותג מצטבר",u:"https://www.instagram.com/naturalaser_/reel/CvMf2QoIUQl/"},
+ {r:"cl",p:"Instagram",a:"נטוראלייזר",t:"\"Do you believe in Magic?\" — טרנספורמציה מלאה",w:"כותרת רגש + תוצאה דרמטית = הפורמט שבנה להם 74K",u:"https://www.instagram.com/naturalaser_/reel/CXv0tUMol3A/"},
+ {r:"cl",p:"Instagram",a:"נטוראלייזר",t:"עיבוי שפתיים לאגם — לפני/אחרי עם שם פרטי",w:"שם פרטי של מטופלת = אותנטיות; הפורמט הדומיננטי אצל שתי המובילות",u:"https://www.instagram.com/naturalaser_/reel/ChupO4_IMEe/"},
+ {r:"cl",p:"Instagram",a:"נטוראלייזר",t:"רילס ריאקשן לקיילי ג'נר",w:"ריאקשן לסלבס — זול לייצור, נוסע רחוק; קל לשכפל בגלואנאס",u:"https://www.instagram.com/reel/DCKTMU4o7kh/"},
+ {r:"cl",p:"TikTok",a:"נטוראלייזר",t:"עיצוב שפתיים ב\"שיטת הפפיון\" — טכניקה ממותגת בשם",w:"מיתוג טכניקה בשם ייחודי מייצר חיפוש ממותג ובידול — כמו MD Codes",u:"https://www.tiktok.com/@naturalaser/video/7387511112419282177"},
+ {r:"cl",p:"TikTok",a:"נטוראלייזר",t:"NaturaLift Approach — גישת ההרמה הטבעית",w:"עוד טכניקה ממותגת — הם בונים שפה שלמה סביב 'טבעי'",u:"https://www.tiktok.com/@naturalaser/video/7468661706634398983"},
+ {r:"cl",p:"Instagram",a:"K-Care (76K)",t:"פיסול אף ללא ניתוח — הרילס החתום שלהם",w:"המתחרה הכי גדולה במספרים; האף הוא עמוד התווך של התוכן שלהם",u:"https://www.instagram.com/k.care.k/reel/Cb7c0AQAEAC/"},
+ {r:"cl",p:"Instagram",a:"K-Care",t:"Nose Sculpting — גרסה דו-לשונית עברית-אנגלית",w:"דו-לשוניות מרחיבה קהל (תיירות רפואית) — רעיון לגלואנאס",u:"https://www.instagram.com/k.care.k/reel/CzniJw6MWMu/"},
+ {r:"cl",p:"Instagram",a:"K-Care",t:"מילוי שקעי עיניים — לפני/אחרי",w:"נישה עם ביקוש גבוה וקצת תחרות תוכן בעברית",u:"https://www.instagram.com/k.care.k/p/C2Mhllvshei/"},
+ {r:"cl",p:"Instagram",a:"K-Care",t:"\"בוטוקס 3 אזורים\" — הוק מחיר/הצעה",w:"הוק מחיר ישיר — ממיר להזמנות; לבדוק רגולציה לפני אימוץ",u:"https://www.instagram.com/k.care.k/reel/CvrPDSMgeYK/"},
+ {r:"cl",p:"Instagram",a:"K-Care",t:"\"שינויים קטנים, הבדל גדול\" — פילוסופיית עדינות",w:"מיצוב 'עדין' מתחבר לטרנד האנטי-אוברפיל של 2026",u:"https://www.instagram.com/k.care.k/reel/C4uqkMdsGPm/"},
+ {r:"cl",p:"Instagram",a:"VIV Clinic (20K)",t:"רילס טיפול — המרכז הרפואי הגדול בישראל",w:"מיצוב 'מרכז רפואי' + נישות מובחנות (הזעת יתר, Sofwave)",u:"https://www.instagram.com/viv.clinic/reel/DAQvKISISvU/"},
+ {r:"cl",p:"Instagram",a:"VIV Clinic",t:"רילס נוסף מהקליניקה",w:"תוכן מגזיני ('ויוקיפדיה') — גישת ערך-קודם",u:"https://www.instagram.com/viv.clinic/reel/DHtKrRqIqi1/"},
+ {r:"cl",p:"Instagram",a:"רוזס קליניק",t:"הכרזת התרחבות לצפון — פוסט צמיחה",w:"תקשור צמיחה כהוכחה חברתית — גם קליניקה קטנה יכולה (חדר חדש, מכשיר חדש)",u:"https://www.instagram.com/rosesclinic/p/C_Fo5mvIUze/"},
+ {r:"cl",p:"Instagram",a:"ד\"ר יעקב שווץ (12K)",t:"\"3 הטיפולים הנפוצים בארץ\" — סטטיסטיקה כהוק",w:"נתון מסקרן כפתיח — פורמט זול עם שיעור צפייה גבוה",u:"https://www.instagram.com/dr.shvetz/reel/CqAoJnXgzqi/"},
+ {r:"cl",p:"Instagram",a:"ד\"ר יעקב שווץ",t:"חוות דעת מטופלים — רילס עדויות",w:"עדויות מצולמות = מנוע ההמרה החזק ביותר לקליניקה מקומית",u:"https://www.instagram.com/dr.shvetz/reel/C4DP1O9tvEB/"},
+ {r:"cl",p:"TikTok",a:"פזית בראל",t:"תיקון הזרקה כושלת + לפני/אחרי",w:"פורמט 'מתקנת טעויות של אחרים' — מנוע אמון שממצב מומחיות",u:"https://www.tiktok.com/@pazitbarelclinic/video/7327717456695446785"},
+ {r:"cl",p:"TikTok",a:"ד\"ר עידן סטרול",t:"צניחת עפעף מבוטוקס — הסבר רפואי בגובה העיניים",w:"myth-busting בעברית פשוטה — מנוע הצמיחה של טיקטוק ישראל",u:"https://www.tiktok.com/@idan.strul.md/video/7381057613821267232"},
+ {r:"cl",p:"TikTok",a:"בוסטון קליניק",t:"מתיחת פנים בחוטים — עם טלפון להזמנה בכיתוב",w:"CTA ישיר בתוך הסרטון — המרה ולא רק חשיפה",u:"https://www.tiktok.com/@bostonclinic/video/7248885980676050194"},
+ // ---------- קליניקות עולם ----------
+ {r:"cg",p:"Instagram",a:"Dr. Simon Ourian — Epione (4M)",t:"פוסט קים קרדשיאן — הרופא הכי נעקב באינסטגרם",w:"מודל הסלב-קליניקה; הלקוח המפורסם הוא הקריאייטיב",u:"https://www.instagram.com/simonourianmd1/p/C8KpP4VPgHq/"},
+ {r:"cg",p:"Instagram",a:"Dr. Simon Ourian",t:"אף ללא ניתוח — לפני/אחרי בסט הצילום החתום",w:"כל תוצאה מצולמת זהה (תאורה, זווית) — זיהוי מיידי בפיד. לאמץ!",u:"https://www.instagram.com/simonourianmd1/p/C_S6rKaJYgR/"},
+ {r:"cg",p:"TikTok",a:"Dr. Simon Ourian",t:"לפני/אחרי ויראלי בטיקטוק",w:"אותה שיטה, פלטפורמה שנייה — מקסום כל תוצאה",u:"https://www.tiktok.com/@simonourianmd1/video/7399401091290483986"},
+ {r:"cg",p:"Instagram",a:"Dr. Jason Diamond (393K)",t:"\"העולם טועה לגבי פילרים\" — רילס פרופורציות אף ושפתיים",w:"פורמט הרופא-חולק-על-טרנד: מחלוקת ממומחה ממירה יותר מלפני/אחרי",u:"https://www.instagram.com/reel/DJjpa_HJv8b/"},
+ {r:"cg",p:"TikTok",a:"SEV Laser",t:"הסבר כן על לייזר ברזילאי — התוכן הרשמי",w:"דה-מיסטיפיקציה של טיפול 'מביך' = אמון + שיתופים",u:"https://www.tiktok.com/@sevlaser/video/7303788776994934062"},
+ {r:"cg",p:"TikTok",a:"יוצרת × SEV Laser",t:"\"בואי איתי לטיפול\" — POV של לקוחה-יוצרת",w:"גלגל ה-UGC: מיקרו-יוצרות מקבלות טיפול ומייצרות את הפרסום",u:"https://www.tiktok.com/@makeupbybrooktiffany/video/7317449159856950559"},
+ {r:"cg",p:"TikTok",a:"LaserAway",t:"מיתוס גווני עור כהים ולייזר — ניפוץ עם שקיפות טכנולוגית",w:"'איזה מכשיר ולמה זה בטוח לעור שלך' — לא מנוצל בשוק הישראלי המגוון",u:"https://www.tiktok.com/@laseraway/video/7573786404082306359"},
+ {r:"cg",p:"TikTok",a:"LaserAway × Jewels Sparkles",t:"מסע לקוחה של כוכבת דראג — קמפיין יוצרים בתשלום",w:"שת\"פ עם קהילות ספציפיות מרחיב קהל בבת אחת",u:"https://www.tiktok.com/@thejewelssparkles/video/7469924153752128814"},
+ {r:"cg",p:"Instagram",a:"Dr. Wassim Taktouk (46K)",t:"רילס מהקליניקה בנייטסברידג' — האינג'קטור האתי",w:"פרסונת ה'לא-אומר' — תוכן על טיפולים שהוא מסרב לעשות מייצר יח\"צ ואמון פרימיום",u:"https://www.instagram.com/drwassimtaktouk/reel/DDg5YykNtH6/"},
+ {r:"cg",p:"Instagram",a:"Ouronyx (31K)",t:"סיור קולנועי בקליניקת היוקרה בלונדון",w:"רילס סיור אחד הופך את החלל עצמו לתוכן — ומצדיק תמחור פרימיום",u:"https://www.instagram.com/reel/C2z2bp8oZQh/"},
+ {r:"cg",p:"Instagram",a:"111 Harley St. — Dr. Yannis",t:"רילס הרופא × מותג הסקינקר 111SKIN",w:"גלגל תנופה קליניקה→מוצר: ערכת פוסט-טיפול ממותגת = תוכן שאפשר לשתף בלי סוף",u:"https://www.instagram.com/reel/DIZRKOepzls/"},
+ {r:"cg",p:"Instagram",a:"Dr. Rita Rakus (18K)",t:"פוסט יום הולדת 75 — הרופאה כעדות המהלכת של עצמה",w:"'השגרה שלי בגיל X' — תוכן מנטרל חשדנות עם שיעור שמירות גבוה",u:"https://www.instagram.com/drritarakus_/p/C6A_-PcqcsP/"},
+ {r:"cg",p:"TikTok",a:"Dr. Pimple Popper (17.1M)",t:"חילוץ ציסטה — התוכן ה'מספק' שבנה אימפריה",w:"ASMR תהליכי מנצח תוכן תוצאות בהיקף חשיפה — למצוא את הרגע המרתק שלכם",u:"https://www.tiktok.com/@drpimplepopper/video/7611245896788905247"},
+ {r:"cg",p:"Instagram",a:"Ever/Body (NYC)",t:"פיצ'ר של חשבון סיטי-לייפסטייל על הקליניקה",w:"חשיפה דרך חשבונות עירוניים (המקבילה: חשבונות תל אביב/לייפסטייל) ממירה יותר מפוסט עצמי",u:"https://www.instagram.com/newyorklocals/p/CvXPPY_BiHl/"},
+ // ---------- עולם ----------
+ {r:"gl",p:"YouTube",a:"Dr. Tim Pearce",t:"הזרקת קו לסת, סנטר ובוקאל — הדגמה חיה מלאה ללא עריכה",w:"פורמט ה\"צפו בי מזריק חי\" — נכס האמון הגדול שלו; ניתן לשכפול בעברית",u:"https://www.youtube.com/watch?v=3U9qldnC2BM"},
+ {r:"gl",p:"YouTube",a:"Dr. Tim Pearce",t:"סימון עורקים מסוכנים על פנים של מטופלת אמיתית — Filler Blindness",w:"תוכן פחד+בטיחות שממיר מזריקים לקורסי סיבוכים — המשפך המרכזי שלו",u:"https://www.youtube.com/watch?v=Uvhx5yiHvog"},
+ {r:"gl",p:"YouTube",a:"Dr. Tim Pearce",t:"\"איך לא להזריק למוח!\" — רקות, לחיים ותעלות דמעה",w:"מאסטרקלאס בכותרות סקרנות לתוכן רפואי",u:"https://www.youtube.com/watch?v=uFPNmbbk6xc"},
+ {r:"gl",p:"YouTube",a:"Dr. Tim Pearce",t:"הדגמה חיה מרובת אזורים: לחיים, קו לסת, תעלות דמעה, סנטר ורקות",w:"תוכן ארוך שמייצר סמכות — ואז נחתך לעשרות רילס קצרים",u:"https://www.youtube.com/watch?v=rdCvRQv1Q9s"},
+ {r:"gl",p:"Instagram",a:"Allergan Medical Institute",t:"רילס מניעת סיבוכים — \"Minimize complications\"",w:"ענקית הפארמה מובילה בבטיחות, לא במכירה — אותו מיצוב מתאים לאקדמיה",u:"https://www.instagram.com/allergan_medical_institute/reel/C5l_g61yWba/"},
+ {r:"gl",p:"Instagram",a:"Allergan Medical Institute",t:"פרומו לאירוע החינוך החי AMI Live",w:"רילס FOMO לאירוע — התבנית שזיכתה אותם בפרס Shorty",u:"https://www.instagram.com/allergan_medical_institute/reel/DAEqSjgRFZ8/"},
+ {r:"gl",p:"Instagram",a:"Allergan Medical Institute",t:"הכרזה על תוכנית MD Codes הבאה",w:"מכירת מתודולוגיה ממותגת כסולם קריירה — לא סתם קורס",u:"https://www.instagram.com/allergan_medical_institute/reel/DBzXTjmPXxD/"},
+ {r:"gl",p:"Instagram",a:"Derma Medical",t:"\"Transform your career\" — רילס גיוס להסבת קריירה",w:"זווית ההמרה מס' 1 של אקדמיות: שינוי זהות, לא רכישת מיומנות",u:"https://www.instagram.com/derma_medical/reel/C5_QU3zKi6c/"},
+ {r:"gl",p:"Instagram",a:"Dr. Mauricio de Maio",t:"פתיחת ההרשמה לתוכנית MD Codes Look Fundamentals",w:"מוכר שיטה (MD Codes) ולא קורס — המודל הרווחי בתעשייה",u:"https://www.instagram.com/mauriciodemaio/p/DCHIaT9NGvz/"},
+ {r:"gl",p:"Instagram",a:"Dr. Mauricio de Maio",t:"סיכום מחזור 3 של MD Codes Complex",w:"רילס סיכום-מחזור = הוכחה חברתית למחזור הבא",u:"https://www.instagram.com/mauriciodemaio/reel/C5a1UywhzIK/"},
+ {r:"gl",p:"Instagram",a:"Dr. Mauricio de Maio",t:"הכרזת סבב ההוראה העולמי MD Codes LIVE Tour",w:"מודל רואד-שואו שאקדמיה ישראלית יכולה לשכפל אזורית (ת\"א/חיפה/י-ם)",u:"https://www.instagram.com/mauriciodemaio/p/DA5xogaNHdS/"},
+ {r:"gl",p:"Instagram",a:"IMCAS 2026",t:"\"22,800 אנשי מקצוע. כנס אחד\" — רילס עוצמת הקונגרס בפריז",w:"רילס מספרי-ענק; המקום שבו KOL ישראלים נראים — זווית שת\"פ ויח\"צ",u:"https://www.instagram.com/reel/DU3OxFPjbbo/"},
+ {r:"gl",p:"Instagram",a:"IMCAS 2026",t:"היילייטס מקונגרס IMCAS פריז 2026",w:"פורמט סיכום-אירוע להעתקה אחרי כל אירוע של האקדמיה",u:"https://www.instagram.com/reel/DT_eGpEkwjS/"},
+ {r:"gl",p:"Instagram",a:"AMWC מונקו 2026",t:"טקס פרסי האסתטיקה AMWC Awards 2026",w:"תוכן פרסים = שאיפתי; אפשר לייצר \"פרסי מצוינות\" לבוגרים",u:"https://www.instagram.com/reel/DWYewhAj7m7/"},
+ {r:"gl",p:"Instagram",a:"AMWC מונקו 2026",t:"\"הקונגרס השנה משקף כיוון ברור\" — פרשנות מגמות 2026",w:"מסמן את הכיוון הרשמי של 2026: המעבר לרפואה רגנרטיבית",u:"https://www.instagram.com/reel/DWWVtwfCMAB/"},
+ {r:"gl",p:"Instagram",a:"GAIN by Galderma",t:"סיכום כנס Aesthetic Next 6.0 בדאלאס",w:"מודל רשת המזריקים של הפארמה: חינוך כתוכנית נאמנות",u:"https://www.instagram.com/gainbygalderma.usa/reel/DA0sTY4pDn8/"},
+ {r:"gl",p:"Instagram",a:"Dr. Arthur Swift",t:"טכניקת ה-Drop לסנטר — טוטוריאל טכניקה ממותגת",w:"מתן שם לטכניקה הופך קליפ לניתן-לציטוט על ידי תלמידים",u:"https://www.instagram.com/swiftbeauty/reel/DEDSxA0TB1_/"},
+ {r:"gl",p:"Instagram",a:"Dr. Arthur Swift",t:"ניהול וטיפול בסיבוכים — רילס לימודי",w:"תוכן סמכות-בטיחות מ-KOL ותיק (131K עוקבים)",u:"https://www.instagram.com/swiftbeauty/reel/DJFu3PGKw62/"},
+ {r:"gl",p:"Instagram",a:"Dr. Arthur Swift",t:"\"איזו עצה תיתן למזריקים צעירים?\" — רילס מנטורינג",w:"פורמט זול להפקה עם שיעור שמירות גבוה אצל מתלמדים",u:"https://www.instagram.com/reel/DKZiJglqJuj/"},
+ {r:"gl",p:"Instagram",a:"Dr. Tapan Patel",t:"צלילה לעומק תוכנית ההכשרה EdiPhi Intense",w:"השקת קורס של מותג אישי מ-Harley Street",u:"https://www.instagram.com/drtapanp/reel/Czrb50xKMqS/"},
+ {r:"gl",p:"YouTube",a:"Dr. Tapan Patel",t:"עיצוב אף ללא ניתוח (Liquid Rhinoplasty) — הדגמה חיה",w:"פרוצדורה עם נפח חיפוש עצום — נכס SEO ירוק-עד",u:"https://www.youtube.com/watch?v=K82vovL1QGU"},
+ {r:"gl",p:"Instagram",a:"Harley Academy",t:"הצצה מאחורי הקלעים של האקדמיה",w:"תוכן שקיפות-BTS — פורמט השיווק המוביל לאקדמיות כרגע",u:"https://www.instagram.com/harley_academy/reel/DDsDreKNGJv/"},
+ {r:"gl",p:"Instagram",a:"Harley Academy",t:"הכירו את חברי הסגל — רילס היכרות עם מרצים",w:"אסטרטגיית סגל-כמשפיענים; מאניש את המוסד",u:"https://www.instagram.com/harley_academy/reel/DGz6ghnqFWH/"},
+ {r:"gl",p:"Instagram",a:"Harley Academy",t:"\"בואו איתי\" — ולוג POV של יום הכשרה",w:"פורמט ה-POV הוויראלי \"יום כמתלמד הזרקות\" — עובר ישר לעברית",u:"https://www.instagram.com/harley_academy/reel/DCofSMFqPZH/"},
+ {r:"gl",p:"Instagram",a:"Empire Medical Training",t:"סוף שבוע בתוך קורס של Empire — סיור מצולם",w:"מוכרים את חוויית הסופ\"ש, לא את התעודה",u:"https://www.instagram.com/reel/DL2mMGWxV-f/"},
+ {r:"gl",p:"Instagram",a:"Empire Medical Training",t:"\"המדע מאחורי הבוטוקס\" — פוסט מנגנון פעולה",w:"תוכן מדעי ממצב את האקדמיה מעל \"קורסי יופי\" מתחרים",u:"https://www.instagram.com/empiremedicaltraining/p/DDiDfi6JGWs/"},
+ // ---------- ויראלי 2026 ----------
+ {r:"vi",p:"Instagram",a:"מחנך-מזריקים (ויראלי)",t:"\"הסיבוך האחד שכל מזריק חייב להכיר\" — הוק ויראלי",w:"פורמט הסיבוכים הדומיננטי של 2026 — הוק פחד + ערך מיידי",u:"https://www.instagram.com/reel/DQtuuQPCDlY/"},
+ {r:"vi",p:"Instagram",a:"Injector Story Time",t:"\"בואו נדבר על חסימות וסקולריות\" — וידוי ממקור ראשון",w:"פורמט ה-Story Time מייצר מעורבות אדירה אצל מתלמדים",u:"https://www.instagram.com/reel/DUbkjkMAV9L/"},
+ {r:"vi",p:"Instagram",a:"חשבון מחקרי",t:"מחקר רב-מרכזי בינלאומי על סיבוכי הפילר הנפוצים",w:"ציטוט מחקרים חדשים = אמינות מיידית בפורמט רילס",u:"https://www.instagram.com/reel/DR2ZUt-kWMd/"},
+ {r:"vi",p:"Instagram",a:"Medik8 (השקה)",t:"השקת מוצר ה-Exo-PDRN החדש — יוני 2026",w:"גל ה-PDRN/אקסוזומים בשיא — מאסטרקלאס PDRN של האקדמיה ירכב עליו",u:"https://www.instagram.com/reel/DYUVaQUxTTW/"},
+ {r:"vi",p:"Instagram",a:"Surgeon Reacts",t:"\"פוצצו לי את הפילר הכושל בשפתיים\" — מנתח מגיב",w:"פורמט התגובה-ל-botched: תקרת הוויראליות הגבוהה בנישה",u:"https://www.instagram.com/reel/DHwjxFHyk4K/"},
+ {r:"vi",p:"Instagram",a:"רילס אקסוזומים",t:"\"Exosome PDRN — הטרנד שכולם ידברו עליו\" — הסבר מרכיב",w:"מיקרו-נישת המדע החמה ביותר; ממצב את האקדמיה כחוד החנית",u:"https://www.instagram.com/reel/DSm8ZbGj6nx/"},
+ {r:"vi",p:"TikTok",a:"@emily_stonee",t:"Injector Reacts — אחות מזריקה מגיבה ללפני/אחרי בוטוקס",w:"פרשנות מומחה + טרנספורמציה באותו קליפ — להעתיק בעברית",u:"https://www.tiktok.com/@emily_stonee/video/7647967433088650510"},
+ {r:"vi",p:"TikTok",a:"@emily_stonee",t:"\"הצעדים שעשיתי כדי להפוך לאחות אסתטית\" — מסלול קריירה",w:"בדיוק משפך גיוס התלמידים של האקדמיה — גרסה ישראלית תנצח",u:"https://www.tiktok.com/@emily_stonee/video/7226505896992591147"},
+ {r:"vi",p:"TikTok",a:"@vivalamedspa",t:"The Tea on Injectable Trends — טייר-ליסט טרנדים",w:"פורמט זול, ויראלי וניתן לשכפול רבעוני",u:"https://www.tiktok.com/@vivalamedspa/video/7490618298753649962"},
+ {r:"vi",p:"TikTok",a:"@breanne.andersonn",t:"דרישות הרישוי וההכשרה להזרקות — הסבר זכאות",w:"ואקום תוכן מלא בעברית: \"מי רשאי להזריק בישראל?\"",u:"https://www.tiktok.com/@breanne.andersonn/video/7493987162954927406"},
+ {r:"vi",p:"TikTok",a:"@_theblondetourage",t:"יום העבודה שלי כאחות אסתטית ב-4 תמונות",w:"פורמט day-in-the-life במינימום הפקה",u:"https://www.tiktok.com/@_theblondetourage/video/7554203363483700493"},
+ {r:"vi",p:"TikTok",a:"@samantha.injector",t:"\"הבוטוקס לא משגע אותך?\" — תגובת וידאו לתגובה",w:"פורמט comment-reply — האלגוריתם מתגמל אינטראקציה",u:"https://www.tiktok.com/@samantha.injector/video/7584161566623272223"},
+ {r:"vi",p:"TikTok",a:"@yesitsniabby",t:"חשיפת מזריקה לא מוסמכת — דרמת botched",w:"הדרמה שמייצרת את הביקוש לתוכן-הנגד החינוכי שלכם",u:"https://www.tiktok.com/@yesitsniabby/video/7573844812730780958"},
+ {r:"vi",p:"TikTok",a:"@drrobertclinic",t:"הבנת סיכוני חסימה וסקולרית (VO) בהזרקות",w:"הסברי בטיחות בטיקטוק מגיעים לקהל טרום-סטודנטים (אחיות מתלבטות)",u:"https://www.tiktok.com/@drrobertclinic/video/7605758389200653590"},
+ {r:"vi",p:"TikTok",a:"@kaesthetics1",t:"\"מפחדים לגרום ל-VO? כך תזהו מוקדם\" — הוק פחד-הקלה",w:"מכוון בדיוק לקהל היעד: מזריקים מתחילים שמפחדים מסיבוכים",u:"https://www.tiktok.com/@kaesthetics1/video/7321681007663516961"},
+ {r:"vi",p:"TikTok",a:"@the_austin_injector",t:"הסבר כן על נדידת פילר — \"בלי לספר לכם שטויות\"",w:"מיצוב אנטי-הייפ ככלי בידול — כנות מוכרת ב-2026",u:"https://www.tiktok.com/@the_austin_injector/video/7369597748259114282"}
+];
+const grid=document.getElementById("grid");
+const state={reg:"all",plat:"all"};
+const PLAT_DIR={Instagram:"Instagram",TikTok:"TikTok",YouTube:"YouTube",Facebook:"Facebook"};
+const REG={il:["reg-il","🇮🇱 אקדמיות ישראל"],gl:["reg-gl","🌍 אקדמיות עולם"],vi:["reg-vi","🔥 ויראלי 2026"],cl:["reg-cl","🏥 קליניקות ישראל"],cg:["reg-cg","💎 קליניקות עולם"]};
+function render(){
+  grid.innerHTML="";
+  let n=0;
+  for(const post of POSTS){
+    if(state.reg!=="all"&&post.r!==state.reg)continue;
+    if(state.plat!=="all"&&post.p!==state.plat)continue;
+    n++;
+    const card=document.createElement("div");card.className="card";
+    const[regCls,regTxt]=REG[post.r];
+    card.innerHTML=
+      '<div class="tags"><span class="tag '+regCls+'">'+regTxt+'</span>'+
+      '<span class="tag plat">'+PLAT_DIR[post.p]+"</span></div>"+
+      '<div class="acct"></div><p class="desc"></p><p class="why"></p>'+
+      '<a class="go" target="_blank" rel="noopener">פתיחת הפוסט ↗</a>';
+    card.querySelector(".acct").textContent=post.a;
+    card.querySelector(".desc").textContent=post.t;
+    card.querySelector(".why").textContent=post.w;
+    card.querySelector("a.go").href=post.u;
+    grid.appendChild(card);
+  }
+  document.getElementById("cnt").textContent="מוצגים "+n+" מתוך "+POSTS.length+" פוסטים";
+}
+document.querySelectorAll(".chipbtn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    const g=b.dataset.g;
+    document.querySelectorAll('.chipbtn[data-g="'+g+'"]').forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    state[g]=b.dataset.v;
+    render();
+  });
+});
+document.getElementById("stTotal").textContent=POSTS.length;
+document.getElementById("stIl").textContent=POSTS.filter(p=>p.r==="il").length;
+document.getElementById("stGl").textContent=POSTS.filter(p=>p.r==="gl").length;
+document.getElementById("stVi").textContent=POSTS.filter(p=>p.r==="vi").length;
+document.getElementById("stCl").textContent=POSTS.filter(p=>p.r==="cl").length;
+document.getElementById("stCg").textContent=POSTS.filter(p=>p.r==="cg").length;
+render();
+</script>
+</div>
