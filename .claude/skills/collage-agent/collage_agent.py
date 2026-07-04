@@ -22,13 +22,20 @@ import sys
 from pathlib import Path
 
 import httpx
-from PIL import Image, ImageDraw, ImageFont, features
+from PIL import Image, ImageDraw, ImageFont, ImageOps, features
 from bidi.algorithm import get_display
+
+try:  # iPhone HEIC photos
+    from pillow_heif import register_heif_opener
+
+    register_heif_opener()
+except ImportError:
+    pass
 
 # With libraqm Pillow shapes RTL text natively; manual bidi would double-reverse.
 HAS_RAQM = features.check("raqm")
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
 FONT_CANDIDATES = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
@@ -62,15 +69,21 @@ def load_api_key() -> str:
 
 def encode_for_vision(path: Path, max_side: int = 768) -> str:
     """Downscale + JPEG-encode a photo for the vision request."""
-    img = Image.open(path).convert("RGB")
+    img = ImageOps.exif_transpose(Image.open(path)).convert("RGB")
     img.thumbnail((max_side, max_side))
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=80)
     return base64.b64encode(buf.getvalue()).decode()
 
 
-def pair_photos(photos: list[Path], model: str, api_key: str) -> dict:
-    content = [{"type": "text", "text": PAIRING_PROMPT}]
+def pair_photos(photos: list[Path], model: str, api_key: str, treatment: str | None = None) -> dict:
+    prompt = PAIRING_PROMPT
+    if treatment:
+        prompt += (
+            f"\nThe clinic folder says the treatment is: {treatment}. "
+            "Base the Hebrew captions on it unless the photos clearly show otherwise."
+        )
+    content = [{"type": "text", "text": prompt}]
     for i, p in enumerate(photos, 1):
         content.append({"type": "text", "text": f"Photo {i} (filename: {p.name}):"})
         content.append(
@@ -129,8 +142,11 @@ def compose_collage(before: Path, after: Path, caption: str, out_path: Path) -> 
     half_w = CANVAS_W // 2
     canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), "white")
     # Hebrew reading order: before on the RIGHT half, after on the LEFT half
-    canvas.paste(fit_cover(Image.open(before).convert("RGB"), half_w, CANVAS_H), (half_w, 0))
-    canvas.paste(fit_cover(Image.open(after).convert("RGB"), half_w, CANVAS_H), (0, 0))
+    def open_photo(p: Path) -> Image.Image:
+        return ImageOps.exif_transpose(Image.open(p)).convert("RGB")
+
+    canvas.paste(fit_cover(open_photo(before), half_w, CANVAS_H), (half_w, 0))
+    canvas.paste(fit_cover(open_photo(after), half_w, CANVAS_H), (0, 0))
 
     overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
@@ -150,6 +166,7 @@ def main() -> None:
     ap.add_argument("photos_dir", type=Path)
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--model", default="gpt-5.5")
+    ap.add_argument("--treatment", default=None, help="Treatment name hint for captions (e.g. שפתיים)")
     args = ap.parse_args()
 
     photos = sorted(p for p in args.photos_dir.iterdir() if p.suffix.lower() in IMAGE_EXTS)
@@ -159,7 +176,7 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Pairing {len(photos)} photos with {args.model}...")
-    result = pair_photos(photos, args.model, load_api_key())
+    result = pair_photos(photos, args.model, load_api_key(), args.treatment)
 
     made = []
     for n, pair in enumerate(result.get("pairs", []), 1):
