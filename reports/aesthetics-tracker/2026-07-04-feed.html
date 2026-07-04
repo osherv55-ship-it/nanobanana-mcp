@@ -58,6 +58,14 @@
   .chipbtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
   .chipbtn.on{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600;}
   .count{font-size:13px; color:var(--muted); margin-inline-start:auto; font-variant-numeric:tabular-nums;}
+  .jump{
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent);
+    border-radius:999px; padding:6px 14px; font-size:13px; font-weight:700;
+    text-decoration:none; display:inline-block; transition:filter .15s;
+  }
+  .jump:hover{filter:brightness(.93);}
+  .jump:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  h2.sec{scroll-margin-top:110px;}
   .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(295px,1fr)); gap:14px;}
   .card{
     background:var(--card); border:1px solid var(--line); border-radius:10px;
@@ -131,11 +139,17 @@
     <button class="chipbtn" data-g="plat" data-v="YouTube">YouTube</button>
     <button class="chipbtn" data-g="plat" data-v="Facebook">Facebook</button>
   </div>
+  <div class="frow">
+    <span class="flabel">קפיצה אל:</span>
+    <a class="jump" href="#ideas-academy">💡 רעיונות לאקדמיה</a>
+    <a class="jump" href="#ideas-clinic">🏥 רעיונות לגלואנאס</a>
+    <a class="jump" href="#newsjack">📰 ניוזג'קינג</a>
+  </div>
 </div>
 
 <div class="grid" id="grid"></div>
 
-<h2 class="sec">📰 ניוזג'קינג — חדשות לרכוב עליהן השבוע</h2>
+<h2 class="sec" id="newsjack">📰 ניוזג'קינג — חדשות לרכוב עליהן השבוע</h2>
 <p class="secsub">אירועים אמיתיים מהתעשייה שאפשר להפוך לפוסט תוך יום — לפני שכולם קופצים עליהם.</p>
 <ul class="news">
   <li><a href="https://www.newbeauty.com/view/new-neurotoxins-and-filler-cosmetic-injectables-in-2026" target="_blank" rel="noopener">"בוטוקס ניסיון" — TrenibotulinumtoxinE בבדיקת FDA</a> · רעלן שמחזיק 2–3 שבועות בלבד. רעיון: "הטיפול שייתן למטופלים לנסות בוטוקס לשבועיים — ומה זה אומר על המקצוע".</li>
@@ -145,7 +159,7 @@
   <li><a href="https://www.ynet.co.il/health/article/sjldlqv2o" target="_blank" rel="noopener">ynet: קטינים נחשפים לתרבות ההזרקות</a> · הזדמנות לתוכן אתיקה שממצב את האקדמיה כמבוגר האחראי בחדר.</li>
 </ul>
 
-<h2 class="sec">💡 עשרת רעיונות התוכן לאקדמיה</h2>
+<h2 class="sec" id="ideas-academy">💡 עשרת רעיונות התוכן לאקדמיה</h2>
 <p class="secsub">מסונתז מכמה מודלים (Claude + ‏Gemini בשני מעברים — מציע ומבקר), מדורג לפי אימפקט צפוי.</p>
 <ol class="ideas">
   <li><b class="hook">"אזורים אדומים בפנים: המקומות שאסור לטעות בהם בהזרקה"</b><span class="idesc">רילס אנטומיה-לבטיחות — הליין שבנה 388 אלף עוקבים לטים פירס וריק לגמרי בעברית. הפורמט החזק ביותר לאקדמיה רפואית.</span></li>
@@ -160,7 +174,7 @@
   <li><b class="hook">"מבחן הרופאים: איזה טיפול בוצע כאן?"</b><span class="idesc">חידון אינטראקטיבי לקהל מקצועי; התשובה בתגובה נעוצה — מנוע תגובות.</span></li>
 </ol>
 
-<h2 class="sec">🏥 רעיונות תוכן לקליניקה — גלואנאס</h2>
+<h2 class="sec" id="ideas-clinic">🏥 רעיונות תוכן לקליניקה — גלואנאס</h2>
 <p class="secsub">מבוסס על ניתוח המתחרות בישראל ובעולם (מסונתז מכמה מודלים). מותאם לקליניקת בוטיק: תקציב הפקה נמוך, אופטימיזציה להזמנת תורים ולא רק לחשיפה.</p>
 <ol class="ideas">
   <li><b class="hook">"למה סירבתי לטיפול הזה היום?"</b><span class="idesc">פרסונת ה"לא-אומרת" (בהשראת Taktouk ו-GoodSkin) — תוכן על מה שאתן מסרבות לעשות בונה אמון פרימיום ומייצר יח"צ. מגמת 2026: שקיפות מנצחת זוהר.</span></li>
