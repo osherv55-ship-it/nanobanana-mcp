@@ -1,9 +1,14 @@
-# מרכז הפפטידים להזרקה — דוח שבועי
+# רטטרוטייד (Reta) — דוח שבועי בסושיאל
 
-A weekly Hebrew-language digest page that aggregates the social-media discourse
-(TikTok / Instagram / Facebook) about **injectable peptides** — the processes people
-report going through, the dramatic changes they describe, expert interpretation,
-regulatory warnings, and the conclusions the community itself reaches.
+A weekly Hebrew-language digest page focused specifically on **retatrutide**
+(Eli Lilly's investigational "Triple-G" triple-agonist) and everything published
+about it on social media that week — **good and bad**: the dramatic trial efficacy
+people are excited about, the personal experiences on TikTok/Reddit/Facebook, the
+gray-market danger, harms/hospitalizations, expert interpretation, the regulatory
+timeline, and the conclusions the community reaches.
+
+> Scope note: the user narrowed this page from "all injectable peptides" to
+> **retatrutide only** — approved GLP-1s (Ozempic/Wegovy/Mounjaro) were removed.
 
 The page is public-health / harm-reduction oriented: it summarizes what is being said
 online and cross-checks it against medical evidence and regulators. It is **not** medical
@@ -29,16 +34,20 @@ A multi-model agent run assembles the page:
 Re-run once per week and regenerate `index.html`. Steps:
 
 1. Update the header week range and the "updated weekly" / date chips.
-2. Refresh, with live web search, each section:
-   - **Trend table** — which injectable peptides trend now and on which platform; update
-     volumes and regulatory-status pills.
-   - **Experiences** — new transformation / recovery / regret stories and the timelines people report.
-   - **Expert reality-check** — evidence level per category (GLP-1s, healing peptides,
-     GH secretagogues, cosmetic/other); pull fresh expert quotes.
-   - **Regulation** — new FDA / Health Canada / WADA / Israeli MoH actions on the timeline.
-   - **Community conclusions** — pros, regrets, red flags.
-   - **Israel angle** — Hebrew-community specifics.
-   - **Sources** — replace with the URLs actually used this week.
+2. Refresh, with live web search, each section (all focused on **retatrutide**):
+   - **הצד הטוב** — latest trial efficacy (TRIUMPH / TRANSCEND readouts) as a dose-response
+     chart of *clinical-trial* results; the "food noise gone" / stall-breaker buzz.
+   - **בסושיאל השבוע** — new TikTok/Reddit/Facebook experiences, good and bad, with the
+     side-effect pattern people report (racing heart, insomnia, "wiped out", etc.).
+   - **הצד המסוכן** — fresh harms: hospitalizations, liver failures, deaths, poison-center
+     numbers, gray-market vendor/clinic counts, FDA warning-letter status.
+   - **פרשנות מומחים** — reality-check quotes (e.g. authenticity "likely not retatrutide", liver flags).
+   - **ציר הזמן** — new trial results vs. regulatory/enforcement/harm events.
+   - **מסקנות** — pros vs. concerns · **בישראל** — MoH status, fraud warnings.
+   - **מקורות** — replace with the URLs actually used this week.
+
+   Keep it retatrutide-only unless the user says otherwise. Efficacy figures are
+   controlled-trial results, framed as such — **never** a usage/dosing protocol.
 3. Keep the medical disclaimer and the "no dosing" rule intact.
 4. Re-publish the Artifact to the **same** URL (redeploy the same `file_path`) and commit the
    updated `index.html` to the working branch.
