@@ -7,6 +7,9 @@ npm-debug.log*
 # media-memory skill local venv
 .claude/skills/media-memory/.venv/
 
+# python bytecode cache
+__pycache__/
+
 # media-memory stored files and metadata are committed so memory survives
 # ephemeral cloud sessions. Only the derived vector index (.chroma/ above)
 # is ignored. If large videos start bloating the repo, move them to Git LFS.
