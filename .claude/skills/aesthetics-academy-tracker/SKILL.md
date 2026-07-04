@@ -102,9 +102,18 @@ academy. The deliverable of every run is a **Hebrew report** committed to
 
 ## Scheduling (weekly routine)
 
-The tracker is meant to run weekly via a Claude Code Remote trigger
-(`create_trigger` on the claude-code-remote MCP server) — creating it requires
-a user-approved permission, so if it does not exist yet, recreate it with:
+**Active scheduler:** `.github/workflows/aesthetics-tracker.yml` — a GitHub
+Actions workflow (Sunday ~06:23 UTC) that runs Claude Code with this skill and
+pushes the report to a `claude/aesthetics-tracker-run-<date>` branch. It
+requires the `CLAUDE_CODE_OAUTH_TOKEN` repository secret (generate with
+`claude setup-token` locally, then add under repo Settings → Secrets and
+variables → Actions). It can also be fired manually from the Actions tab
+(workflow_dispatch).
+
+Alternative scheduler (if the MCP approval flow is available in-session): a
+Claude Code Remote trigger via `create_trigger` on the claude-code-remote MCP
+server — in past sessions this call was blocked by a platform-level approval
+that never surfaced, so the GitHub Action is the default. Config if created:
 
 - **name:** `Aesthetics Academy Tracker — weekly`
 - **cron_expression:** `23 6 * * 0` (Sunday ~06:23 UTC ≈ 09:23 Israel)
