@@ -29,8 +29,19 @@ Requires `OPENAI_API_KEY` (env var, or read from `~/pal-mcp-server/.env`).
 ## Run
 
 ```bash
-/root/collage-venv/bin/python .claude/skills/collage-agent/collage_agent.py <photos_dir> [--out DIR] [--model gpt-5.5]
+/root/collage-venv/bin/python .claude/skills/collage-agent/collage_agent.py <photos_dir> \
+    [--out DIR] [--model gpt-5.5] [--treatment שפתיים] [--template stacked|wide] [--single-frontal]
 ```
+
+## Clinic rules (learned from feedback)
+
+- **Lips: one collage only** — always pass `--single-frontal`; only the frontal
+  before/after pair is used, angled/profile shots stay unmatched.
+- **Identical scale** — zoom is anchored to the nose width (unchanged by
+  treatment) and shared across both tiles; never let one side look bigger.
+- **Lips only** — nose-to-chin crop, lips pinned at 45% height; eyes must not
+  appear. Implausible model boxes are re-fetched and, failing that, the nose is
+  synthesized from the lips box.
 
 ## Google Drive workflow
 

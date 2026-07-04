@@ -59,15 +59,15 @@ area, and within each pair which one is BEFORE (pre-treatment) and which is AFTE
 condition, filenames if hinted.
 
 For EACH photo in a pair also return, as fractions of image width/height
-([x0, y0, x1, y1], 0,0 = top-left, be precise):
-- "face": the face box — x0/x1 at the cheek outlines, y0 at the eyebrows,
-  y1 at the very bottom of the chin.
+([x0, y0, x1, y1], 0,0 = top-left, be VERY precise):
+- "nose": tight box around the nose only — x0/x1 exactly at the outer edges of
+  the nostrils, y1 at the nose tip's base.
 - "area": tight box around the treated feature itself (lips only for lip
-  treatments, nose only for a nose job, etc.).
+  treatments, etc.).
 
 Reply with STRICT JSON only, no prose:
 {"pairs": [{"before": <n>, "after": <n>,
-            "face_before": [...], "face_after": [...],
+            "nose_before": [...], "nose_after": [...],
             "area_before": [...], "area_after": [...],
             "caption": "<short Hebrew treatment caption, e.g. מילוי שפתיים>"}],
  "unmatched": [<numbers>]}
@@ -100,12 +100,24 @@ def encode_for_vision(path: Path, max_side: int = 768) -> str:
     return base64.b64encode(buf.getvalue()).decode()
 
 
-def pair_photos(photos: list[Path], model: str, api_key: str, treatment: str | None = None) -> dict:
+def pair_photos(
+    photos: list[Path],
+    model: str,
+    api_key: str,
+    treatment: str | None = None,
+    single_frontal: bool = False,
+) -> dict:
     prompt = PAIRING_PROMPT
     if treatment:
         prompt += (
             f"\nThe clinic folder says the treatment is: {treatment}. "
             "Base the Hebrew captions on it unless the photos clearly show otherwise."
+        )
+    if single_frontal:
+        prompt += (
+            "\nIMPORTANT: Return EXACTLY ONE pair — the most frontal, straight-facing "
+            "before photo and the most frontal after photo. Angled or profile shots must "
+            "NOT be paired; list every other photo under unmatched."
         )
     content = [{"type": "text", "text": prompt}]
     for i, p in enumerate(photos, 1):
@@ -134,6 +146,93 @@ def pair_photos(photos: list[Path], model: str, api_key: str, treatment: str | N
     return json.loads(body["choices"][0]["message"]["content"])
 
 
+def valid_box(box) -> bool:
+    return (
+        isinstance(box, (list, tuple))
+        and len(box) == 4
+        and all(isinstance(v, (int, float)) for v in box)
+        and 0 <= box[0] < box[2] <= 1
+        and 0 <= box[1] < box[3] <= 1
+    )
+
+
+def fetch_boxes(path: Path, model: str, api_key: str) -> dict:
+    """Fallback: ask for face + treated-area boxes of a single photo."""
+    resp = httpx.post(
+        "https://api.openai.com/v1/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={
+            "model": model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": (
+                                "Locate in this clinical photo, as fractions of image "
+                                "width/height ([x0, y0, x1, y1], 0,0 = top-left, VERY precise): "
+                                '"nose" — tight box, x0/x1 exactly at the outer nostril edges; '
+                                '"area" — tight box around the lips. '
+                                'STRICT JSON only: {"nose": [...], "area": [...]}'
+                            ),
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{encode_for_vision(path)}"},
+                        },
+                    ],
+                }
+            ],
+            "max_completion_tokens": 1000,
+            "response_format": {"type": "json_object"},
+        },
+        timeout=120,
+    )
+    if resp.status_code != 200:
+        return {}
+    try:
+        return json.loads(resp.json()["choices"][0]["message"]["content"])
+    except (KeyError, ValueError):
+        return {}
+
+
+def plausible(nose, area) -> bool:
+    """Anatomical sanity: nose is narrower than the lips (roughly 0.35–1.0×)
+    and sits above them, horizontally aligned."""
+    if not (valid_box(nose) and valid_box(area)):
+        return False
+    nose_w, lips_w = nose[2] - nose[0], area[2] - area[0]
+    nose_cx, lips_cx = (nose[0] + nose[2]) / 2, (area[0] + area[2]) / 2
+    return (
+        0.35 * lips_w <= nose_w <= 1.0 * lips_w
+        and abs(nose_cx - lips_cx) <= lips_w * 0.5
+        and nose[3] <= (area[1] + area[3]) / 2
+    )
+
+
+def ensure_boxes(pair: dict, before: Path, after: Path, model: str, api_key: str) -> None:
+    """Guarantee valid, anatomically plausible boxes per side, re-asking if needed."""
+    for side, path in (("before", before), ("after", after)):
+        if not plausible(pair.get(f"nose_{side}"), pair.get(f"area_{side}")):
+            boxes = fetch_boxes(path, model, api_key)
+            if valid_box(boxes.get("nose")):
+                pair[f"nose_{side}"] = boxes["nose"]
+            if valid_box(boxes.get("area")):
+                pair[f"area_{side}"] = boxes["area"]
+        nose, area = pair.get(f"nose_{side}"), pair.get(f"area_{side}")
+        if not plausible(nose, area):
+            if valid_box(area):
+                # Synthesize a nose box from the lips: ~0.65 lip-width, centered.
+                lips_w = area[2] - area[0]
+                cx = (area[0] + area[2]) / 2
+                nose_w = 0.65 * lips_w
+                pair[f"nose_{side}"] = [cx - nose_w / 2, max(0, area[1] - lips_w), cx + nose_w / 2, area[1]]
+                print(f"  note: synthesized nose box for {path.name} (model box implausible)")
+            else:
+                print(f"  WARNING: no usable crop boxes for {path.name}; tile left uncropped")
+
+
 def load_font(size: int, serif: bool = False) -> ImageFont.FreeTypeFont:
     for cand in SERIF_FONTS if serif else SANS_FONTS:
         if Path(cand).exists():
@@ -151,45 +250,55 @@ def fit_cover(img: Image.Image, w: int, h: int) -> Image.Image:
 
 def frame_lower_face(
     img: Image.Image,
-    face: list[float] | None,
+    nose: list[float] | None,
     area: list[float] | None,
     aspect: float,
+    ratio: float,
 ) -> Image.Image:
     """Crop the clinic's lip-template frame: nose-to-chin, lips centered.
 
-    Vertical span is derived from the lips-to-chin distance (so the top lands
-    around the nostrils regardless of how much of the face the photo shows);
-    width follows from the fixed aspect, widened to the cheeks if needed.
+    Zoom is anchored to the NOSE width — a small, precisely locatable feature
+    that treatment doesn't change — so both tiles of a pair show the patient
+    at an identical scale regardless of how each photo was shot.
     """
-    if not face or not area or len(face) != 4 or len(area) != 4:
+    if not (valid_box(nose) and valid_box(area)):
         return img
-    fx0, fy0, fx1, fy1 = face
-    ax0, ay0, ax1, ay1 = area
-    if fx1 <= fx0 or fy1 <= fy0 or ax1 <= ax0 or ay1 <= ay0:
-        return img
+    nose_w = (nose[2] - nose[0]) * img.width
+    lips_cx = (area[0] + area[2]) / 2 * img.width
+    lips_cy = (area[1] + area[3]) / 2 * img.height
 
-    face_w = (fx1 - fx0) * img.width
-    cx = (fx0 + fx1) / 2 * img.width
-    chin = fy1 * img.height
-    lips_cy = (ay0 + ay1) / 2 * img.height
-    d = chin - lips_cy  # lips center → chin
-    if d <= 0:
-        return img
-
-    bottom = min(chin + 0.3 * d, img.height)
-    crop_h = 2.3 * d
+    # ratio is crop height in units of this photo's nose width; sharing the
+    # ratio across a pair keeps both tiles at the same scale.
+    crop_h = ratio * nose_w
     crop_w = crop_h * aspect
-    if crop_w < face_w * 1.02:  # never crop into the cheeks
-        crop_w = min(face_w * 1.02, img.width)
-        crop_h = crop_w / aspect
-    if crop_h > img.height:
-        crop_h = img.height
-        crop_w = crop_h * aspect
-    crop_w = min(crop_w, img.width)
 
-    x0 = max(0, min(cx - crop_w / 2, img.width - crop_w))
-    y0 = max(0, min(bottom - crop_h, img.height - crop_h))
+    # Lips pinned at the horizontal center, 45% down the crop.
+    x0 = max(0, min(lips_cx - crop_w / 2, img.width - crop_w))
+    y0 = max(0, min(lips_cy - 0.45 * crop_h, img.height - crop_h))
     return img.crop((round(x0), round(y0), round(x0 + crop_w), round(y0 + crop_h)))
+
+
+# Base crop: width ≈ 4.1 nose-widths (cheek-to-cheek), height per the aspect.
+BASE_RATIO = 4.1 / (1340 / 900)
+
+
+def max_frame_ratio(img: Image.Image, nose, area, aspect: float) -> float:
+    """Largest lips-anchored crop (in nose-width units) this photo can host.
+
+    Caps the crop so lips can actually sit at 45% height — a photo already cut
+    tight at the chin forces a smaller window instead of drifting up the face.
+    """
+    if not (valid_box(nose) and valid_box(area)):
+        return BASE_RATIO
+    nose_w = (nose[2] - nose[0]) * img.width
+    lips_cy = (area[1] + area[3]) / 2 * img.height
+    limits = [
+        (img.height - lips_cy) / 0.55,  # room below the lips
+        lips_cy / 0.45,  # room above the lips
+        img.height,
+        img.width / aspect,
+    ]
+    return min(min(limits) / nose_w, BASE_RATIO)
 
 
 # --- stacked template (the clinic's original design) --------------------------
@@ -206,14 +315,19 @@ def compose_stacked(before: Path, after: Path, pair: dict, out_path: Path) -> No
     font = load_font(76, serif=True)
 
     aspect = STACK_W / STACK_TILE_H
+    img_b, img_a = open_photo(before), open_photo(after)
+    ratio = min(
+        max_frame_ratio(img_b, pair.get("nose_before"), pair.get("area_before"), aspect),
+        max_frame_ratio(img_a, pair.get("nose_after"), pair.get("area_after"), aspect),
+    )
     y = 0
-    for label, path, face, area in (
-        ("Before", before, pair.get("face_before"), pair.get("area_before")),
-        ("After", after, pair.get("face_after"), pair.get("area_after")),
+    for label, img, nose, area in (
+        ("Before", img_b, pair.get("nose_before"), pair.get("area_before")),
+        ("After", img_a, pair.get("nose_after"), pair.get("area_after")),
     ):
         draw.text((STACK_W // 2, y + STACK_BAND_H // 2), label, font=font, fill="black", anchor="mm")
         y += STACK_BAND_H
-        tile = fit_cover(frame_lower_face(open_photo(path), face, area, aspect), STACK_W, STACK_TILE_H)
+        tile = fit_cover(frame_lower_face(img, nose, area, aspect, ratio), STACK_W, STACK_TILE_H)
         canvas.paste(tile, (0, y))
         y += STACK_TILE_H
 
@@ -268,6 +382,11 @@ def main() -> None:
     ap.add_argument("--model", default="gpt-5.5")
     ap.add_argument("--treatment", default=None, help="Treatment name hint for captions (e.g. שפתיים)")
     ap.add_argument("--template", choices=sorted(TEMPLATES), default="stacked")
+    ap.add_argument(
+        "--single-frontal",
+        action="store_true",
+        help="Produce exactly one collage from the frontal before/after pair (clinic rule for lips)",
+    )
     args = ap.parse_args()
 
     photos = sorted(p for p in args.photos_dir.iterdir() if p.suffix.lower() in IMAGE_EXTS)
@@ -277,7 +396,9 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Pairing {len(photos)} photos with {args.model}...")
-    result = pair_photos(photos, args.model, load_api_key(), args.treatment)
+    result = pair_photos(photos, args.model, load_api_key(), args.treatment, args.single_frontal)
+    if args.single_frontal and len(result.get("pairs", [])) > 1:
+        result["pairs"] = result["pairs"][:1]
 
     compose = TEMPLATES[args.template]
     made = []
@@ -286,6 +407,8 @@ def main() -> None:
         after = photos[pair["after"] - 1]
         name = "photo.jpg" if n == 1 else f"photo{n}.jpg"
         out_path = out_dir / name
+        if args.template == "stacked":
+            ensure_boxes(pair, before, after, args.model, load_api_key())
         compose(before, after, pair, out_path)
         made.append(out_path)
         print(f"  {name}: {before.name} (before) + {after.name} (after) — {pair.get('caption', '')}")
