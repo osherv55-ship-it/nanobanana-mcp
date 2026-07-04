@@ -37,11 +37,9 @@ const IMAGE_SIZES = ["512","1K","2K","4K"];
 async function callGemini(parts, { aspectRatio, imageSize } = {}) {
   const generationConfig = { responseModalities: ["TEXT", "IMAGE"] };
   if (aspectRatio || imageSize) {
-    generationConfig.responseFormat = {
-      image: {
-        ...(aspectRatio ? { aspectRatio } : {}),
-        ...(imageSize ? { imageSize } : {}),
-      },
+    generationConfig.imageConfig = {
+      ...(aspectRatio ? { aspectRatio } : {}),
+      ...(imageSize ? { imageSize } : {}),
     };
   }
 
