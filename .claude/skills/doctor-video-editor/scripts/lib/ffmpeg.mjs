@@ -7,14 +7,23 @@ import path from "node:path";
 
 const require = createRequire(import.meta.url);
 
-function resolveBinary(pkg) {
-  const mod = require(pkg);
-  // ffmpeg-static exports the binary path directly; ffprobe-static exports {path}.
-  return typeof mod === "string" ? mod : mod.path;
+function resolveBinary(pkg, envVar, systemCmd) {
+  // Explicit override wins (e.g. FFMPEG_PATH=/usr/bin/ffmpeg).
+  if (process.env[envVar]) return process.env[envVar];
+  try {
+    const mod = require(pkg);
+    // ffmpeg-static exports the binary path directly; ffprobe-static exports {path}.
+    return typeof mod === "string" ? mod : mod.path;
+  } catch {
+    // ffmpeg-static's postinstall downloads its binary from GitHub releases,
+    // which is blocked in some sandboxed/proxied environments. Fall back to a
+    // system binary on PATH so the pipeline still runs (spawn resolves it).
+    return systemCmd;
+  }
 }
 
-export const FFMPEG = resolveBinary("ffmpeg-static");
-export const FFPROBE = resolveBinary("ffprobe-static");
+export const FFMPEG = resolveBinary("ffmpeg-static", "FFMPEG_PATH", "ffmpeg");
+export const FFPROBE = resolveBinary("ffprobe-static", "FFPROBE_PATH", "ffprobe");
 
 export function runFfmpeg(args, { onStderr } = {}) {
   return new Promise((resolve, reject) => {

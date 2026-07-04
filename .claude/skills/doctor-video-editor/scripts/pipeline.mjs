@@ -561,9 +561,12 @@ async function cmdApplyCuts(args) {
       }
 
       const listFile = path.join(tmpDir, "list.txt");
+      // The concat demuxer resolves relative entries against the list file's
+      // own directory, so a relative partPath would get the tmpDir prefix
+      // doubled. The parts sit next to list.txt — bare basenames always work.
       fs.writeFileSync(
         listFile,
-        partFiles.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join("\n"),
+        partFiles.map((p) => `file '${path.basename(p)}'`).join("\n"),
       );
 
       const concatOut = musicPath
