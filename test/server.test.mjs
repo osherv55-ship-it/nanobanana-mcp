@@ -72,11 +72,11 @@ test("MCP endpoint rejects wrong token", async () => {
   assert.equal(res.status, 401);
 });
 
-test("tools/list returns the three tools", async () => {
+test("tools/list returns all five tools", async () => {
   const res = await mcpRequest(TOOLS_LIST);
   assert.equal(res.status, 200);
   const text = await res.text();
-  for (const tool of ["generate_image", "edit_image", "deep_research"]) {
+  for (const tool of ["generate_image", "edit_image", "gpt_image_generate", "gpt_image_edit", "deep_research"]) {
     assert.ok(text.includes(`"name":"${tool}"`), `missing tool ${tool}`);
   }
 });

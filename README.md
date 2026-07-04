@@ -6,6 +6,8 @@ Remote [MCP](https://modelcontextprotocol.io) server (Node 20+, Express, statele
 |---|---|---|
 | `generate_image` | Google Nano Banana (Gemini Flash Image) | Text-to-image. Supports Hebrew prompts, aspect ratios, 512–4K output. |
 | `edit_image` | Google Nano Banana | Image-to-image editing from an HTTPS URL or inline base64. |
+| `gpt_image_generate` | OpenAI `gpt-image-2` | Text-to-image via the OpenAI API. Strong at text-in-image and complex compositions. Per-image cost. |
+| `gpt_image_edit` | OpenAI `gpt-image-2` | Multi-image editing/composition with optional mask. Per-call cost. |
 | `deep_research` | Perplexity `sonar-deep-research` | Slow (30s+) multi-source web research with citations. |
 
 ## Environment variables
@@ -15,6 +17,10 @@ Remote [MCP](https://modelcontextprotocol.io) server (Node 20+, Express, statele
 | `GEMINI_API_KEY` | yes | — | Google AI Studio key for image generation/editing. |
 | `MCP_AUTH_TOKEN` | recommended | none (unauthenticated!) | Bearer token required on `/mcp`. |
 | `PERPLEXITY_API_KEY` | for `deep_research` | — | Perplexity API key; only needed when the tool is called. |
+| `OPENAI_API_KEY` | for `gpt_image_*` | — | OpenAI API key; only needed when those tools are called. |
+| `OPENAI_IMAGE_MODEL` | no | `gpt-image-2-2026-04-21` | Override the OpenAI image model. |
+| `OPENAI_TIMEOUT_MS` | no | `180000` | Abort OpenAI image calls after this many ms. |
+| `ALLOW_LOCAL_FILES` | no | `false` | Allow file:// / local-path image inputs (only for self-hosted local servers). |
 | `GEMINI_IMAGE_MODEL` | no | `gemini-3.1-flash-image-preview` | Override the image model. |
 | `GEMINI_TIMEOUT_MS` | no | `120000` | Abort Gemini calls after this many ms. |
 | `GEMINI_MAX_RETRIES` | no | `2` | Retries on 429/5xx/network errors (exponential backoff). |
