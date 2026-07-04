@@ -27,6 +27,12 @@ Use the right `--source`:
 
 Provide `--description` when you already know the content (e.g. the prompt you used to generate it). Otherwise let the script auto-describe with Gemini multimodal. Always pass meaningful `--tags`.
 
+When a tool returns an image inline (base64 in the tool result, e.g. `generate_image` via MCP), first write it to a file, then ingest that file with `--source generated`, the generation prompt as `--description`, and `--extra` recording the tool name and params.
+
+### Persistence — commit after ingest
+
+Sessions run in ephemeral cloud containers. `media-memory/` (raw files + `metadata.jsonl`) is tracked in git; the ChromaDB index (`.chroma/`) is derived and gitignored. After ingesting, commit and push `media-memory/` on your working branch, and rebuild the index in a fresh checkout with `reindex.py`.
+
 ### Always query before assuming an asset is new
 
 Call `search.py` when the user references past media with vague language ("the logo from last week", "that recording", "the screenshot I sent you"), asks "do we have anything about/showing X?", or when you're about to generate something a previous asset may already cover.
@@ -38,6 +44,48 @@ Treat cosine similarity > 0.75 as a strong match, 0.55–0.75 as worth surfacing
 The skill scripts live at `.claude/skills/media-memory/scripts/`. The skill's `SKILL.md` documents the exact CLI for `ingest.py`, `search.py`, `list_media.py`, and `reindex.py`. Use the venv at `.claude/skills/media-memory/.venv/bin/python`. On a fresh checkout, run the one-time setup block in `SKILL.md`.
 
 Required env var: `GEMINI_API_KEY` (same key the MCP server uses).
+
+## Doctor video editor — standard workflow
+
+The `doctor-video-editor` skill (at `.claude/skills/doctor-video-editor/`) is the
+permanent way to edit doctor promo / testimonial videos. The user maintains a
+**one-folder-per-doctor** convention. Whenever the user references a doctor
+by name (Yasmin, ETTY, etc.) or asks to "edit a doctor video", assume this
+layout and the bootstrap entry point unless told otherwise.
+
+### Folder convention (flat, one per doctor)
+
+```
+<doctor-name>/
+  main.mov           REQUIRED — the main interview / promo clip
+  intro.mov          optional — auto-trimmed to ~6s (name + role intro)
+  b-roll.mov         optional — B-roll #1 (any non-main video name works)
+  b-roll2.mov        optional — B-roll #2
+  photo.jpg          optional — before/after collage shown as overlay
+  photo2.jpg         optional — second collage
+  music.mp3          optional — background bed with sidechain ducking
+```
+
+Role detection is automatic by filename prefix: `main*` is the main video,
+`intro*` is the prefix clip (auto-trimmed to the doctor's role intro),
+`before*` matched with `after*` becomes a vertical-split before/after, every
+other image / video file becomes a still or B-roll overlay distributed evenly
+across the cleaned timeline. The first audio file becomes the music bed.
+
+### Invocation
+
+```powershell
+$env:DOCTOR_FOLDER = "C:\Users\osher\OneDrive\...\<doctor-name>"
+iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+```
+
+Output: `<doctor-folder>/out/final.he.mp4`. `ELEVENLABS_API_KEY` (Speech-to-Text
+scope) must be set in the user environment. If the user mentions an asset is
+missing (no intro / no music / etc.), the pipeline skips that step gracefully —
+never block on a missing optional piece.
+
+A `new-doctor-folder.ps1` helper scaffolds an empty folder with a README that
+documents the convention. Suggest it when the user is starting on a new doctor.
 
 ## Code conventions
 
