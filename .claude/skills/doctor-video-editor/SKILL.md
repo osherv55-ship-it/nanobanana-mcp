@@ -103,7 +103,7 @@ cd "$env:USERPROFILE\Desktop\nanobanana-mcp\.claude\skills\doctor-video-editor"
 ```powershell
 # Option B: one-shot bootstrap (auto-clones / auto-updates the repo)
 $env:DOCTOR_FOLDER = "$env:USERPROFILE\Desktop\doctors\yasmin"
-iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
 ```
 
 ### Outputs

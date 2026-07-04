@@ -54,7 +54,7 @@ The pipeline detects roles by filename -- you only need the bits you have.
 When the assets are in place, run from PowerShell:
 
   `$env:DOCTOR_FOLDER = "$folder"
-  iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+  iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
 
 Output lands in:  out\final.he.mp4
 
@@ -71,4 +71,4 @@ Write-Host "  $folder"
 Write-Host ""
 Write-Host "Then run:" -ForegroundColor Cyan
 Write-Host "  `$env:DOCTOR_FOLDER = `"$folder`""
-Write-Host "  iex (irm `"https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1`")"
+Write-Host "  iex (irm `"https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1`")"

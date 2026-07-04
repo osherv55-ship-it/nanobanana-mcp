@@ -70,7 +70,7 @@ across the cleaned timeline. The first audio file becomes the music bed.
 
 ```powershell
 $env:DOCTOR_FOLDER = "C:\Users\osher\OneDrive\...\<doctor-name>"
-iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
 ```
 
 Output: `<doctor-folder>/out/final.he.mp4`. `ELEVENLABS_API_KEY` (Speech-to-Text

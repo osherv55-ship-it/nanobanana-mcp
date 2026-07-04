@@ -1,14 +1,14 @@
 # One-shot bootstrap for the doctor-video-editor skill on Windows.
 #
 # Usage (paste into PowerShell):
-#   iwr https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/install.ps1 | iex
+#   iwr https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/install.ps1 | iex
 #
 # Or download and run with a custom target dir:
 #   .\install.ps1 -TargetDir C:\Projects\nanobanana-mcp
 
 param(
     [string]$TargetDir = (Join-Path $HOME "Projects\nanobanana-mcp"),
-    [string]$Branch = "claude/doctor-video-editing-5AveU",
+    [string]$Branch = "main",
     [string]$RepoUrl = "https://github.com/osherv55-ship-it/nanobanana-mcp.git"
 )
 

@@ -6,7 +6,7 @@
 # Invoke from any PowerShell prompt:
 #   $env:GEMINI_API_KEY = "..."
 #   $env:ELEVENLABS_API_KEY = "..."
-#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/run-yasmin.ps1")
+#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/run-yasmin.ps1")
 
 $ErrorActionPreference = "Stop"
 
@@ -30,7 +30,7 @@ Note "Desktop: $desktop"
 
 Section "Cloning / updating repo"
 $repoDir = Join-Path $desktop "nanobanana-mcp"
-$branch = "claude/doctor-video-editing-5AveU"
+$branch = "main"
 if (-not (Test-Path $repoDir)) {
     git clone https://github.com/osherv55-ship-it/nanobanana-mcp.git $repoDir
 }

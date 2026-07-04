@@ -24,7 +24,7 @@
 #
 # Or invoke via the one-line bootstrap if your repo is fresh:
 #   $env:ELEVENLABS_API_KEY = "<key>"
-#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1") -Args "<folder>"
+#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1") -Args "<folder>"
 
 param(
     [Parameter(Mandatory=$true, Position=0)]

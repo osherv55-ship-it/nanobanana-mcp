@@ -4,7 +4,7 @@
 # Usage (PowerShell):
 #   $env:ELEVENLABS_API_KEY = "<key>"
 #   $env:DOCTOR_FOLDER = "C:\Users\osher\OneDrive\Desktop\doctors\yasmin"
-#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/claude/doctor-video-editing-5AveU/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
+#   iex (irm "https://raw.githubusercontent.com/osherv55-ship-it/nanobanana-mcp/main/.claude/skills/doctor-video-editor/edit-doctor-bootstrap.ps1")
 
 $ErrorActionPreference = "Stop"
 
@@ -24,7 +24,7 @@ if (-not (Test-Path $env:DOCTOR_FOLDER)) {
 Section "Locating repo workspace"
 $desktop = [Environment]::GetFolderPath("Desktop")
 $repoDir = Join-Path $desktop "nanobanana-mcp"
-$branch = "claude/doctor-video-editing-5AveU"
+$branch = "main"
 
 if (-not (Test-Path $repoDir)) {
     Note "Cloning repo to $repoDir"
