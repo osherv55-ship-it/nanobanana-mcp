@@ -27,6 +27,12 @@ Use the right `--source`:
 
 Provide `--description` when you already know the content (e.g. the prompt you used to generate it). Otherwise let the script auto-describe with Gemini multimodal. Always pass meaningful `--tags`.
 
+When a tool returns an image inline (base64 in the tool result, e.g. `generate_image` via MCP), first write it to a file, then ingest that file with `--source generated`, the generation prompt as `--description`, and `--extra` recording the tool name and params.
+
+### Persistence — commit after ingest
+
+Sessions run in ephemeral cloud containers. `media-memory/` (raw files + `metadata.jsonl`) is tracked in git; the ChromaDB index (`.chroma/`) is derived and gitignored. After ingesting, commit and push `media-memory/` on your working branch, and rebuild the index in a fresh checkout with `reindex.py`.
+
 ### Always query before assuming an asset is new
 
 Call `search.py` when the user references past media with vague language ("the logo from last week", "that recording", "the screenshot I sent you"), asks "do we have anything about/showing X?", or when you're about to generate something a previous asset may already cover.
