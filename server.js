@@ -12,6 +12,8 @@ import {
 const PORT = parseInt(process.env.PORT || "8080", 10);
 const MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-3.1-flash-image-preview";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_TIMEOUT_MS = parseInt(process.env.GEMINI_TIMEOUT_MS || "120000", 10);
+const GEMINI_MAX_RETRIES = parseInt(process.env.GEMINI_MAX_RETRIES || "2", 10);
 const MCP_AUTH_TOKEN = process.env.MCP_AUTH_TOKEN; // optional Bearer token
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
@@ -34,6 +36,33 @@ const ASPECT_RATIOS = ["1:1","16:9","9:16","4:5","5:4","3:4","4:3","21:9","2:3",
 const IMAGE_SIZES = ["512","1K","2K","4K"];
 
 // ---- Gemini API helpers ----
+async function geminiFetch(url, init) {
+  for (let attempt = 0; ; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      if ((res.status === 429 || res.status >= 500) && attempt < GEMINI_MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+      return res;
+    } catch (error) {
+      const reason =
+        error.name === "AbortError"
+          ? `timed out after ${GEMINI_TIMEOUT_MS}ms (raise GEMINI_TIMEOUT_MS if needed)`
+          : `network error: ${error.message}`;
+      if (attempt < GEMINI_MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+      throw new Error(`Gemini API request failed after ${attempt + 1} attempts: ${reason}`);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 async function callGemini(parts, { aspectRatio, imageSize } = {}) {
   const generationConfig = { responseModalities: ["TEXT", "IMAGE"] };
   if (aspectRatio || imageSize) {
@@ -43,7 +72,7 @@ async function callGemini(parts, { aspectRatio, imageSize } = {}) {
     };
   }
 
-  const res = await fetch(`${API_BASE}/${MODEL}:generateContent`, {
+  const res = await geminiFetch(`${API_BASE}/${MODEL}:generateContent`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -298,11 +327,17 @@ app.get("/", (_req, res) => {
 });
 
 // Optional Bearer-token auth on the MCP endpoint
+function tokensMatch(provided, expected) {
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 function authenticate(req, res, next) {
   if (!MCP_AUTH_TOKEN) return next();
   const header = req.headers.authorization || "";
   const token = header.replace(/^Bearer\s+/i, "");
-  if (token !== MCP_AUTH_TOKEN) {
+  if (!tokensMatch(token, MCP_AUTH_TOKEN)) {
     return res.status(401).json({
       jsonrpc: "2.0",
       error: { code: -32000, message: "Unauthorized" },
