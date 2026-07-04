@@ -40,6 +40,27 @@ if [ ! -x "$PAL_PY" ]; then
   fi
 fi
 
+# --- PAL customizations (survive fresh containers) ---------------------------
+# 1. OpenAI: PAL strips proxy env vars, which breaks it behind the managed
+#    egress proxy — re-apply the proxy patch on every fresh clone.
+"$PAL_PY" "$CLAUDE_PROJECT_DIR/.claude/pal/patch-openai-proxy.py" "$PAL_DIR" || true
+
+# 2. Model catalog: use the repo's copy (adds gpt-5.4/gpt-5.5/gpt-5.5-pro).
+# 3. API keys: PAL reads $PAL_DIR/.env at startup. OPENAI_API_KEY comes from
+#    the environment settings at claude.ai/code (same place as GEMINI_API_KEY);
+#    fall back to a key already saved in .env so reruns don't wipe it.
+PAL_OPENAI_KEY="${OPENAI_API_KEY:-}"
+if [ -z "$PAL_OPENAI_KEY" ] && [ -f "$PAL_DIR/.env" ]; then
+  PAL_OPENAI_KEY=$(grep -m1 '^OPENAI_API_KEY=' "$PAL_DIR/.env" | cut -d= -f2- || true)
+fi
+{
+  echo "OPENAI_MODELS_CONFIG_PATH=$CLAUDE_PROJECT_DIR/.claude/pal/openai_models.json"
+  if [ -n "$PAL_OPENAI_KEY" ]; then
+    echo "OPENAI_API_KEY=$PAL_OPENAI_KEY"
+  fi
+} > "$PAL_DIR/.env"
+chmod 600 "$PAL_DIR/.env"
+
 if ! claude mcp get pal >/dev/null 2>&1; then
   claude mcp add pal --scope user -- "$PAL_PY" "$PAL_DIR/server.py"
 fi
