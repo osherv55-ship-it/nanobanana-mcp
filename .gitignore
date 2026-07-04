@@ -11,6 +11,10 @@ npm-debug.log*
 # ephemeral cloud sessions. Only the derived vector index (.chroma/ above)
 # is ignored. If large videos start bloating the repo, move them to Git LFS.
 
+# scratch / working dirs for video processing demos
+tmp/
+out/
+
 # OS / editor cruft
 .DS_Store
 .env
