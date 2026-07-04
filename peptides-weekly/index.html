@@ -1,0 +1,758 @@
+<!-- מרכז הפפטידים להזרקה — דוח שבועי / Injectable Peptides Weekly Monitor (Hebrew, RTL) -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>מרכז הפפטידים להזרקה — דוח שבועי</title>
+<style>
+  :root {
+    /* clinical neutrals, slight cool/teal bias — chosen, not defaulted */
+    --bg:        #eef1f4;
+    --surface:   #fbfcfd;
+    --surface-2: #f3f5f8;
+    --ink:       #151a21;
+    --ink-soft:  #48525e;
+    --ink-faint: #7d8794;
+    --line:      #dde2e8;
+    --line-soft: #e7ebef;
+    /* signature accent: clinical teal + vial amber */
+    --teal:      #0d6e78;
+    --teal-bright:#128a96;
+    --teal-wash: #e2f0f1;
+    --amber:     #b26a06;
+    --amber-wash:#f6ecd9;
+    --red:       #bb3b2c;
+    --red-wash:  #f7e3e0;
+    --green:     #2f7d54;
+    --green-wash:#e2f0e8;
+    --violet:    #5b4a9c;
+    --shadow:    0 1px 2px rgba(18,26,33,.04), 0 8px 28px -14px rgba(18,26,33,.22);
+    --shadow-sm: 0 1px 2px rgba(18,26,33,.05);
+    --radius:    14px;
+    --maxw:      1080px;
+    --font: "Assistant","Heebo","Rubik",system-ui,"Segoe UI","Arial Hebrew",Arial,sans-serif;
+    --mono: "IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #0d1116;
+      --surface:   #141a21;
+      --surface-2: #1a222b;
+      --ink:       #eef2f6;
+      --ink-soft:  #aab4c0;
+      --ink-faint: #78838f;
+      --line:      #263039;
+      --line-soft: #1e262f;
+      --teal:      #35b0bd;
+      --teal-bright:#4ac6d3;
+      --teal-wash: #10312f;
+      --amber:     #e0a445;
+      --amber-wash:#3a2c0f;
+      --red:       #e56b5b;
+      --red-wash:  #3a1c17;
+      --green:     #57c084;
+      --green-wash:#12301f;
+      --violet:    #9385d8;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 14px 40px -18px rgba(0,0,0,.7);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#eef1f4; --surface:#fbfcfd; --surface-2:#f3f5f8; --ink:#151a21; --ink-soft:#48525e;
+    --ink-faint:#7d8794; --line:#dde2e8; --line-soft:#e7ebef; --teal:#0d6e78; --teal-bright:#128a96;
+    --teal-wash:#e2f0f1; --amber:#b26a06; --amber-wash:#f6ecd9; --red:#bb3b2c; --red-wash:#f7e3e0;
+    --green:#2f7d54; --green-wash:#e2f0e8; --violet:#5b4a9c;
+    --shadow:0 1px 2px rgba(18,26,33,.04),0 8px 28px -14px rgba(18,26,33,.22); --shadow-sm:0 1px 2px rgba(18,26,33,.05);
+  }
+  :root[data-theme="dark"] {
+    --bg:#0d1116; --surface:#141a21; --surface-2:#1a222b; --ink:#eef2f6; --ink-soft:#aab4c0;
+    --ink-faint:#78838f; --line:#263039; --line-soft:#1e262f; --teal:#35b0bd; --teal-bright:#4ac6d3;
+    --teal-wash:#10312f; --amber:#e0a445; --amber-wash:#3a2c0f; --red:#e56b5b; --red-wash:#3a1c17;
+    --green:#57c084; --green-wash:#12301f; --violet:#9385d8;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px -18px rgba(0,0,0,.7); --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font); line-height: 1.65; direction: rtl;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(16px,4vw,32px); }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2.5px solid var(--teal-bright); outline-offset: 2px; border-radius: 4px; }
+  h1,h2,h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+
+  /* ---------- Top bar ---------- */
+  header.top {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-in { display: flex; align-items: center; gap: 14px; padding-block: 11px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.01em; }
+  .brand .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px var(--teal-wash); animation: pulse 2.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{ box-shadow:0 0 0 4px var(--teal-wash);} 50%{ box-shadow:0 0 0 7px transparent;} }
+  .brand small { font-weight: 600; color: var(--ink-faint); font-size: .74rem; }
+  nav.jump { margin-inline-start: auto; display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.jump a { font-size: .82rem; color: var(--ink-soft); padding: 5px 9px; border-radius: 8px; }
+  nav.jump a:hover { background: var(--surface-2); text-decoration: none; color: var(--ink); }
+  @media (max-width: 760px){ nav.jump{ display:none; } }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  #chain { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .5; }
+  .hero-in { position: relative; z-index: 1; padding-block: clamp(38px,7vw,72px); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700;
+    letter-spacing: .04em; color: var(--teal); background: var(--teal-wash); border: 1px solid color-mix(in srgb,var(--teal) 30%,transparent);
+    padding: 5px 12px; border-radius: 999px; }
+  h1.title { font-size: clamp(1.9rem,5.2vw,3.3rem); font-weight: 850; letter-spacing: -.02em; margin-top: 16px; max-width: 18ch; }
+  .lede { font-size: clamp(1.02rem,2.3vw,1.22rem); color: var(--ink-soft); max-width: 60ch; margin-top: 14px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font-size: .86rem; color: var(--ink-faint); align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:7px; background: var(--surface); border:1px solid var(--line);
+    padding: 5px 11px; border-radius: 999px; font-weight:600; color: var(--ink-soft); }
+  .chip b { color: var(--ink); }
+
+  /* ---------- Stat band ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-top: 30px; box-shadow: var(--shadow); }
+  @media (max-width: 720px){ .stats{ grid-template-columns: repeat(2,1fr); } }
+  .stat { background: var(--surface); padding: 18px 16px; }
+  .stat .n { font-size: clamp(1.5rem,4vw,2.1rem); font-weight: 850; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .stat .n .u { font-size: .62em; font-weight: 700; color: var(--teal); margin-inline-start: 3px; }
+  .stat .l { font-size: .8rem; color: var(--ink-faint); margin-top: 3px; }
+
+  /* ---------- Sections ---------- */
+  section { padding-block: clamp(38px,6vw,60px); border-bottom: 1px solid var(--line-soft); }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .sec-num { font-family: var(--mono); font-size: .8rem; color: var(--teal); font-weight: 700; }
+  h2 { font-size: clamp(1.4rem,3.4vw,2rem); font-weight: 820; letter-spacing: -.015em; }
+  .sec-sub { color: var(--ink-soft); max-width: 66ch; margin-top: 4px; font-size: .98rem; }
+
+  /* pills */
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 700;
+    padding: 3px 9px; border-radius: 999px; letter-spacing: .01em; white-space: nowrap; border: 1px solid transparent; }
+  .pill::before { content:""; width:6px; height:6px; border-radius:50%; background: currentColor; opacity:.85; }
+  .p-approved { color: var(--green); background: var(--green-wash); border-color: color-mix(in srgb,var(--green) 26%,transparent); }
+  .p-research { color: var(--amber); background: var(--amber-wash); border-color: color-mix(in srgb,var(--amber) 30%,transparent); }
+  .p-experimental { color: var(--violet); background: color-mix(in srgb,var(--violet) 15%,var(--surface)); border-color: color-mix(in srgb,var(--violet) 30%,transparent); }
+  .p-banned { color: var(--red); background: var(--red-wash); border-color: color-mix(in srgb,var(--red) 28%,transparent); }
+
+  /* trending table */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  thead th { text-align: right; font-size: .76rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase;
+    letter-spacing: .04em; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--surface-2); white-space: nowrap; }
+  tbody td { padding: 14px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; font-size: .93rem; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--surface-2); }
+  .pep-name { font-weight: 750; color: var(--ink); }
+  .pep-alias { color: var(--ink-faint); font-size: .82rem; }
+  .plat { display:inline-flex; gap:6px; flex-wrap:wrap; }
+  .plat span { font-size:.74rem; font-weight:650; color: var(--ink-soft); background: var(--surface-2); border:1px solid var(--line-soft); padding:2px 7px; border-radius:6px; }
+  .vol { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); white-space: nowrap; }
+
+  /* generic card grid */
+  .grid { display: grid; gap: 16px; }
+  .g-2 { grid-template-columns: repeat(2,1fr); }
+  .g-3 { grid-template-columns: repeat(3,1fr); }
+  @media (max-width: 860px){ .g-2,.g-3 { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: 1.06rem; font-weight: 780; margin-bottom: 6px; }
+  .card p { margin: 8px 0 0; color: var(--ink-soft); font-size: .93rem; }
+
+  /* story cards with quote + timeline */
+  .story { position: relative; }
+  .story .plat-tag { font-size:.74rem; font-weight:700; color: var(--teal); letter-spacing:.02em; }
+  .story blockquote { margin: 10px 0 0; padding-inline-start: 14px; border-inline-start: 3px solid var(--teal);
+    color: var(--ink); font-size: .98rem; font-style: normal; line-height: 1.6; }
+  .story .tl { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .story .tl span { font-size: .74rem; color: var(--ink-soft); background: var(--surface-2); border:1px solid var(--line-soft);
+    padding: 3px 8px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+  .story .tag-neg { color: var(--red); background: var(--red-wash); border-color: color-mix(in srgb,var(--red) 25%,transparent); }
+  .story .tag-pos { color: var(--green); background: var(--green-wash); border-color: color-mix(in srgb,var(--green) 25%,transparent); }
+
+  /* expert reality-check rows */
+  .rc { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); background: var(--surface); }
+  .rc details { border-bottom: 1px solid var(--line-soft); }
+  .rc details:last-child { border-bottom: 0; }
+  .rc summary { list-style: none; cursor: pointer; padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+  .rc summary::-webkit-details-marker { display: none; }
+  .rc summary .chev { margin-inline-start: auto; color: var(--ink-faint); transition: transform .2s; font-size:.9rem; }
+  .rc details[open] summary .chev { transform: rotate(90deg); }
+  .rc summary .cat { font-weight: 780; font-size: 1.02rem; }
+  .rc .body { padding: 0 18px 18px; color: var(--ink-soft); font-size: .93rem; }
+  .rc .body p { margin: 0 0 8px; }
+  .rc .body strong { color: var(--ink); }
+  /* evidence meter */
+  .ev { display:inline-flex; align-items:center; gap:7px; font-size:.76rem; font-weight:700; color: var(--ink-faint); }
+  .ev .bars { display:inline-flex; gap:3px; }
+  .ev .bars i { width: 16px; height: 7px; border-radius: 2px; background: var(--line); display:inline-block; }
+  .ev.lvl1 .bars i:nth-child(-n+1),
+  .ev.lvl2 .bars i:nth-child(-n+2),
+  .ev.lvl3 .bars i:nth-child(-n+3),
+  .ev.lvl4 .bars i:nth-child(-n+4){ background: var(--teal); }
+  .ev.warn .bars i:nth-child(-n+1){ background: var(--amber); }
+
+  /* regulatory timeline */
+  .timeline { position: relative; margin-inline-start: 8px; padding-inline-start: 26px; border-inline-start: 2px solid var(--line); display: grid; gap: 22px; }
+  .tl-item { position: relative; }
+  .tl-item::before { content:""; position: absolute; inset-inline-start: -34px; top: 3px; width: 13px; height: 13px; border-radius: 50%;
+    background: var(--surface); border: 3px solid var(--teal); }
+  .tl-item.crit::before { border-color: var(--red); }
+  .tl-item .when { font-family: var(--mono); font-size: .78rem; color: var(--teal); font-weight: 700; }
+  .tl-item.crit .when { color: var(--red); }
+  .tl-item .what { font-weight: 730; margin-top: 2px; }
+  .tl-item .who { color: var(--ink-soft); font-size: .9rem; margin-top: 3px; }
+
+  /* pros / cons */
+  .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px){ .pc { grid-template-columns: 1fr; } }
+  .pc-col { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
+  .pc-col h3 { display:flex; align-items:center; gap:8px; font-size: 1rem; margin-bottom: 10px; }
+  .pc-col ul { margin: 0; padding-inline-start: 0; list-style: none; display: grid; gap: 10px; }
+  .pc-col li { position: relative; padding-inline-start: 24px; font-size: .93rem; color: var(--ink-soft); }
+  .pc-col li::before { position: absolute; inset-inline-start: 0; top: 0; font-weight: 800; }
+  .pc-pos li::before { content:"+"; color: var(--green); }
+  .pc-neg li::before { content:"−"; color: var(--red); }
+  .pc-pos h3 { color: var(--green); }
+  .pc-neg h3 { color: var(--red); }
+
+  /* disclaimer / warning banner */
+  .warnbar { background: var(--amber-wash); border: 1px solid color-mix(in srgb,var(--amber) 34%,transparent);
+    border-radius: var(--radius); padding: 16px 18px; display: flex; gap: 13px; align-items: flex-start; }
+  .warnbar .ic { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--amber); color: #fff;
+    display: grid; place-items: center; font-weight: 900; font-size: .95rem; }
+  .warnbar p { margin: 0; font-size: .9rem; color: var(--ink); }
+  .warnbar b { color: color-mix(in srgb, var(--amber) 80%, var(--ink)); }
+
+  .safety-grid { display:grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+  @media (max-width: 760px){ .safety-grid{ grid-template-columns:1fr; } }
+  .sfx { border:1px solid var(--line); border-inline-start: 4px solid var(--red); border-radius: 10px; padding: 14px 16px; background: var(--surface); }
+  .sfx h4 { margin:0 0 4px; font-size: .96rem; font-weight: 760; }
+  .sfx p { margin:0; font-size: .88rem; color: var(--ink-soft); }
+
+  /* sources */
+  .src-list { columns: 2; column-gap: 28px; }
+  @media (max-width: 760px){ .src-list{ columns: 1; } }
+  .src-list a { display: block; break-inside: avoid; padding: 7px 0; font-size: .88rem; color: var(--ink-soft); border-bottom: 1px dashed var(--line); }
+  .src-list a:hover { color: var(--teal); }
+  .src-list a b { color: var(--ink); font-weight: 700; }
+
+  footer { padding-block: 40px; color: var(--ink-faint); font-size: .86rem; }
+  footer .how { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+  footer .how h3 { font-size: 1.02rem; color: var(--ink); margin-bottom: 8px; }
+  footer .how p { margin: 0 0 8px; color: var(--ink-soft); font-size:.92rem; }
+  .stack { display:inline-flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .stack b { font-size:.76rem; font-weight:700; padding:3px 9px; border-radius:7px; background: var(--teal-wash); color: var(--teal); border:1px solid color-mix(in srgb,var(--teal) 25%,transparent); }
+</style>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <span class="dot" aria-hidden="true"></span>
+      מרכז הפפטידים <small>· דוח שבועי</small>
+    </div>
+    <nav class="jump" aria-label="ניווט">
+      <a href="#trend">הטרנד</a>
+      <a href="#stories">חוויות אישיות</a>
+      <a href="#experts">פרשנות מומחים</a>
+      <a href="#reg">רגולציה</a>
+      <a href="#conclusions">מסקנות</a>
+      <a href="#israel">בישראל</a>
+      <a href="#sources">מקורות</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <canvas id="chain" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <span class="eyebrow">● ניטור שיח · טיקטוק · אינסטגרם · פייסבוק</span>
+    <h1 class="title">פפטידים להזרקה: מה הרשת מדברת עליו השבוע</h1>
+    <p class="lede">
+      סיכום שבועי מרוכז של השיח ברשתות החברתיות סביב פפטידים להזרקה — התהליכים שאנשים
+      מספרים שעברו, השינויים הדרמטיים שהם מתארים, פרשנות של רופאים ורגולטורים, והמסקנות
+      שהקהילה עצמה מסיקה. נועד להעלאת מודעות ולצמצום נזק — <b>לא</b> להמלצה או להנחיה רפואית.
+    </p>
+    <div class="meta-row">
+      <span class="chip">שבוע: <b>29 ביוני – 4 ביולי 2026</b></span>
+      <span class="chip">מתעדכן <b>אחת לשבוע</b></span>
+      <span class="chip">איסוף: <b>Claude · חיפוש רשת חי</b></span>
+    </div>
+
+    <div class="stats" role="list">
+      <div class="stat" role="listitem"><div class="n">50<span class="u">מ׳+</span></div><div class="l">צפיות בסרטוני ‎#peptides‎ בטיקטוק</div></div>
+      <div class="stat" role="listitem"><div class="n">654<span class="u">אלף</span></div><div class="l">פוסטים בהאשטאג באינסטגרם</div></div>
+      <div class="stat" role="listitem"><div class="n">10.1<span class="u">מ׳</span></div><div class="l">חיפושים בארה״ב (ינואר 2026)</div></div>
+      <div class="stat" role="listitem"><div class="n">7<span class="u">מכתבים</span></div><div class="l">אזהרת FDA למוכרים ביום אחד</div></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- disclaimer -->
+  <section style="border-bottom:0; padding-bottom:0;">
+    <div class="warnbar">
+      <span class="ic" aria-hidden="true">!</span>
+      <p><b>הבהרה רפואית.</b> הדף מסכם שיח ציבורי ברשתות החברתיות ובתקשורת, ואינו מהווה ייעוץ רפואי,
+      אבחון או המלצת טיפול. רוב הפפטידים המוזכרים כאן אינם מאושרים לשימוש בבני אדם, נמכרים ב״שוק אפור״
+      ללא פיקוח, ועלולים להיות מסוכנים. אין להתחיל, להפסיק או לשנות טיפול על סמך מידע ברשת — יש להתייעץ
+      עם רופ/ה מוסמכ/ת. הדף אינו כולל מינונים או הוראות שימוש.</p>
+    </div>
+  </section>
+
+  <!-- 1 TREND -->
+  <section id="trend">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <div>
+        <h2>הטרנד של השבוע</h2>
+        <p class="sec-sub">הפפטידים שהכי מדוברים כרגע, לפי הפלטפורמה שבה הם בולטים ומצב הרגולציה שלהם. הסטטוס משקף את מעמדם הרשמי — לא את הבטיחות בפועל.</p>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>פפטיד</th><th>נפוץ בשם</th><th>איפה מדובר</th><th>נפח שיח</th><th>סטטוס</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pep-name">סמגלוטייד</span></td>
+            <td class="pep-alias">אוזמפיק / וגובי</td>
+            <td><span class="plat"><span>טיקטוק</span><span>אינסטגרם</span><span>פייסבוק</span></span></td>
+            <td class="vol">מיליוני צפיות</td>
+            <td><span class="pill p-approved">מאושר FDA</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">טירזפטייד</span></td>
+            <td class="pep-alias">מונג׳רו / זפבаунד</td>
+            <td><span class="plat"><span>טיקטוק</span><span>אינסטגרם</span></span></td>
+            <td class="vol">מיליוני צפיות</td>
+            <td><span class="pill p-approved">מאושר FDA</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">רטטרוטייד</span></td>
+            <td class="pep-alias">"טריפל-G" ניסויי</td>
+            <td><span class="plat"><span>טיקטוק</span><span>פורומים</span></span></td>
+            <td class="vol">עולה בחדות</td>
+            <td><span class="pill p-experimental">ניסויי · שלב 3</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">BPC-157</span></td>
+            <td class="pep-alias">"פפטיד הריפוי"</td>
+            <td><span class="plat"><span>טיקטוק</span><span>אינסטגרם</span><span>פייסבוק</span></span></td>
+            <td class="vol">עשרות מיליוני צפיות</td>
+            <td><span class="pill p-research">"מחקר בלבד"</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">TB-500</span></td>
+            <td class="pep-alias">תימוזין β4</td>
+            <td><span class="plat"><span>טיקטוק</span><span>קבוצות פייסבוק</span></span></td>
+            <td class="vol">גבוה</td>
+            <td><span class="pill p-research">"מחקר בלבד"</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">CJC-1295 / איפמורלין</span></td>
+            <td class="pep-alias">משחררי הורמון גדילה</td>
+            <td><span class="plat"><span>טיקטוק</span><span>קהילות ביו-האקינג</span></span></td>
+            <td class="vol">בינוני-גבוה</td>
+            <td><span class="pill p-research">"מחקר בלבד"</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">GHK-Cu</span></td>
+            <td class="pep-alias">פפטיד נחושת</td>
+            <td><span class="plat"><span>טיקטוק</span><span>אינסטגרם ביוטי</span></span></td>
+            <td class="vol">גבוה (סקינקר)</td>
+            <td><span class="pill p-approved">מאושר לשימוש מקומי</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">מלנוטן II</span></td>
+            <td class="pep-alias">"פפטיד השיזוף"</td>
+            <td><span class="plat"><span>טיקטוק</span><span>אינסטגרם</span></span></td>
+            <td class="vol">בינוני</td>
+            <td><span class="pill p-banned">קושר לסרטן עור</span></td>
+          </tr>
+          <tr>
+            <td><span class="pep-name">NAD+</span></td>
+            <td class="pep-alias">אנטי-אייג׳ינג / אנרגיה</td>
+            <td><span class="plat"><span>טיקטוק</span><span>לונג׳ביטי</span></span></td>
+            <td class="vol">בינוני</td>
+            <td><span class="pill p-research">ראיות מוגבלות</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2 STORIES -->
+  <section id="stories">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <div>
+        <h2>מה אנשים מספרים שהם עברו</h2>
+        <p class="sec-sub">תמצית של סוגי התהליכים והשינויים הדרמטיים שגולשים מתארים בפוסטים ובסרטונים — כולל טווחי הזמן שהם מדווחים עליהם. אלו עדויות אישיות לא מאומתות, שמייצגות את השיח ולא ראיה מדעית.</p>
+      </div>
+    </div>
+    <div class="grid g-3">
+      <div class="card story">
+        <span class="plat-tag">טיקטוק · ‎#Mounjaro‎</span>
+        <h3>ירידה דרמטית במשקל</h3>
+        <blockquote>"סרטוני ׳לפני ואחרי׳ שהציפו את הפיד — עשרות קילוגרמים, שינוי בפנים, בגדים חדשים." המדווחים מתארים ירידה מהירה בתיאבון וב״רעש המחשבתי״ סביב אוכל.</blockquote>
+        <div class="tl"><span>שבוע 1–4: דיכוי תיאבון</span><span>חודש 3–6: ירידה נראית</span><span class="tag-neg">אחרי הפסקה: חלק מהמשקל חוזר</span></div>
+      </div>
+      <div class="card story">
+        <span class="plat-tag">אינסטגרם / טיקטוק · BPC-157</span>
+        <h3>החלמה מפציעה</h3>
+        <blockquote>ספורטאים ומתאמנים מספרים על "ריפוי" של פציעות גידים, ברכיים וגב שלא עברו — בהשראת פודקאסטרים שסיפרו שזה עזר להם. הרבה מהעדויות סובייקטיביות וללא הדמיה רפואית.</blockquote>
+        <div class="tl"><span>ימים–שבועות: הקלה מדווחת</span><span class="tag-neg">מדווח גם: כאבי ראש, בחילה</span></div>
+      </div>
+      <div class="card story">
+        <span class="plat-tag">אינסטגרם ביוטי · GHK-Cu</span>
+        <h3>עור, קולגן וזוהר</h3>
+        <blockquote>קהילת ה״סקין לונג׳ביטי" מייחסת לפפטיד הנחושת שיפור במרקם ובקמטים. יש בסיס מחקרי — אך רק לשימוש <b>מקומי</b> על העור, לא להזרקה.</blockquote>
+        <div class="tl"><span>שבועות–חודשים: שיפור מדווח</span><span class="tag-pos">ראיות טובות יחסית (טופיקלי)</span></div>
+      </div>
+      <div class="card story">
+        <span class="plat-tag">טיקטוק · ביו-האקינג</span>
+        <h3>אנרגיה, שינה ומיקוד</h3>
+        <blockquote>משחררי הורמון גדילה (CJC-1295, איפמורלין) ו-NAD+ משווקים כ״שדרוג" לאנרגיה, שינה והתאוששות. משפיענים כמו גארי ברקה מוכרים ערכות ב-350–600$.</blockquote>
+        <div class="tl"><span>עדויות סובייקטיביות</span><span class="tag-neg">ללא נתוני בטיחות ארוכי-טווח</span></div>
+      </div>
+      <div class="card story">
+        <span class="plat-tag">רדיט / פייסבוק · דיווחי חרטה</span>
+        <h3>"הצד השני" של הטרנד</h3>
+        <blockquote>לצד סיפורי ההצלחה מצטברים פוסטי חרטה: אנשים מתארים מיגרנות, חולשה, דיכאון, בחילה והקאות, ואף <b>אנהדוניה</b> — אובדן היכולת לחוות הנאה. מקרה אחד תיאר "השתנה עם דם".</blockquote>
+        <div class="tl"><span class="tag-neg">אנהדוניה</span><span class="tag-neg">מיגרנות / חולשה</span><span class="tag-neg">חרטה</span></div>
+      </div>
+      <div class="card story">
+        <span class="plat-tag">רדיט · ניתוח 400 אלף פוסטים</span>
+        <h3>תופעות לוואי "נסתרות"</h3>
+        <blockquote>מחקר שסרק כ-400,000 פוסטים על GLP-1 חשף תסמינים פחות מדוברים: אי-סדירות במחזור, צמרמורות וגלי חום — בנוסף לבחילה, שלשול ועייפות שכבר מוכרים.</blockquote>
+        <div class="tl"><span class="tag-neg">מחזור לא סדיר</span><span class="tag-neg">גלי חום</span><span class="tag-neg">GI</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 EXPERTS -->
+  <section id="experts">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <div>
+        <h2>פרשנות מומחים: מה אומרת המדע</h2>
+        <p class="sec-sub">בדיקת מציאות לפי קטגוריה. "מד הראיות" משקף כמה יש עדויות איכותיות בבני אדם — לא כמה הפפטיד פופולרי. הקטגוריות פתוחות ללחיצה.</p>
+      </div>
+    </div>
+    <div class="rc">
+      <details open>
+        <summary>
+          <span class="cat">אגוניסטים ל-GLP-1 <span class="pep-alias">— סמגלוטייד, טירזפטייד, רטטרוטייד</span></span>
+          <span class="ev lvl4"><span class="bars"><i></i><i></i><i></i><i></i></span>ראיות חזקות (למאושרים)</span>
+          <span class="chev" aria-hidden="true">▸</span>
+        </summary>
+        <div class="body">
+          <p><strong>מה שאושר:</strong> סמגלוטייד וטירזפטייד עברו ניסויים קליניים גדולים ומאושרים לסוכרת ולהשמנה. היעילות לירידה במשקל אמיתית ומתועדת — טירזפטייד הראה ירידה גדולה יותר מסמגלוטייד.</p>
+          <p><strong>הבעיה ברשת:</strong> <strong>רטטרוטייד</strong> ("טריפל-G") עדיין בשלב 3 של אלי לילי ו<strong>לא מאושר</strong> — אך גולשים כבר מדגימים בטיקטוק איך לערבב אבקה מ״שוק אפור" בבית. זהו שימוש בחומר ניסויי ללא כל פיקוח.</p>
+          <p><strong>סיכונים:</strong> בחילה, הקאות, אפשרות לדלקת לבלב, וחזרת חלק ניכר מהמשקל תוך שנה מהפסקה. תביעות ענק בארה״ב על תופעות לוואי חמורות.</p>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <span class="cat">פפטידי ריפוי <span class="pep-alias">— BPC-157, TB-500</span></span>
+          <span class="ev lvl1 warn"><span class="bars"><i></i><i></i><i></i><i></i></span>ראיות דלות בבני אדם</span>
+          <span class="chev" aria-hidden="true">▸</span>
+        </summary>
+        <div class="body">
+          <p><strong>מה שידוע:</strong> ל-BPC-157 יש רק שלושה מחקרים קטנים בבני אדם, ללא קבוצת ביקורת ובאיכות נמוכה. אין ניסויים אקראיים מבוקרים גדולים. רוב "הראיות" מגיעות מעכברים ותאים.</p>
+          <p><strong>מנגנון מדאיג:</strong> חלק מההשפעה מיוחסת ל<strong>אנגיוגנזה</strong> (יצירת כלי דם חדשים) — תהליך שהוא גם סימן היכר של סרטן. אם קיימים תאים סרטניים רדומים, תיאורטית זה עלול להאיץ אותם.</p>
+          <p><strong>עמדת רגולטורים:</strong> Health Canada הזהירה במפורש שלא לרכוש או להזריק BPC-157, TB-500, CJC-1295, איפמורלין ורטטרוטייד הנמכרים אונליין.</p>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <span class="cat">משחררי הורמון גדילה <span class="pep-alias">— CJC-1295, איפמורלין, סרמורלין</span></span>
+          <span class="ev lvl2"><span class="bars"><i></i><i></i><i></i><i></i></span>ראיות חלקיות</span>
+          <span class="chev" aria-hidden="true">▸</span>
+        </summary>
+        <div class="body">
+          <p><strong>מה שידוע:</strong> חומרים אלה מגרים שחרור הורמון גדילה. לחלקם רקע מחקרי, אך רובם אינם מאושרים לשימוש כללי ומשווקים כ״מחקר בלבד". הבטיחות ארוכת-הטווח לא נחקרה בקהל הרחב.</p>
+          <p><strong>ספורט:</strong> משחררי GH ופפטידים רבים <strong>אסורים ע״י WADA</strong> — שימוש אצל ספורטאים מתחרים = דופינג.</p>
+          <p><strong>הקשר:</strong> נמכרים בעיקר בקהילות ביו-האקינג ולונג׳ביטי, לרוב ע״י משפיענים בעלי אינטרס מסחרי ישיר.</p>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <span class="cat">קוסמטי ואחרים <span class="pep-alias">— GHK-Cu, מלנוטן II, NAD+</span></span>
+          <span class="ev lvl2"><span class="bars"><i></i><i></i><i></i><i></i></span>מעורב</span>
+          <span class="chev" aria-hidden="true">▸</span>
+        </summary>
+        <div class="body">
+          <p><strong>GHK-Cu (פפטיד נחושת):</strong> יש בסיס קליני סביר — אך רק ל<strong>שימוש מקומי</strong> על העור (קולגן, אלסטין, אנטי-דלקתי). ההשפעות בפרסום מוגזמות, וזריקות אינן מגובות בראיות בבני אדם.</p>
+          <p><strong>מלנוטן II ("פפטיד שיזוף"):</strong> לפי Cancer Research UK <strong>אינו בטוח</strong>; דיווחי מקרים קשרו אותו לסרטן עור, כולל מלנומה.</p>
+          <p><strong>NAD+:</strong> משווק לאנרגיה ואנטי-אייג׳ינג עם ראיות מוגבלות בבני אדם. הרבה מההבטחות מבוססות על מעבדה, לא על ניסויים קליניים.</p>
+        </div>
+      </details>
+    </div>
+    <div class="warnbar" style="margin-top:18px;">
+      <span class="ic" aria-hidden="true">i</span>
+      <p><b>למה זה נהיה ויראלי?</b> "אפקט ההילה" של זריקות ההרזיה GLP-1 גלש לכל עולם הפפטידים; תרבות הביו-האקינג והלונג׳ביטי; שיווק אגרסיבי של טלה-מדיסין; וכלכלת המשפיענים — רבים מהם מוכרים את המוצר שהם מקדמים. מומחים מ-CU Anschutz, UNSW ו-NPR מזהירים שה<b>הייפ רץ מהר יותר מהראיות</b>.</p>
+    </div>
+  </section>
+
+  <!-- 4 REGULATION -->
+  <section id="reg">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div>
+        <h2>רגולציה ואזהרות</h2>
+        <p class="sec-sub">אכיפה סביב הפפטידים התגברה בחדות ב-2026. ציר הזמן מתמקד במהלכי הגופים המרכזיים.</p>
+      </div>
+    </div>
+    <div class="grid g-2" style="align-items:start;">
+      <div class="timeline">
+        <div class="tl-item crit">
+          <div class="when">אפריל 2026</div>
+          <div class="what">FDA: 7 מכתבי אזהרה ביום אחד</div>
+          <div class="who">נגד אתרים שמכרו חיקויי GLP-1 בתווית "מחקר בלבד" — סגירת פרצת ה-Research Use Only. מספר המכתבים ב-2026 שילש את 2024.</div>
+        </div>
+        <div class="tl-item">
+          <div class="when">2025–2026</div>
+          <div class="what">Health Canada: אזהרה לציבור</div>
+          <div class="who">לא לרכוש/להזריק BPC-157, TB-500, CJC-1295, איפמורלין, רטטרוטייד הנמכרים אונליין וברשתות.</div>
+        </div>
+        <div class="tl-item">
+          <div class="when">דצמבר 2025</div>
+          <div class="what">רטטרוטייד: תוצאות שלב 3</div>
+          <div class="who">אלי לילי דיווחה על קריאת שלב 3 ראשונה; הגשת בקשת אישור צפויה בסוף 2026 — עד אז החומר ניסויי בלבד.</div>
+        </div>
+        <div class="tl-item crit">
+          <div class="when">מתמשך</div>
+          <div class="what">WADA: פפטידים רבים אסורים</div>
+          <div class="who">משחררי הורמון גדילה ופפטידים נוספים ברשימת האיסור לספורטאים מתחרים.</div>
+        </div>
+      </div>
+      <div class="grid" style="gap:14px;">
+        <div class="card">
+          <h3>איכות המוצר — הממצא המדאיג</h3>
+          <p>בדיקות מעבדה עצמאיות מצאו פפטידים מזוהמים ב<strong>מתכות כבדות רעילות</strong> (ארסן, עופרת) — לעיתים פי 10 מהמותר להזרקה — וכן רעלנים חיידקיים (אנדוטוקסינים) שעלולים לגרום ל<strong>אלח דם מסכן חיים</strong>. חלק גדול מהמוצרים היה <strong>מתויג באופן שגוי</strong>: חומר אחר לגמרי, או ללא חומר פעיל כלל.</p>
+        </div>
+        <div class="card">
+          <h3>הקשר פוליטי (ארה״ב)</h3>
+          <p>הטרנד קיבל רוח גבית מבעלי ברית של RFK Jr. ותנועת ה-MAHA. פאנל מומחי FDA שהוקם לנושא כלל דמויות שמקדמות בעצמן פפטידים לא-מוכחים — מה שעורר ביקורת על ניגוד עניינים.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 CONCLUSIONS -->
+  <section id="conclusions">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <div>
+        <h2>המסקנות של הקהילה עצמה</h2>
+        <p class="sec-sub">מה שגולשים מסכמים לעצמם — משני צידי המתרס — מתוך פורומים, קבוצות פייסבוק ורדיט.</p>
+      </div>
+    </div>
+    <div class="pc">
+      <div class="pc-col pc-pos">
+        <h3>מה שמושך אנשים</h3>
+        <ul>
+          <li>ירידה במשקל אמיתית ומהירה עם GLP-1 מאושרים — לרבים זו חוויה משנה-חיים.</li>
+          <li>הקלה מדווחת בפציעות כרוניות שלא הגיבו לטיפולים אחרים.</li>
+          <li>תחושת שליטה ו״שדרוג עצמי" בתרבות הביו-האקינג.</li>
+          <li>GHK-Cu מקומי — אחד מרכיבי האנטי-אייג׳ינג המגובים יחסית (על העור).</li>
+          <li>נגישות: טלה-מדיסין וקהילות אונליין מורידים חסמי כניסה.</li>
+        </ul>
+      </div>
+      <div class="pc-col pc-neg">
+        <h3>מה שגורם לחרטה</h3>
+        <ul>
+          <li>"מפל תופעות לוואי": בחילה, מיגרנות, חולשה, דיכאון, ואנהדוניה.</li>
+          <li>שוק אפור = חוסר ודאות מוחלט לגבי סטריליות, מינון וזיהומים.</li>
+          <li>מוצרים מזויפים או מתויגים לא נכון — לא באמת יודעים מה מוזרק.</li>
+          <li>עלות מצטברת גבוהה ותלות בהמשך רכישה.</li>
+          <li>חזרת המשקל / התסמינים עם ההפסקה — "מה עכשיו?".</li>
+          <li>חשש עקרוני: אין נתוני בטיחות ארוכי-טווח בבני אדם.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:22px;">
+      <div class="card">
+        <h3>דגלים אדומים בפוסט של משפיען</h3>
+        <p>הבטחות גורפות ("מרפא הכול"); לפני/אחרי דרמטי מדי; קישור מכירה ישיר או קוד קופון; "מחקר בלבד" ככיסוי משפטי; היעדר גילוי אינטרס מסחרי; הדגמת ערבוב ביתי על השיש עם מזרק וספוגית אלכוהול.</p>
+      </div>
+      <div class="card">
+        <h3>שאלות לשאול רופ/אה</h3>
+        <p>האם החומר מאושר לשימוש בבני אדם? מה הראיות בבני אדם (לא בעכברים)? מה הסיכונים והאינטראקציות עבורי? מאיפה מגיע המוצר ומי מפקח על איכותו? מה קורה כשמפסיקים?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <div>
+        <h2>אזהרות הבטיחות המרכזיות</h2>
+        <p class="sec-sub">מה שהכי חשוב שקהל עברי לא-מקצועי ייקח מכאן.</p>
+      </div>
+    </div>
+    <div class="safety-grid">
+      <div class="sfx"><h4>זיהום ומתכות כבדות</h4><p>נמצאו ארסן ועופרת עד פי 10 מהמותר, ואנדוטוקסינים חיידקיים בחלק מהמוצרים.</p></div>
+      <div class="sfx"><h4>סכנת אלח דם (ספסיס)</h4><p>הזרקה לא סטרילית של חומר לא מפוקח עלולה להיות מסכנת חיים.</p></div>
+      <div class="sfx"><h4>תיוג שגוי</h4><p>רבים מהמוצרים הכילו חומר אחר לגמרי או ללא חומר פעיל — אי אפשר לדעת מה מוזרק.</p></div>
+      <div class="sfx"><h4>חשש אנגיוגנזה/סרטן</h4><p>מנגנון יצירת כלי דם עלול תיאורטית להאיץ תאים סרטניים רדומים.</p></div>
+      <div class="sfx"><h4>אין נתונים ארוכי-טווח</h4><p>לרוב הפפטידים ה״ריפויים" אין ניסויים מבוקרים גדולים בבני אדם.</p></div>
+      <div class="sfx"><h4>שוק אפור וחוקיות</h4><p>מכירה כ״מחקר בלבד" היא פרצה משפטית — לא אישור בטיחות. בישראל אלו תכשירים במרשם/לא מאושרים.</p></div>
+    </div>
+  </section>
+
+  <!-- 7 ISRAEL -->
+  <section id="israel">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <div>
+        <h2>הזווית הישראלית</h2>
+        <p class="sec-sub">מה שרלוונטי ספציפית לקהילות דוברות עברית.</p>
+      </div>
+    </div>
+    <div class="grid g-3">
+      <div class="card">
+        <h3>זריקות ההרזיה בכותרות</h3>
+        <p>אוזמפיק, וגובי ומונג׳רו הם הפפטידים המדוברים ביותר בישראל. סרטוני "לפני/אחרי" הציפו את הטיקטוק והאינסטגרם הישראליים, וסלבריטאים הפכו אותם לסמל תרבותי — עם היקף גדול של שימוש לא-רשמי לירידה במשקל.</p>
+      </div>
+      <div class="card">
+        <h3>מעמד רגולטורי</h3>
+        <p>בישראל השימוש באוזמפיק לירידה במשקל דורש אישור מיוחד ממשרד הבריאות. פפטידים מ״שוק אפור" אינם מאושרים ואינם מפוקחים. משרד הבריאות התריע בעבר על תכשירים מזויפים שהגיעו לבתי מרקחת.</p>
+      </div>
+      <div class="card">
+        <h3>מידע רפואי כוזב ברשת</h3>
+        <p>בישראל תועדו קמפייני הונאה שהתחזו לרופאים בכירים ולוגו משרד הבריאות כדי להפיץ המלצות שקריות על תכשירים. זהירות כפולה מכל "המלצה רפואית" בפיד.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 SOURCES -->
+  <section id="sources">
+    <div class="sec-head">
+      <span class="sec-num">08</span>
+      <div>
+        <h2>מקורות</h2>
+        <p class="sec-sub">מבחר מהמקורות שנאספו לדוח שבוע זה. לחיצה פותחת את המקור המקורי.</p>
+      </div>
+    </div>
+    <div class="src-list">
+      <a href="https://time.com/7380810/anti-aging-peptide-shots-social-media/" target="_blank" rel="noopener"><b>TIME</b> — Why 'Anti-Aging' Peptide Shots Are Trending</a>
+      <a href="https://theconversation.com/the-peptide-problem-hype-is-outrunning-the-evidence-280715" target="_blank" rel="noopener"><b>The Conversation</b> — Hype is outrunning the evidence</a>
+      <a href="https://www.unsw.edu.au/newsroom/news/2026/04/injectable-peptides-anti-ageing-trend-safe-humans-evidence" target="_blank" rel="noopener"><b>UNSW</b> — What evidence do we have they're safe?</a>
+      <a href="https://news.cuanschutz.edu/emergency-medicine/zuckerman-peptides-regulation" target="_blank" rel="noopener"><b>CU Anschutz</b> — Influencers Love Peptides, But Are They Safe?</a>
+      <a href="https://www.cnn.com/2025/11/15/health/peptides-unregulated-influencers" target="_blank" rel="noopener"><b>CNN</b> — Unproven peptides spreading through influencers</a>
+      <a href="https://www.pbs.org/newshour/health/fda-panel-on-peptides-will-include-experts-who-promote-the-unproven-chemicals-favored-by-rfk-jr" target="_blank" rel="noopener"><b>PBS NewsHour</b> — FDA panel on peptides / RFK Jr.</a>
+      <a href="https://www.techbuzz.ai/articles/gray-market-peptides-flood-tiktok-as-pharmacists-warn-of-safety-risks" target="_blank" rel="noopener"><b>TechBuzz</b> — Gray-market peptides flood TikTok</a>
+      <a href="https://thehill.com/policy/healthcare/5855883-injectable-peptides-health-concerns-kennedy/" target="_blank" rel="noopener"><b>The Hill</b> — Inside the gray-market world of injectable peptides</a>
+      <a href="https://policycanary.io/blog/fda-research-peptide-warning-letters-april-2026" target="_blank" rel="noopener"><b>Policy Canary</b> — FDA hits seven peptide websites</a>
+      <a href="https://www.eurekalert.org/news-releases/1131852" target="_blank" rel="noopener"><b>EurekAlert!</b> — Regulation is falling behind</a>
+      <a href="https://www.sciencedaily.com/releases/2026/05/260523103914.htm" target="_blank" rel="noopener"><b>ScienceDaily</b> — AI scans 400,000 Reddit posts, hidden side effects</a>
+      <a href="https://www.nature.com/articles/s44360-026-00108-y" target="_blank" rel="noopener"><b>Nature Health</b> — Self-reported side effects of semaglutide/tirzepatide</a>
+      <a href="https://www.npr.org/2026/02/23/nx-s1-5716162/peptides-science-muscle-growth-longevity-wellness" target="_blank" rel="noopener"><b>NPR</b> — What does the science say?</a>
+      <a href="https://www.forbes.com/sites/joshuacohen/2026/06/13/influencers-peptide-boom-healthcare/" target="_blank" rel="noopener"><b>Forbes</b> — The growing power of health influencers</a>
+      <a href="https://www.westlakedermatology.com/trends/ghk-cu-copper-peptides-for-skin-care/" target="_blank" rel="noopener"><b>Westlake Dermatology</b> — The Copper Peptide (GHK-Cu) trend</a>
+      <a href="https://www.ama-assn.org/public-health/prevention-wellness/what-doctors-want-patients-know-about-injectable-peptides" target="_blank" rel="noopener"><b>AMA</b> — What doctors want patients to know</a>
+      <a href="https://www.israelhayom.co.il/health/article/16429077" target="_blank" rel="noopener"><b>ישראל היום</b> — זריקת ההרזיה החדשה שמגיעה לישראל</a>
+      <a href="https://healthy.walla.co.il/item/3776149" target="_blank" rel="noopener"><b>וואלה בריאות</b> — תביעות ענק על תופעות לוואי מזריקות הרזיה</a>
+      <a href="https://he.hadassah.org.il/hadassahpedia/mounjaro/" target="_blank" rel="noopener"><b>הדסה</b> — מונג׳רו: כל מה שחשוב לדעת</a>
+      <a href="https://www.ynet.co.il/health/article/bjqhyzpf11g" target="_blank" rel="noopener"><b>ynet</b> — האזהרה החריגה לרופאים</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="how">
+      <h3>איך הדף הזה נבנה ומתעדכן</h3>
+      <p>סוכן שבועי מרכז את השיח מטיקטוק, אינסטגרם ופייסבוק סביב פפטידים להזרקה, מצליב אותו עם
+      דיווחי תקשורת, מחקרים ואזהרות רגולטוריות, ומרנדר את הדף מחדש עם התאריכים והנתונים העדכניים.</p>
+      <p>הצוות הטכנולוגי מאחורי האיסוף:</p>
+      <div class="stack"><b>Claude — סינתזה ובנייה</b><b>חיפוש רשת חי</b><b>Gemini / GPT — פרשנות (כשזמין)</b></div>
+      <p style="margin-top:12px; font-size:.84rem;">הערה: בהרצה זו כלי ה-CLI של Gemini ו-Codex לא היו זמינים בסביבה ומכסת ה-API של Gemini הייתה מוצתה, לכן האיסוף והסינתזה בוצעו ע״י Claude עם חיפוש רשת חי. בהרצות הבאות, כאשר המפתחות זמינים, הפרשנות תשולב גם ממודלים אלו.</p>
+    </div>
+    <p>© 2026 מרכז הפפטידים · דוח שבועי לניטור שיח ברשתות. תוכן לצורכי מודעות בלבד — אינו ייעוץ רפואי.
+    אין להתחיל או לשנות טיפול ללא רופ/אה מוסמכ/ת.</p>
+  </footer>
+</main>
+
+<script>
+  // Ambient peptide-chain motif: amino-acid "beads" linked into chains, drifting slowly.
+  (function () {
+    var c = document.getElementById('chain');
+    if (!c) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var ctx = c.getContext('2d');
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var W, H, chains = [];
+    function accent() {
+      var s = getComputedStyle(document.documentElement).getPropertyValue('--teal').trim();
+      return s || '#0d6e78';
+    }
+    function resize() {
+      var r = c.getBoundingClientRect();
+      W = r.width; H = r.height;
+      c.width = W * DPR; c.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      build();
+    }
+    function build() {
+      chains = [];
+      var count = Math.max(3, Math.round(W / 260));
+      for (var i = 0; i < count; i++) {
+        var beads = 5 + Math.floor((i * 7 + 11) % 4);
+        var startX = (i + 0.5) * (W / count) + ((i % 2) ? -40 : 40);
+        var startY = 40 + ((i * 53) % Math.max(60, H - 80));
+        var ch = { beads: [], vx: 0.12 + (i % 3) * 0.05, vy: 0.05 + (i % 2) * 0.04, phase: i };
+        for (var b = 0; b < beads; b++) {
+          ch.beads.push({ x: startX + b * 30, y: startY + Math.sin(b * 0.9 + i) * 16, r: 3.2 + (b % 2) });
+        }
+        chains.push(ch);
+      }
+    }
+    var t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      var col = accent();
+      for (var i = 0; i < chains.length; i++) {
+        var ch = chains[i];
+        // links
+        ctx.strokeStyle = col; ctx.globalAlpha = 0.10; ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        for (var b = 0; b < ch.beads.length; b++) {
+          var bd = ch.beads[b];
+          var ox = Math.sin(t * 0.4 + b * 0.7 + ch.phase) * 6;
+          var oy = Math.cos(t * 0.3 + b * 0.6 + ch.phase) * 6;
+          var x = bd.x + ox, y = bd.y + oy;
+          if (b === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          bd._x = x; bd._y = y;
+        }
+        ctx.stroke();
+        // beads
+        for (var b2 = 0; b2 < ch.beads.length; b2++) {
+          var bd2 = ch.beads[b2];
+          ctx.globalAlpha = 0.16; ctx.fillStyle = col;
+          ctx.beginPath(); ctx.arc(bd2._x, bd2._y, bd2.r, 0, Math.PI * 2); ctx.fill();
+        }
+        // drift
+        for (var b3 = 0; b3 < ch.beads.length; b3++) {
+          ch.beads[b3].x += ch.vx; ch.beads[b3].y += ch.vy;
+          if (ch.beads[b3].x > W + 60) ch.beads[b3].x -= (W + 120);
+          if (ch.beads[b3].y > H + 60) ch.beads[b3].y -= (H + 120);
+        }
+      }
+      ctx.globalAlpha = 1;
+      t += 0.016;
+      if (!reduce) requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+    if (reduce) { draw(); } else { requestAnimationFrame(draw); }
+  })();
+</script>
