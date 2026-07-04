@@ -69,10 +69,18 @@ academy. The deliverable of every run is a **Hebrew report** committed to
    the template below. Every claim about a post must carry its link. Rank items
    by expected value to the academy, not by date.
 
-6. **Persist.** `git add` the report (+ any watchlist changes), commit with a
-   descriptive message, and push to the session's working branch (never `main`).
+6. **Feed page (user's preferred delivery).** Besides the markdown report,
+   build `reports/aesthetics-tracker/YYYY-MM-DD-feed.html` — an RTL Hebrew
+   dashboard where every surfaced post is a clickable card (region + platform
+   filters, direct post links, newsjacking list, ranked ideas). Use the
+   previous feed file as the template. When running interactively, publish it
+   with the Artifact tool so the user gets a live link.
 
-7. **Deliver.** Post a short Hebrew summary of the top 3-5 findings and ideas
+7. **Persist.** `git add` the report + feed page (+ any watchlist changes),
+   commit with a descriptive message, and push to the session's working branch
+   (never `main`).
+
+8. **Deliver.** Post a short Hebrew summary of the top 3-5 findings and ideas
    in the conversation, with links, and mention the report path.
 
 ## Report template (Hebrew)
