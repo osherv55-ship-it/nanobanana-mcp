@@ -12,6 +12,8 @@ import {
 const PORT = parseInt(process.env.PORT || "8080", 10);
 const MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-3.1-flash-image-preview";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_TIMEOUT_MS = parseInt(process.env.GEMINI_TIMEOUT_MS || "120000", 10);
+const GEMINI_MAX_RETRIES = parseInt(process.env.GEMINI_MAX_RETRIES || "2", 10);
 const MCP_AUTH_TOKEN = process.env.MCP_AUTH_TOKEN; // optional Bearer token
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
@@ -34,18 +36,43 @@ const ASPECT_RATIOS = ["1:1","16:9","9:16","4:5","5:4","3:4","4:3","21:9","2:3",
 const IMAGE_SIZES = ["512","1K","2K","4K"];
 
 // ---- Gemini API helpers ----
+async function geminiFetch(url, init) {
+  for (let attempt = 0; ; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      if ((res.status === 429 || res.status >= 500) && attempt < GEMINI_MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+      return res;
+    } catch (error) {
+      const reason =
+        error.name === "AbortError"
+          ? `timed out after ${GEMINI_TIMEOUT_MS}ms (raise GEMINI_TIMEOUT_MS if needed)`
+          : `network error: ${error.message}`;
+      if (attempt < GEMINI_MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+      throw new Error(`Gemini API request failed after ${attempt + 1} attempts: ${reason}`);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 async function callGemini(parts, { aspectRatio, imageSize } = {}) {
   const generationConfig = { responseModalities: ["TEXT", "IMAGE"] };
   if (aspectRatio || imageSize) {
-    generationConfig.responseFormat = {
-      image: {
-        ...(aspectRatio ? { aspectRatio } : {}),
-        ...(imageSize ? { imageSize } : {}),
-      },
+    generationConfig.imageConfig = {
+      ...(aspectRatio ? { aspectRatio } : {}),
+      ...(imageSize ? { imageSize } : {}),
     };
   }
 
-  const res = await fetch(`${API_BASE}/${MODEL}:generateContent`, {
+  const res = await geminiFetch(`${API_BASE}/${MODEL}:generateContent`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -210,16 +237,18 @@ function buildServer() {
       },
       {
         name: "edit_image",
-        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Requires a publicly accessible HTTPS URL for the source image.",
+        description: "Edit an existing image with a text instruction (image-to-image). For retouching, background changes, adding/removing elements while preserving the subject. Provide the source image either as a publicly accessible HTTPS URL (imageUrl) or as inline base64 data (imageBase64 + mimeType).",
         inputSchema: {
           type: "object",
           properties: {
-            imageUrl: { type: "string", description: "HTTPS URL of source image (publicly accessible)." },
+            imageUrl: { type: "string", description: "HTTPS URL of source image (publicly accessible). Provide this or imageBase64." },
+            imageBase64: { type: "string", description: "Base64-encoded source image data (no data: URI prefix). Use when the image is not publicly reachable. Requires mimeType." },
+            mimeType: { type: "string", description: "MIME type of imageBase64 (e.g. image/png, image/jpeg). Required with imageBase64." },
             instruction: { type: "string", description: "What to change. Be specific and explicitly preserve elements that should stay unchanged." },
             aspectRatio: { type: "string", enum: ASPECT_RATIOS, description: "Output aspect ratio. Defaults to match input." },
             imageSize: { type: "string", enum: IMAGE_SIZES, description: "Output resolution. Default 1K." },
           },
-          required: ["imageUrl", "instruction"],
+          required: ["instruction"],
         },
       },
       {
@@ -259,7 +288,16 @@ function buildServer() {
       if (name === "generate_image") {
         parts = [{ text: args.prompt }];
       } else if (name === "edit_image") {
-        const { base64, mimeType } = await fetchImageAsBase64(args.imageUrl);
+        let base64, mimeType;
+        if (args.imageBase64) {
+          if (!args.mimeType) throw new Error("mimeType is required when passing imageBase64.");
+          base64 = args.imageBase64;
+          mimeType = args.mimeType;
+        } else if (args.imageUrl) {
+          ({ base64, mimeType } = await fetchImageAsBase64(args.imageUrl));
+        } else {
+          throw new Error("edit_image requires either imageUrl or imageBase64 + mimeType.");
+        }
         parts = [
           { inline_data: { mime_type: mimeType, data: base64 } },
           { text: args.instruction },
@@ -300,11 +338,17 @@ app.get("/", (_req, res) => {
 });
 
 // Optional Bearer-token auth on the MCP endpoint
+function tokensMatch(provided, expected) {
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 function authenticate(req, res, next) {
   if (!MCP_AUTH_TOKEN) return next();
   const header = req.headers.authorization || "";
   const token = header.replace(/^Bearer\s+/i, "");
-  if (token !== MCP_AUTH_TOKEN) {
+  if (!tokensMatch(token, MCP_AUTH_TOKEN)) {
     return res.status(401).json({
       jsonrpc: "2.0",
       error: { code: -32000, message: "Unauthorized" },
