@@ -60,10 +60,12 @@ RTL glyph order (renders backwards).
 
 - **fast-modern** (default for punchy content): doctor-video-editor `ass.mjs`
   STYLE — Heebo bold 128/1920, white, black outline 9, one style for all cues.
-- **luxury** (user-approved for the academy brand, 2026-07-05): title = Frank
-  Ruhl Libre 600 @96, ivory `&H00D8E7F2`, outline 1.5 warm-dark `&H60281E14`,
-  shadow 3, centered mid-screen; body = Assistant 400 @62, off-white, outline 1,
-  shadow 2.5, MarginV 300, margins 130; every cue wrapped with
-  `{\fad(260,260)\blur3}`. Fonts via google/fonts variable TTFs →
-  `fontTools.varLib.instancer`. Reference: `subs8.ass` in the 2026-07-04 video
-  project (scratchpad) / final_v8 in media-memory.
+- **brand-bordeaux** (USER-APPROVED academy style, 2026-07-05 — the default):
+  title = Assistant 600 @118, soft bordeaux `&H00453076` (#763045) with thin
+  white halo (outline 5 `&H30FFFFFF`, no shadow), centered mid-screen;
+  body = Assistant 500 @90, off-white `&H00FAFAF8`, outline 2 plum
+  `&H55362038`, shadow 3, MarginV 280, margins 90; every cue wrapped with
+  `{\fad(260,260)\blur2}`. Body must NEVER go below ~85 — user rejected 62 as
+  unreadable. No serif fonts (Frank Ruhl rejected). Fonts via google/fonts
+  variable TTFs → `fontTools.varLib.instancer`. Reference: `subs9.ass` /
+  final_v9 in media-memory.
