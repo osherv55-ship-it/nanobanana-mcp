@@ -53,4 +53,17 @@ post unchanged. Test: if the line works for a rival clinic's feed — it's banal
 
 Line-final `?` `:` `—` `.` jump sides in libass — either drop them, keep them
 mid-line, or append RLM (U+200F). Digits inside Hebrew lines are fine.
-Use the doctor-video-editor `ass.mjs` STYLE (Heebo bold, one style for all cues).
+**Never set ASS `Spacing` > 0 with Hebrew** — libass letter-spacing reverses
+RTL glyph order (renders backwards).
+
+## Caption style presets
+
+- **fast-modern** (default for punchy content): doctor-video-editor `ass.mjs`
+  STYLE — Heebo bold 128/1920, white, black outline 9, one style for all cues.
+- **luxury** (user-approved for the academy brand, 2026-07-05): title = Frank
+  Ruhl Libre 600 @96, ivory `&H00D8E7F2`, outline 1.5 warm-dark `&H60281E14`,
+  shadow 3, centered mid-screen; body = Assistant 400 @62, off-white, outline 1,
+  shadow 2.5, MarginV 300, margins 130; every cue wrapped with
+  `{\fad(260,260)\blur3}`. Fonts via google/fonts variable TTFs →
+  `fontTools.varLib.instancer`. Reference: `subs8.ass` in the 2026-07-04 video
+  project (scratchpad) / final_v8 in media-memory.
