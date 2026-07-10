@@ -16,3 +16,16 @@ Most relevant skills for this business: `ad-creative`, `ads`, `copywriting`, `so
 `video`, `marketing-psychology`, `offers`, `competitor-profiling`, `content-strategy`.
 
 To update to a newer upstream version: re-clone the repo and re-copy `skills/*` here.
+
+# Paid-Ads Audit Suite (vendored)
+
+The `paid-ads` orchestrator + 22 `ads-*` sub-skills + 10 agents in `.claude/agents/`
+are vendored from [AgriciDaniel/claude-ads](https://github.com/AgriciDaniel/claude-ads)
+(MIT, see `paid-ads/LICENSE`). The upstream orchestrator was named `ads`; it is
+renamed `paid-ads` here to avoid colliding with the Corey Haines `ads` strategy
+skill. Sub-skills keep their upstream `ads-*` names, and upstream docs referring
+to `/ads <cmd>` correspond to `/paid-ads <cmd>` in this repo.
+
+Entry points: `/paid-ads audit` (full parallel audit), `/paid-ads google`,
+`/paid-ads meta`, `ads-math` (no API needed), `ads-generate` / `ads-photoshoot`
+(use this repo's own nanobanana MCP for ad imagery).
