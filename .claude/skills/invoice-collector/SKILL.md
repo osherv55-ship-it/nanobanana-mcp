@@ -62,9 +62,11 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
    unless a link exists. Don't burn time trying; note it and move on.
    **Fallback via Google Drive**: the Drive connector reads PDFs/JPEGs with
    OCR (`read_file_content`). The user keeps a Drive folder named
-   "חשבוניות למעקב" — when attachment-only invoices need resolving, ask the
-   user to drag those attachments into that folder (Gmail: hover the
-   attachment → "Add to Drive"), then `search_files` for recent files there,
+   "חשבוניות למעקב 📥" (folder id `1-EdHr7QezErSBkOiX83d5Yx7JQ9O_CE5`) — when
+   attachment-only invoices need resolving, ask the user to drag those
+   attachments into that folder (Gmail: hover the attachment →
+   "Add to Drive"), then `search_files` with
+   `parentId = '1-EdHr7QezErSBkOiX83d5Yx7JQ9O_CE5'`,
    `read_file_content` each, extract number/total/issuer/customer, update the
    matching `UNKNOWN` ledger rows by `gmail_message_id`, and clear the folder
    note in the report. Also worth suggesting: WellyBox (the user has an
