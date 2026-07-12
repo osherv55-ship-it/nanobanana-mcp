@@ -76,6 +76,15 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
    match files to ledger rows by that id prefix. If files for `UNKNOWN` rows
    are missing from the folder, the script may not be installed yet; the
    one-time install steps are at the top of the .gs file.
+   **Other mailboxes (e.g. the AAA business account, aaaaesthtic@gmail.com)**:
+   the Gmail connector only reaches osherv55@gmail.com. For any other mailbox
+   use `apps-script/save-invoice-attachments-aaa.gs` — it runs inside that
+   account, creates its own Drive folder, shares it with osherv55@gmail.com,
+   and syncs attachments PLUS each email body as `<msgId>_body.html` (covers
+   body-only receipts). Find the folder via search_files on the folder name /
+   `sharedWithMe = true`; read `_body.html` files with download_file_content
+   (base64 → decode). Keep AAA documents in a separate ledger:
+   `invoices/ledger-aaa.csv` (same schema).
 4. **Merge** the new rows:
    `python3 .claude/skills/invoice-collector/scripts/merge_ledger.py new_rows.csv`
    (dedupes by `gmail_message_id`, sorts by date, prints a per-vendor summary).
