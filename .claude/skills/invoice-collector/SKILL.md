@@ -69,8 +69,13 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
    `parentId = '1-EdHr7QezErSBkOiX83d5Yx7JQ9O_CE5'`,
    `read_file_content` each, extract number/total/issuer/customer, update the
    matching `UNKNOWN` ledger rows by `gmail_message_id`, and clear the folder
-   note in the report. Also worth suggesting: WellyBox (the user has an
-   account) can auto-sync invoice attachments to Drive.
+   note in the report.
+   **Hands-free sync**: `apps-script/save-invoice-attachments.gs` (in this
+   skill dir) runs daily inside the user's Google account and drops every
+   invoice attachment into that folder, named `<gmailMessageId>_<filename>` —
+   match files to ledger rows by that id prefix. If files for `UNKNOWN` rows
+   are missing from the folder, the script may not be installed yet; the
+   one-time install steps are at the top of the .gs file.
 4. **Merge** the new rows:
    `python3 .claude/skills/invoice-collector/scripts/merge_ledger.py new_rows.csv`
    (dedupes by `gmail_message_id`, sorts by date, prints a per-vendor summary).
