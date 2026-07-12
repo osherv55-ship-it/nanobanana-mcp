@@ -4,7 +4,11 @@
 Usage: merge_ledger.py new_rows.csv [more.csv ...]
 
 Each input file: CSV rows (header optional) in ledger schema:
-date,vendor,invoice_number,amount,currency,gmail_message_id,notes
+date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
+
+direction is "income" (the user's business issued the document) or "expense"
+(the user is the payer). Rows in the old 7-column schema (no direction) are
+accepted and upgraded with direction=UNKNOWN.
 """
 import csv
 import sys
@@ -14,7 +18,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[4]
 LEDGER = REPO_ROOT / "invoices" / "ledger.csv"
 FIELDS = ["date", "vendor", "invoice_number", "amount", "currency",
-          "gmail_message_id", "notes"]
+          "direction", "gmail_message_id", "notes"]
+OLD_FIELDS = ["date", "vendor", "invoice_number", "amount", "currency",
+              "gmail_message_id", "notes"]
+
+
+DIRECTIONS = {"income", "expense", "UNKNOWN"}
 
 
 def read_rows(path):
@@ -23,8 +32,15 @@ def read_rows(path):
         for raw in csv.reader(f):
             if not raw or raw[0].strip() == "date":
                 continue
-            raw = [c.strip() for c in raw] + [""] * (len(FIELDS) - len(raw))
-            rows.append(dict(zip(FIELDS, raw[: len(FIELDS)])))
+            raw = [c.strip() for c in raw]
+            # Old 7-column rows have a gmail id (hex) where direction sits.
+            if len(raw) < 6 or raw[5] not in DIRECTIONS:
+                raw = dict(zip(OLD_FIELDS, raw + [""] * len(OLD_FIELDS)))
+                raw["direction"] = "UNKNOWN"
+                rows.append({k: raw.get(k, "") for k in FIELDS})
+            else:
+                raw += [""] * (len(FIELDS) - len(raw))
+                rows.append(dict(zip(FIELDS, raw[: len(FIELDS)])))
     return rows
 
 
@@ -52,12 +68,14 @@ def main(paths):
     unknown = 0
     for r in existing:
         try:
-            totals[r["currency"] or "?"] += float(r["amount"].replace(",", ""))
+            amt = float(r["amount"].replace(",", ""))
         except ValueError:
             unknown += 1
+            continue
+        totals[(r["direction"] or "UNKNOWN", r["currency"] or "?")] += amt
     print(f"added {added} rows; ledger now {len(existing)} rows -> {LEDGER}")
-    for cur, total in sorted(totals.items()):
-        print(f"  total {cur}: {total:,.2f}")
+    for (direction, cur), total in sorted(totals.items()):
+        print(f"  {direction} {cur}: {total:,.2f}")
     if unknown:
         print(f"  {unknown} rows with UNKNOWN amount (PDF-only)")
 
