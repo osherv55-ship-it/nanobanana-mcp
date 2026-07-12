@@ -60,6 +60,15 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
    lives only in an attached PDF with no link (hyp/upapp, Partner, Google
    Workspace, IEC, cardcom, y-it/soofa, scanned rent invoices) stay `UNKNOWN`
    unless a link exists. Don't burn time trying; note it and move on.
+   **Fallback via Google Drive**: the Drive connector reads PDFs/JPEGs with
+   OCR (`read_file_content`). The user keeps a Drive folder named
+   "חשבוניות למעקב" — when attachment-only invoices need resolving, ask the
+   user to drag those attachments into that folder (Gmail: hover the
+   attachment → "Add to Drive"), then `search_files` for recent files there,
+   `read_file_content` each, extract number/total/issuer/customer, update the
+   matching `UNKNOWN` ledger rows by `gmail_message_id`, and clear the folder
+   note in the report. Also worth suggesting: WellyBox (the user has an
+   account) can auto-sync invoice attachments to Drive.
 4. **Merge** the new rows:
    `python3 .claude/skills/invoice-collector/scripts/merge_ledger.py new_rows.csv`
    (dedupes by `gmail_message_id`, sorts by date, prints a per-vendor summary).
