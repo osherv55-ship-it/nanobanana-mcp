@@ -19,9 +19,13 @@ function saveInvoiceAttachments() {
 
   for (const thread of GmailApp.search(SEARCH, 0, 400)) {
     for (const msg of thread.getMessages()) {
-      for (const att of msg.getAttachments({ includeInlineImages: false })) {
+      for (const att of msg.getAttachments({ includeInlineImages: true })) {
         try {
-          if (!/pdf|jpe?g|png/i.test(att.getContentType() || '')) continue;
+          // Some Israeli invoice systems send PDFs as application/octet-stream,
+          // so accept by filename extension too.
+          const type = att.getContentType() || '';
+          const fname = att.getName() || '';
+          if (!/pdf|jpe?g|png/i.test(type) && !/\.(pdf|jpe?g|png)$/i.test(fname)) continue;
           if (!att.getSize || att.getSize() === 0) continue;
           // Drive rejects some raw attachment names; sanitize and cap length.
           const safe = (att.getName() || 'file.pdf')
