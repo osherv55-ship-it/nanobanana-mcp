@@ -2,12 +2,18 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-01,Wolt - ג׳פניקה כשר,6a1bed056dc4d0691533f9d1,536.90,ILS,expense,19e82db168ee5d87,
 2026-06-01,Wolt - וולט מרקט,6a1d92306056e32b71a5a114,52.10,ILS,expense,19e838a8be3237fc,
 2026-06-01,Wolt - וולט מרקט,6a1dbd523283645749d80871,285.40,ILS,expense,19e843dd2be3e995,
+2026-06-01,פרטנר,1050416513,UNKNOWN,ILS,expense,19ea43fa31881445,חשבונית מאי; קובץ לא סונכרן
 2026-06-02,מוז-חולצות ומתנות (Verifone),93604810,2240.00,ILS,income,19e88d3703760c5c,שובר 08001001; לקוח hamden; מקדמה; עסקה 01/06
 2026-06-02,שני גולן כהן,61654,960.00,ILS,expense,19e8bff79d69f361,לקוח: יוסף דן גור; טיפול
 2026-06-03,Wolt - וולט מרקט,6a208270355f62bbfcf641bb,521.70,ILS,expense,19e8f19f4748d1bf,
+2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019672,614.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH26006110
+2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019671,5039.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH26006133
+2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019663,10148.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH25069056
+2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019650,472.00,ILS,expense,19ea0d8a9ec526e5,"חשבונית מרכזת; שולם ע""י הלקוחה"
+2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019641,2867.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH26004965
 2026-06-04,Apple (Apple TV),792142832059,25.90,ILS,expense,19e90fb03eab46eb,
 2026-06-04,PayPro Global (GREEN-API),42854101,12.00,USD,expense,19e92482d245c39b,
-2026-06-04,חשבונית שהוצאת לאילנה וקנין,UNKNOWN,UNKNOWN,ILS,income,19e91a2090cebd7f,מייל שנשלח עם חשבונית מצורפת - סכום בקובץ
+2026-06-04,אדוונס אסתטיק — חשבונית ללקוח,30220,26550.00,ILS,income,19e91a2090cebd7f,"לקוח: אילנה בע""מ; קורס אסתטיקה רפואית מחזור מאי 26"
 2026-06-05,Apple,696143169077,170.30,ILS,expense,19e95eef858517e0,
 2026-06-05,Celonis (Make.com),2587-2850,17.96,USD,expense,19e9755703757f4a,
 2026-06-05,Wolt - שיריז פטיסרי,6a22c67225850a4860468054,328.90,ILS,expense,19e980bf73d35dc1,
@@ -19,16 +25,15 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-07,Celonis (Make.com),2553-5723,31.51,USD,expense,19ea16e7b8ecc6bb,
 2026-06-07,Wolt - וולט מרקט,6a258e4c3beec3171aa6489d,28.40,ILS,expense,19ea2be7a0e402aa,
 2026-06-07,Wolt - מאפיית דון לאון,6a24f78c12706856bbbe62fd,453.90,ILS,expense,19ea097a8280f20a,
-2026-06-07,פרטנר,1050416513,UNKNOWN,ILS,expense,19ea43fa31881445,חשבונית מאי 2026
-2026-06-07,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19ea22783353bccc,סכום ב-PDF מצורף
+2026-06-07,רבו פילאטיס (upapp/hyp),1009513336,UNKNOWN,ILS,expense,19ea22783353bccc,קובץ לא סונכרן - octet-stream
 2026-06-08,Apple (CapCut),770145119147,153.60,ILS,expense,19ea9e1ec0fc95dd,
 2026-06-08,Celonis (Make.com),2688-4597,54.28,USD,expense,19ea8f24926300ab,
 2026-06-08,Eleven Labs,2609-1019-9091,22.00,USD,expense,19ea65daf693a24c,
 2026-06-08,Epic Games,A1117437934,236.35,ILS,expense,19ea64ed3c4366ac,
 2026-06-08,Wolt - לנדוור סינמה סיטי,6a270de63f037158b5e40f45,86.45,ILS,expense,19ea8b876e3c06ac,
-2026-06-08,חברת החשמל,348906304,UNKNOWN,ILS,expense,19ea97f76d1c0b1f,קבלה לחוזה - סכום ב-PDF
+2026-06-08,חברת החשמל,300068534487,264.69,ILS,expense,19ea97f76d1c0b1f,קבלה לחוזה 348906304 תקופה 18/03-18/05
 2026-06-09,Wolt - וולט מרקט,6a2814b4d238765b51b7332f,337.50,ILS,expense,19eacaf9ddf90054,
-2026-06-09,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19eaabc693c4aaf2,סכום ב-PDF מצורף
+2026-06-09,רבו פילאטיס (upapp/hyp),1009535688,UNKNOWN,ILS,expense,19eaabc693c4aaf2,קובץ לא סונכרן - octet-stream
 2026-06-10,Anthropic,2788-5628-7662,45.00,USD,expense,19eb0e230fb9647d,
 2026-06-10,Anthropic,2751-6850-5757,25.00,USD,expense,19eb0a54dbd8846d,
 2026-06-10,Muscle Booster,bcfb142175f38f978dbb039fe8a423ee,6.93,USD,expense,19eb33172e10545b,
@@ -47,7 +52,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-12,Wolt - פלאפל שושנה,6a2bd5efe55f3d95cfcc64e2,39.00,ILS,expense,19ebb7042b44a3fd,
 2026-06-13,Wolt - וולט מרקט,6a2d91868c2ad721784c3bf3,436.91,ILS,expense,19ec253f97e115f7,
 2026-06-13,Wolt - מקדונלד'ס,6a2d3a907404025164782609,129.90,ILS,expense,19ec0c9bc01b61c1,
-2026-06-13,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19ec0e486cdaaaef,סכום ב-PDF מצורף
+2026-06-13,רבו פילאטיס (upapp/hyp),1009589130,UNKNOWN,ILS,expense,19ec0e486cdaaaef,קובץ לא סונכרן - octet-stream
 2026-06-14,PayPro Global (GREEN-API),42991799,12.00,USD,expense,19ec55ed07021ce3,
 2026-06-14,Wolt - וולט מרקט,6a2e81822bb969bd56e6c02e,7.90,ILS,expense,19ec5b130d63091a,
 2026-06-14,Wolt - חלום יעקב,6a2e354a6499aa7d52d872c3,473.90,ILS,expense,19ec4e692ff53f09,
@@ -57,17 +62,17 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-16,Celonis (Make.com),2784-5062,45.23,USD,expense,19ecee29c97d22bb,
 2026-06-16,Wolt - פרשמרקט,6a30e6451b86e6987ef49150,84.03,ILS,expense,19ecf3482cda4e77,
 2026-06-16,"ד""ר גיא שלום בע""מ",31979,7080.00,ILS,expense,19ed21448074bcc7,לקוח: אדוונס אסתטיק אקדמי; שיעורי אקדמיה רופא עור
-2026-06-16,הילה ש.מ מבנים,157956,UNKNOWN,ILS,expense,19ed06442c75db57,חשבונית מס - PDF
-2026-06-16,הילה ש.מ מבנים,8931,UNKNOWN,ILS,expense,19ed06a66bdc649b,חשבונית זיכוי - PDF
-2026-06-16,סופה הסעות וטיולים,157958,UNKNOWN,ILS,expense,19ed06f1a6a60e32,חשבונית מס - PDF
-2026-06-16,סופה הסעות וטיולים,157949,UNKNOWN,ILS,expense,19ecf411ccf6b9ce,חשבונית מס - PDF
-2026-06-16,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19ed1e9e41d7ad58,סכום ב-PDF מצורף
+2026-06-16,הילה ש.מ מבנים,157956,UNKNOWN,ILS,expense,19ed06442c75db57,קובץ לא סונכרן
+2026-06-16,הילה ש.מ מבנים,8931,UNKNOWN,ILS,expense,19ed06a66bdc649b,חשבונית זיכוי - סכום שלילי; קובץ לא סונכרן
+2026-06-16,סופה הסעות וטיולים,157958,UNKNOWN,ILS,expense,19ed06f1a6a60e32,קובץ לא סונכרן
+2026-06-16,סופה הסעות וטיולים,157949,UNKNOWN,ILS,expense,19ecf411ccf6b9ce,קובץ לא סונכרן
+2026-06-16,רבו פילאטיס (upapp/hyp),1009636310,UNKNOWN,ILS,expense,19ed1e9e41d7ad58,קובץ לא סונכרן - octet-stream
 2026-06-17,Clara Marketing,2085-3497,65.00,ILS,expense,19ed611d49070461,
 2026-06-17,Muscle Booster,4fa8491b-079f-4571-b20c-03c1b4b3262a,49.95,USD,expense,19ed73e1fb19b904,
 2026-06-17,Wolt - וולט מרקט,6a324b36712505e98a2410dd,7.35,ILS,expense,19ed47c6567318f9,
 2026-06-17,Wolt - וולט מרקט,6a32a7d48b1a96055286fc52,25.90,ILS,expense,19ed5e33a3b3abc2,
 2026-06-17,סנדביץ' בר אקספרס,35532,549.00,ILS,expense,19edaf0ead825a1d,לקוח: advance aesthetic; כיבוד קל
-2026-06-17,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19ed6f4d6420627c,סכום ב-PDF מצורף
+2026-06-17,רבו פילאטיס (upapp/hyp),1009647719,UNKNOWN,ILS,expense,19ed6f4d6420627c,קובץ לא סונכרן - octet-stream
 2026-06-18,Apple,676149133825,189.50,ILS,expense,19eda5e61120fd08,
 2026-06-18,Apple (iCloud+ 2TB),772148842582,39.90,ILS,expense,19ed983d27646a4c,
 2026-06-18,Gett,UNKNOWN,128.80,ILS,expense,19edc3d81558f39a,ride receipt
@@ -87,7 +92,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-22,Wolt - וולט מרקט,6a394f0d451b654767818a14,83.50,ILS,expense,19eefe6c3d809e42,
 2026-06-22,Wolt - מקדונלד׳ס,6a39105a0ef82670f7ec6d5d,187.90,ILS,expense,19eeefcb265f3036,
 2026-06-22,Wolt - סופר יודה,6a396b22016402541fe8e69b,67.41,ILS,expense,19ef064322146c83,
-2026-06-22,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19eeed8c8fa7f4b6,סכום ב-PDF מצורף
+2026-06-22,רבו פילאטיס (upapp/hyp),1009703108,UNKNOWN,ILS,expense,19eeed8c8fa7f4b6,קובץ לא סונכרן - octet-stream
 2026-06-23,Apple,860151209430,111.70,ILS,expense,19ef26bfd6f64170,
 2026-06-23,Wolt - הנכד של אברם,6a3a8d239ef75da7206742a3,155.90,ILS,expense,19ef4de7dc315059,
 2026-06-23,Wolt - וולט מרקט,6a3a8bcd248e79fff4c85210,242.30,ILS,expense,19ef4f3e58d2a192,
@@ -109,12 +114,17 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-28,Wolt - וולט מרקט,6a4103061f10220f73e4c429,41.30,ILS,expense,19f0df8574f48ba1,
 2026-06-28,Wolt - מאפיית דון לאון,6a40ae9c32dd0cbd35c0a5c0,453.90,ILS,expense,19f0d046136ab514,
 2026-06-28,מוז-חולצות ומתנות (Verifone),95985123,2500.00,ILS,income,19f0d835f11e6b94,לקוח גילה מנשה; טיפול ברקוד
-2026-06-28,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19f0e6cc3adcfad7,סכום ב-PDF מצורף
+2026-06-28,רבו פילאטיס (upapp/hyp),1009776913,UNKNOWN,ILS,expense,19f0e6cc3adcfad7,קובץ לא סונכרן - octet-stream
 2026-06-29,שני גולן כהן,61707,960.00,ILS,expense,19f128605f9e3f4c,לקוח: יוסף דן גור; טיפול
 2026-06-30,Apple,850154719044,519.60,ILS,expense,19f189a0feb4b92f,
+2026-06-30,Google Workspace,5612919402,2.72,EUR,expense,19f2061a17c8b4a9,Business Starter 19-30.6
 2026-06-30,Wolt - ברד,6a43d06bbc575909ea076559,161.90,ILS,expense,19f190be611e7102,
 2026-06-30,Wolt - הטוניסאי,6a438ce43d4cfa2f31d8aacf,37.00,ILS,expense,19f181bf4cf466a4,
 2026-06-30,Wolt - הטריפוליטאי,6a438c9bbfc6821a66b779ec,186.90,ILS,expense,19f181b93224c106,
+2026-06-30,סופה הסעות וטיולים,158110,UNKNOWN,ILS,expense,19f36c4d974bbca2,קובץ לא סונכרן
+2026-06-30,קארדקום סליקה,186881,424.61,ILS,expense,19f1fb593056f2ad,עמלות סליקה יוני; מחזור 26430 הועבר נטו 26005.39
+2026-06-30,שקרון דניאל רוג'ר (שכירות),01/010057,3245.00,ILS,expense,19f562d4f6ad3f3c,שכירות 06/26 חלק 1 מתוך 2
+2026-06-30,שקרון דניאל רוג'ר (שכירות),01/010058,3245.00,ILS,expense,19f562d4f6ad3f3c,שכירות 06/26 חלק 2 מתוך 2
 2026-07-01,Holmes Place,756064593,242.46,ILS,expense,19f11769f78d8fd3,לקוח: אושר דן גור; מנוי 12 חודשים
 2026-07-01,Holmes Place,756064673,272.11,ILS,expense,19f1176f01bf320b,לקוח: יוסי דן גור; מנוי 12 חודשים
 2026-07-01,Wolt - ג׳פניקה כשר,6a44a8892b7294cab3c460e6,600.90,ILS,expense,19f1d59d9ec90abc,
@@ -122,13 +132,12 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-07-01,Wolt - וולט מרקט,6a44f79bcefc7fa15bc7288a,23.90,ILS,expense,19f1d6f24ab9f3b8,
 2026-07-01,Wolt - וולט מרקט,6a453e825d4bdc0464cce3a2,7.35,ILS,expense,19f1e85f8708bbda,
 2026-07-01,Wolt - וולט מרקט,6a455499aa38e00d78cf8e4f,46.80,ILS,expense,19f1ee71d02b42e0,
-2026-07-01,קארדקום סליקה,186881,UNKNOWN,ILS,expense,19f1fb593056f2ad,חשבונית 06/26
-2026-07-02,Google Workspace,5612919402,UNKNOWN,ILS,expense,19f2061a17c8b4a9,
+2026-07-01,פרטנר,1057426863,UNKNOWN,ILS,expense,19f390b467c58ba5,חשבונית יוני; קובץ לא סונכרן
 2026-07-02,Wolt - וולט מרקט,6a4637a645c6ad5797033a8b,57.80,ILS,expense,19f225b5bc27b5ed,
 2026-07-02,Wolt - וולט מרקט,6a46446a50f8c7a9202da997,34.35,ILS,expense,19f229229f8ab858,
 2026-07-02,Wolt - וולט מרקט,6a466ee4a4888dac66b84ead,9.50,ILS,expense,19f2326470b53754,
 2026-07-02,Wolt - וולט מרקט,6a4663968a0d233d217ee2bd,27.90,ILS,expense,19f2326495fe768f,
-2026-07-02,רבו פילאטיס (upapp/hyp),1009822204,UNKNOWN,ILS,expense,19f2117b29b491bf,סכום ב-PDF מצורף
+2026-07-02,רבו פילאטיס (upapp/hyp),1009822204,UNKNOWN,ILS,expense,19f2117b29b491bf,קובץ לא סונכרן - octet-stream
 2026-07-03,Wolt - סופר דוש,6a47782e3bfd62644665cdfc,506.40,ILS,expense,19f274e5ab989f33,
 2026-07-03,לוטם זיו - קלינאית תקשורת,12416,2450.00,ILS,expense,19f26dc8e6b2bc1c,YPAY; עבור רפאל ארי דן-גור; 6 טיפולים
 2026-07-04,Eventer (A list),4536,0,ILS,expense,19f2a708415d238a,כרטיס חינם - הזמנה 20734188026
@@ -144,8 +153,6 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-07-06,Wolt - וולט מרקט,6a4b6781f8ee492f2ac8718e,25.50,ILS,expense,19f36929ccd944c4,
 2026-07-06,Wolt - וולט מרקט,6a4b90a7a8901f9278eb9c0d,82.75,ILS,expense,19f373b1044966fb,
 2026-07-06,Wolt - וולט מרקט,6a4bc0b2136b266bfd3949a4,14.70,ILS,expense,19f37fbe2c0a3d1b,
-2026-07-06,סופה הסעות וטיולים,158110,UNKNOWN,ILS,expense,19f36c4d974bbca2,חשבונית מס - PDF
-2026-07-06,פרטנר,1057426863,UNKNOWN,ILS,expense,19f390b467c58ba5,חשבונית יוני 2026
 2026-07-07,Meta Ads (גלונס אסתטיקה),27698483759838692-27958510407169361,1111.21,ILS,expense,19f3d8276eaaab73,
 2026-07-07,Wolt - וולט מרקט,6a4cc39efee927602c93d2f7,143.73,ILS,expense,19f3bf9ccebf56f8,
 2026-07-07,שיר חיה מרחב,62857,1500.00,ILS,expense,19f3c559d4bc727a,לקוח: אושר Advanced Aesthetic; טיפול/ייעוץ
@@ -158,9 +165,8 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-07-09,Wolt - וולט מרקט,6a4fa21984936eda2ce9a8db,11.50,ILS,expense,19f471c4d57c8689,
 2026-07-09,Wolt - מאפיית דון לאון,6a4f6656f83fcb788d1b8297,453.90,ILS,expense,19f46749cd07be60,
 2026-07-09,Wolt - פוקי בר,6a4fdb63cbfa5f9e0d8de1e0,75.00,ILS,expense,19f4827b92889355,
-2026-07-09,אתר צמרת,UNKNOWN,UNKNOWN,ILS,expense,19f47d88f61fcc45,צרופת JPG בלבד (HMN.jpg) - אין קישור להורדה
+2026-07-09,אתר צמרת,UNKNOWN,UNKNOWN,ILS,expense,19f47d88f61fcc45,סריקת JPG לא סונכרנה
 2026-07-10,Meta Ads (גלונס אסתטיקה),27829950990025307-27888837777469960,1111.00,ILS,expense,19f4b90b96ad35fd,
 2026-07-12,Anthropic,2861-0936-7374,20.00,USD,expense,19f554c0782f289e,
 2026-07-12,Celonis (Make.com),2743-5696,12.00,USD,expense,19f560e925e01298,
 2026-07-12,Celonis (Make.com),2246-4569,15.00,USD,expense,19f54f423d533675,
-2026-07-12,"שכירות - רו""ח אורטל/ויקי",UNKNOWN,UNKNOWN,ILS,expense,19f562d4f6ad3f3c,מפוצל ל-2 חשבוניות - בקובץ מצורף
