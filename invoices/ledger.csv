@@ -1,11 +1,16 @@
 date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
+2026-05-17,סופה הסעות וטיולים,157807,8006.00,ILS,expense,19e34f6fa161454a,שכירות משרד 05/26 עבור AAA
+2026-05-17,סופה הסעות וטיולים,157808,3855.00,ILS,expense,19e34f8d1f4f19e0,ארנונה 05/26 עבור AAA
+2026-05-24,סופה הסעות וטיולים,157828,595.00,ILS,expense,19e5963009f37514,חשמל 18/3-18/5 עבור AAA
+2026-05-31,סופה הסעות וטיולים,157949,3855.00,ILS,expense,19ecf411ccf6b9ce,ארנונה 06/26
 2026-06-01,Wolt - ג׳פניקה כשר,6a1bed056dc4d0691533f9d1,536.90,ILS,expense,19e82db168ee5d87,
 2026-06-01,Wolt - וולט מרקט,6a1d92306056e32b71a5a114,52.10,ILS,expense,19e838a8be3237fc,
 2026-06-01,Wolt - וולט מרקט,6a1dbd523283645749d80871,285.40,ILS,expense,19e843dd2be3e995,
-2026-06-01,פרטנר,1050416513,UNKNOWN,ILS,expense,19ea43fa31881445,חשבונית מאי; קובץ לא סונכרן
+2026-06-01,פרטנר תקשורת,17281413,43.85,ILS,expense,19ea43fa31881445,חשבון מאי; מס' מייל 1050416513
 2026-06-02,מוז-חולצות ומתנות (Verifone),93604810,2240.00,ILS,income,19e88d3703760c5c,שובר 08001001; לקוח hamden; מקדמה; עסקה 01/06
 2026-06-02,שני גולן כהן,61654,960.00,ILS,expense,19e8bff79d69f361,לקוח: יוסף דן גור; טיפול
 2026-06-03,Wolt - וולט מרקט,6a208270355f62bbfcf641bb,521.70,ILS,expense,19e8f19f4748d1bf,
+2026-06-03,החברה העירונית ראשון לציון,1314450,2075.00,ILS,expense,19e8ca1984717e5a,קבלה - קייטנת קיץ (2 מחזורים + צהרון)
 2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019672,614.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH26006110
 2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019671,5039.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH26006133
 2026-06-04,AMI (עמי) טכנולוגיות רפואיות,SI26019663,10148.00,ILS,expense,19ea0d8a9ec526e5,חשבונית מרכזת לתעודת משלוח SH25069056
@@ -31,7 +36,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-08,Eleven Labs,2609-1019-9091,22.00,USD,expense,19ea65daf693a24c,
 2026-06-08,Epic Games,A1117437934,236.35,ILS,expense,19ea64ed3c4366ac,
 2026-06-08,Wolt - לנדוור סינמה סיטי,6a270de63f037158b5e40f45,86.45,ILS,expense,19ea8b876e3c06ac,
-2026-06-08,חברת החשמל,300068534487,264.69,ILS,expense,19ea97f76d1c0b1f,קבלה לחוזה 348906304 תקופה 18/03-18/05
+2026-06-08,חברת החשמל,300068534487,264.69,ILS,expense,19ea97f76d1c0b1f,קבלה לתשלום חשבונית חשמל 2026-420818154 (18/3-18/5)
 2026-06-09,Wolt - וולט מרקט,6a2814b4d238765b51b7332f,337.50,ILS,expense,19eacaf9ddf90054,
 2026-06-09,רבו פילאטיס (upapp/hyp),1009535688,UNKNOWN,ILS,expense,19eaabc693c4aaf2,קובץ לא סונכרן - octet-stream
 2026-06-10,Anthropic,2788-5628-7662,45.00,USD,expense,19eb0e230fb9647d,
@@ -62,10 +67,9 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-16,Celonis (Make.com),2784-5062,45.23,USD,expense,19ecee29c97d22bb,
 2026-06-16,Wolt - פרשמרקט,6a30e6451b86e6987ef49150,84.03,ILS,expense,19ecf3482cda4e77,
 2026-06-16,"ד""ר גיא שלום בע""מ",31979,7080.00,ILS,expense,19ed21448074bcc7,לקוח: אדוונס אסתטיק אקדמי; שיעורי אקדמיה רופא עור
-2026-06-16,הילה ש.מ מבנים,157956,UNKNOWN,ILS,expense,19ed06442c75db57,קובץ לא סונכרן
-2026-06-16,הילה ש.מ מבנים,8931,UNKNOWN,ILS,expense,19ed06a66bdc649b,חשבונית זיכוי - סכום שלילי; קובץ לא סונכרן
-2026-06-16,סופה הסעות וטיולים,157958,UNKNOWN,ILS,expense,19ed06f1a6a60e32,קובץ לא סונכרן
-2026-06-16,סופה הסעות וטיולים,157949,UNKNOWN,ILS,expense,19ecf411ccf6b9ce,קובץ לא סונכרן
+2026-06-16,הילה ש.מ מבנים,157956,8006.00,ILS,expense,19ed06442c75db57,שכירות משרד 06/26 - חיוב כפול שבוטל בזיכוי 8931
+2026-06-16,הילה ש.מ מבנים,8931,-8006.00,ILS,expense,19ed06a66bdc649b,חשבונית זיכוי כנגד 157956
+2026-06-16,סופה הסעות וטיולים,157958,8006.00,ILS,expense,19ed06f1a6a60e32,שכירות משרד 06/26 עבור AAA
 2026-06-16,רבו פילאטיס (upapp/hyp),1009636310,UNKNOWN,ILS,expense,19ed1e9e41d7ad58,קובץ לא סונכרן - octet-stream
 2026-06-17,Clara Marketing,2085-3497,65.00,ILS,expense,19ed611d49070461,
 2026-06-17,Muscle Booster,4fa8491b-079f-4571-b20c-03c1b4b3262a,49.95,USD,expense,19ed73e1fb19b904,
@@ -121,7 +125,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-30,Wolt - ברד,6a43d06bbc575909ea076559,161.90,ILS,expense,19f190be611e7102,
 2026-06-30,Wolt - הטוניסאי,6a438ce43d4cfa2f31d8aacf,37.00,ILS,expense,19f181bf4cf466a4,
 2026-06-30,Wolt - הטריפוליטאי,6a438c9bbfc6821a66b779ec,186.90,ILS,expense,19f181b93224c106,
-2026-06-30,סופה הסעות וטיולים,158110,UNKNOWN,ILS,expense,19f36c4d974bbca2,קובץ לא סונכרן
+2026-06-30,סופה הסעות וטיולים,158110,7830.00,ILS,expense,19f36c4d974bbca2,ארנונה 7-8/26 עבור AAA
 2026-06-30,קארדקום סליקה,186881,424.61,ILS,expense,19f1fb593056f2ad,עמלות סליקה יוני; מחזור 26430 הועבר נטו 26005.39
 2026-06-30,שקרון דניאל רוג'ר (שכירות),01/010057,3245.00,ILS,expense,19f562d4f6ad3f3c,שכירות 06/26 חלק 1 מתוך 2
 2026-06-30,שקרון דניאל רוג'ר (שכירות),01/010058,3245.00,ILS,expense,19f562d4f6ad3f3c,שכירות 06/26 חלק 2 מתוך 2
@@ -132,7 +136,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-07-01,Wolt - וולט מרקט,6a44f79bcefc7fa15bc7288a,23.90,ILS,expense,19f1d6f24ab9f3b8,
 2026-07-01,Wolt - וולט מרקט,6a453e825d4bdc0464cce3a2,7.35,ILS,expense,19f1e85f8708bbda,
 2026-07-01,Wolt - וולט מרקט,6a455499aa38e00d78cf8e4f,46.80,ILS,expense,19f1ee71d02b42e0,
-2026-07-01,פרטנר,1057426863,UNKNOWN,ILS,expense,19f390b467c58ba5,חשבונית יוני; קובץ לא סונכרן
+2026-07-01,פרטנר תקשורת,18715384,43.85,ILS,expense,19f390b467c58ba5,חשבון יוני; מס' מייל 1057426863
 2026-07-02,Wolt - וולט מרקט,6a4637a645c6ad5797033a8b,57.80,ILS,expense,19f225b5bc27b5ed,
 2026-07-02,Wolt - וולט מרקט,6a46446a50f8c7a9202da997,34.35,ILS,expense,19f229229f8ab858,
 2026-07-02,Wolt - וולט מרקט,6a466ee4a4888dac66b84ead,9.50,ILS,expense,19f2326470b53754,
@@ -165,7 +169,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-07-09,Wolt - וולט מרקט,6a4fa21984936eda2ce9a8db,11.50,ILS,expense,19f471c4d57c8689,
 2026-07-09,Wolt - מאפיית דון לאון,6a4f6656f83fcb788d1b8297,453.90,ILS,expense,19f46749cd07be60,
 2026-07-09,Wolt - פוקי בר,6a4fdb63cbfa5f9e0d8de1e0,75.00,ILS,expense,19f4827b92889355,
-2026-07-09,אתר צמרת,UNKNOWN,UNKNOWN,ILS,expense,19f47d88f61fcc45,סריקת JPG לא סונכרנה
+2026-07-09,צמרת מימונים (ישראכרט),UNKNOWN,UNKNOWN,ILS,expense,19f47d88f61fcc45,מכתב הודעה בלבד - החשבונית עצמה באתר tzm.co.il
 2026-07-10,Meta Ads (גלונס אסתטיקה),27829950990025307-27888837777469960,1111.00,ILS,expense,19f4b90b96ad35fd,
 2026-07-12,Anthropic,2861-0936-7374,20.00,USD,expense,19f554c0782f289e,
 2026-07-12,Celonis (Make.com),2743-5696,12.00,USD,expense,19f560e925e01298,
