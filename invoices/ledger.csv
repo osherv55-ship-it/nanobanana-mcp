@@ -1,11 +1,120 @@
 date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
+2026-05-01,Wolt - וולט מרקט,69f4787e321e7b5dd037f7b8,8.90,ILS,expense,19de2ff0626ed643,
+2026-05-01,Wolt - וולט מרקט,69f487369e71c66ea91b36c5,155.93,ILS,expense,19de36aab88ed1fe,
+2026-05-01,Wolt - טורקיש טראק,69f4b1085f9d3dfb80282064,99.40,ILS,expense,19de3f8d7fb14932,
+2026-05-02,Wolt - אוטוטו רחובות,69f635d7bf445b3b7a666ade,268.90,ILS,expense,19dea17792400f72,
+2026-05-02,Wolt - בורגראנץ׳ רוטשילד,69f6395e571bb252d050912e,93.18,ILS,expense,19de9f4807fc1c08,
+2026-05-02,Wolt - וולט מרקט,69f62dc0904fde7518d3a5c5,201.20,ILS,expense,19de9dab482915d0,
+2026-05-02,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19de9b5fc0e237c3,קובץ לא סונכרן
+2026-05-03,Apple (Apple TV),770129016663,25.90,ILS,expense,19df184f983c9fe1,
+2026-05-03,Wolt - וולט מרקט,69f718f36db9190ea5d7173f,8.90,ILS,expense,19ded4665845be3c,
+2026-05-03,אדג' קונטרול,66948,78.36,ILS,expense,19dedb3b60cd33c3,טעינת רכב חשמלי
+2026-05-03,אייס (מולטי ריטייל),RC269170767,UNKNOWN,ILS,expense,19dec6f73d23f60a,קבלה/חשבונית מצורפת - לא סונכרנה
+2026-05-03,סנדביץ' בר אקספרס,34939,559.00,ILS,expense,19dedf881da767fc,כיבוד
+2026-05-04,Gett,UNKNOWN,73.10,ILS,expense,19df25fa69214d66,נסיעה עבור דבורה
+2026-05-04,Wolt - וולט מרקט,69f86ac303c1284ed4ebb775,57.25,ILS,expense,19df2a209c18eb54,
+2026-05-04,Wolt - וולט מרקט,69f889daf45c5f844f4694f2,8.90,ILS,expense,19df2df8c64c2b22,
+2026-05-04,Wolt - נונומימי,69f8d650a25d92c21a043f7e,137.60,ILS,expense,19df43093d5f6c9b,
+2026-05-04,Wolt - סופר יודה,69f84267bdce63c9bb52d26e,134.30,ILS,expense,19df1d74bf803b62,
+2026-05-04,Wolt - קפה עלמה,69f8d9e9a486ba8e34de785b,128.35,ILS,expense,19df4373908ce41a,
+2026-05-04,לוטם זיו - קלינאית תקשורת,12316,800.00,ILS,expense,19df15de35c4b722,עבור רפאל ארי דן-גור
+2026-05-05,Apple,694129594835,135.60,ILS,expense,19dfbe5ffd860d2d,
+2026-05-05,איזיביזי לעסקים,0218-8897,317.42,ILS,expense,19df7c305efce752,מנוי חודשי מאי
+2026-05-06,Wolt - וולט מרקט,69fb16e981a6a64ec144b277,8.90,ILS,expense,19dfcd56d2e7f871,
+2026-05-06,Wolt - וולט מרקט,69fb1437731001c8253ba5c9,16.50,ILS,expense,19dfcd5789a42af1,
+2026-05-06,Wolt - וולט מרקט,69fb255624e0613b4049704d,18.20,ILS,expense,19dfd1fcaec028fc,
+2026-05-06,Wolt - סופר יודה,69fb4d5b62f2057f455da7c3,332.90,ILS,expense,19dfdcc4be6bef47,
+2026-05-06,Wolt - קצביית החברים,69fae5fc025578e2b945cc29,200.88,ILS,expense,19dfc20837e28a77,
+2026-05-06,איליה מלצב,1214,900.00,ILS,expense,19dfd300a7d9924f,אפיון מערכת לאדוונס אסתטיק
+2026-05-06,שקרון דניאל רוג'ר (שכירות),01/010053,6490.00,ILS,expense,19e352d5ee9e4df8,שכירות 05/26 לאדוונס אסתטיק - שיק
+2026-05-07,Wolt - הטאבון והשווארמה,69fcd1e4911fc27586811922,119.45,ILS,expense,19e03bff24ecafc3,
+2026-05-07,Wolt - וולט מרקט,69fc889c3063627a0ae5a7a1,14.70,ILS,expense,19e0277091651b28,
+2026-05-07,Wolt - וולט מרקט,69fccfd04fedff9d51da4333,79.90,ILS,expense,19e039418e235774,
+2026-05-07,Wolt - מאפיית דון לאון,69fc54c2f360c05a57d4b2ba,427.90,ILS,expense,19e01d54d0a03bd3,
+2026-05-08,Eleven Labs,2895-4962-2216,22.00,USD,expense,19e06b913ec59aa6,
+2026-05-08,Wolt - מאפיית דון לאון,69fd69acf799cbb19063de41,493.90,ILS,expense,19e062548bd60d09,
+2026-05-10,Wolt - האק רחובות,6a00c9d75c75ed876f8ffa4d,171.90,ILS,expense,19e13384b6f7ea10,
+2026-05-10,Wolt - וולט מרקט,6a001a6d68f9dd6fc69f9289,29.25,ILS,expense,19e108746327f000,
+2026-05-10,Wolt - וולט מרקט,6a001cc0dabb1d91c7612051,19.50,ILS,expense,19e10874feaca72f,
+2026-05-10,Wolt - וולט מרקט,6a003f4dc56433f7e45cd75f,8.90,ILS,expense,19e11062fbb76f48,
+2026-05-10,סופר-פארם אונליין,UNKNOWN,UNKNOWN,ILS,expense,19e10b0e553fc790,חשבונית מצורפת - לא סונכרנה
+2026-05-10,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19e1207b90bd54ea,קובץ לא סונכרן
+2026-05-10,שני גולן כהן,61604,480.00,ILS,expense,19e11b4d353e7ec3,
+2026-05-11,Wolt - ביגה סטריט,6a02145875a7de0f8bb360f7,214.90,ILS,expense,19e1850a984427bd,
+2026-05-11,Wolt - וולט מרקט,6a01a318949e73033fc589cc,8.90,ILS,expense,19e1685c9f52f45d,
+2026-05-11,Wolt - וולט מרקט,6a01ddec76b3633768f80616,88.20,ILS,expense,19e175482af9e0eb,
+2026-05-11,Wolt - מאפיית דון לאון,6a019b9aca5abcb4a8c24f0a,333.90,ILS,expense,19e1674b3a7cf142,
+2026-05-11,Wolt - פיצה פרגו,6a02156801ddd64929ba8b3c,39.00,ILS,expense,19e1843cfd319696,
+2026-05-11,החברה העירונית ראשון לציון (infocash),UNKNOWN,UNKNOWN,ILS,expense,19e17b87f67a8523,אישור רישום לפעילות - קבלה לא סונכרנה
+2026-05-11,צמרת מימונים (ישראכרט),UNKNOWN,UNKNOWN,ILS,expense,19e1482a4b30a8f2,הודעה - החשבונית באתר
+2026-05-12,Wolt - וולט מרקט,6a02dcb97bcdec6ef6c0c832,8.90,ILS,expense,19e1b3d705aac26f,
+2026-05-12,Wolt - וולט מרקט,6a0312f7177030f53ba8c3e6,19.50,ILS,expense,19e1c0a48b5accfb,
+2026-05-12,פתאל (InfoGifts),184818,UNKNOWN,ILS,expense,19e1ab46085655dd,קבלה בקובץ מצורף - לא נגיש
+2026-05-13,Anthropic,2725-0862-6445,20.00,USD,expense,19e2547942e5385a,
+2026-05-13,Apple (Wabi),734132968875,13.90,ILS,expense,19e2303ecd11467b,
+2026-05-13,Wolt - פאזל בורגר,6a04ae5acfec708fea12d230,199.90,ILS,expense,19e22788413e1320,
+2026-05-13,Wolt - שופרסל,6a0488413be1c9c9dc5ba7d4,318.94,ILS,expense,19e21dfefc19e07f,
+2026-05-14,Anthropic,2928-7612-1710,45.00,USD,expense,19e2565fa07010a8,
+2026-05-14,Wolt - גוד מורנינג סאנשיין,6a05693820326f9388f24905,636.90,ILS,expense,19e25fcc9002fd28,
+2026-05-14,Wolt - וולט מרקט,6a05ac2fc70738ad574d9785,25.05,ILS,expense,19e264458f1a33c1,
+2026-05-14,Wolt - וולט מרקט,6a05b6ed40e77674933b837b,65.90,ILS,expense,19e265b1e12f89b3,
+2026-05-14,Wolt - וולט מרקט,6a05d390d96692d2357f24e7,24.40,ILS,expense,19e276fc3703daa6,
+2026-05-14,Wolt - ווק אווי,6a061e0355b121afe102dec7,223.90,ILS,expense,19e281f6de5ec6c6,
+2026-05-14,פלאפון תקשורת,8165439,67.89,ILS,expense,19e446c10028352b,סלולר אדוונס אסתטיק 15/04-14/05
+2026-05-15,Wolt - ברד,263805873,963.90,ILS,expense,19e2a59afe2fdd39,
+2026-05-15,Wolt - וולט מרקט,263802587,7.35,ILS,expense,19e2a3a3e7dcfa85,
+2026-05-15,Wolt - סיבל,263870895,601.90,ILS,expense,19e2b7e229dd3ce7,
+2026-05-16,Apple,806134641563,155.50,ILS,expense,19e31e70cea3776b,
+2026-05-17,Apple (iCloud+ 2TB),710134822041,39.90,ILS,expense,19e3a6b3987c1c11,
+2026-05-17,Clara Marketing,2101-0099,65.00,ILS,expense,19e366c7e4668cf7,
+2026-05-17,Wolt - וולט מרקט,6a09fd397c3e6d96a0a4b807,832.60,ILS,expense,19e37581d6bc0254,
 2026-05-17,סופה הסעות וטיולים,157807,8006.00,ILS,expense,19e34f6fa161454a,שכירות משרד 05/26 עבור AAA
 2026-05-17,סופה הסעות וטיולים,157808,3855.00,ILS,expense,19e34f8d1f4f19e0,ארנונה 05/26 עבור AAA
+2026-05-18,Apple (Apple Music),702135500397,21.90,ILS,expense,19e3ecd05118532f,
+2026-05-18,Wolt - וולט מרקט,6a0aee34b2bb43469f247954,122.40,ILS,expense,19e3ad3a6853fe6f,
+2026-05-18,Wolt - סלמי,6a0b51d676520f55718d912e,227.90,ILS,expense,19e3c62fee6c9311,
+2026-05-20,Wolt - אקספרס,6a0d706644cd6473ab672fa5,71.00,ILS,expense,19e44933aa7b6de6,
+2026-05-20,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19e45ab8e66a72a4,קובץ לא סונכרן
+2026-05-21,Apple (Wabi),728137003030,13.90,ILS,expense,19e4e44b14a56210,
+2026-05-21,Celonis (Make.com),2315-0424,18.82,USD,expense,19e4a2118bef0a01,
+2026-05-21,OpenRouter,1249-7704,7.80,USD,expense,19e4b73161b81765,
+2026-05-21,Wolt - וולט מרקט נס ציונה,6a0f0522db49a918ddf62799,198.90,ILS,expense,19e4ac8edab40053,
+2026-05-22,Wolt - וולט מרקט,6a106fddf38386d3f4b0ec44,475.40,ILS,expense,19e50718af493f80,
+2026-05-23,OpenRouter,1531-5377,15.83,USD,expense,19e53d812d56a3a0,
+2026-05-23,Wolt - Yellow Mini Market,6a117b9408f199761bd6d07b,190.40,ILS,expense,19e5474cef6f47af,
+2026-05-24,Apple,670138356602,276.60,ILS,expense,19e5f6c9e1bad807,
+2026-05-24,Wolt - וולט מרקט,6a12d466b00cdda770123c65,8.90,ILS,expense,19e599aa4a807531,
+2026-05-24,Wolt - וולט מרקט,6a131d4b69fc8ce90d33354e,19.50,ILS,expense,19e5ab2fe5801f43,
+2026-05-24,Wolt - וולט מרקט,6a13121b8557bb95a09f8d40,229.60,ILS,expense,19e5ab313385aac7,
 2026-05-24,סופה הסעות וטיולים,157828,595.00,ILS,expense,19e5963009f37514,חשמל 18/3-18/5 עבור AAA
+2026-05-24,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19e58b6ccfa7aadc,קובץ לא סונכרן
+2026-05-24,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19e5ad84622fa4be,קובץ לא סונכרן
+2026-05-24,רבו פילאטיס (upapp/hyp),זיכוי-1009326346,UNKNOWN,ILS,expense,19e5ad8598ee1a3b,זיכוי ביטול חשבונית 1009326346
+2026-05-25,Wolt - וולט מרקט רחובות,6a1478abedc073c479289c6a,213.80,ILS,expense,19e606220a47f049,
+2026-05-25,Wolt - מאפיית דון לאון,6a13db5e73fb096a324657d8,453.90,ILS,expense,19e5e8237fc200b4,
+2026-05-25,Wolt - קצביית החברים,6a145ee24f690ff23559ccb8,116.90,ILS,expense,19e5f9c1d8bc1167,
+2026-05-26,Wolt - בורגראנץ׳,6a15ea89e74d544208ed7637,157.90,ILS,expense,19e65bdc50f23b3f,
+2026-05-26,Wolt - וולט מרקט,6a15aee5a6759269cb61d26d,304.20,ILS,expense,19e64e3aef566ae7,
+2026-05-28,Lovable,2663-4224,88.00,GBP,expense,19e702890cdfa051,מנוי Pro חודשי
+2026-05-28,MainFunc (Genspark),2849-1904,239.99,USD,expense,19e6eedd6b7f3057,"מנוי שנתי Plus (704.06 ש""ח)"
+2026-05-28,Wolt - באגט האחים,6a1887f3391e950c6ce1554e,188.90,ILS,expense,19e6ff3a624a21a5,
+2026-05-28,Wolt - וולט מרקט,6a182fe8379b1f8aff578727,37.25,ILS,expense,19e6eb4405911d0d,
+2026-05-28,Wolt - וולט מרקט,6a184fb82bbd834f6b19f40f,25.90,ILS,expense,19e6effb7643aa47,
+2026-05-28,Wolt - וולט מרקט,6a185b01287d4a5ad7b38d8b,99.90,ILS,expense,19e6f2e79ceb30c3,
+2026-05-28,Wolt - וולט מרקט,6a188d1900d7842845f301fd,24.70,ILS,expense,19e6feb8036426c1,
+2026-05-28,רבו פילאטיס (upapp/hyp),UNKNOWN,UNKNOWN,ILS,expense,19e6cddccdb85dc1,קובץ לא סונכרן
+2026-05-29,Anthropic,2411-2135-8832,25.00,USD,expense,19e75d4e7990bc34,
+2026-05-29,BUYME גיפט קארד,8701884,300.00,ILS,expense,19e72b879df4cc17,"קבלה - גיפט קארד 300 ש""ח"
+2026-05-30,Apple,722140557345,623.70,ILS,expense,19e76ffc83828ac6,כולל מנוי Claude Max 549.90
+2026-05-30,Wolt - אוטלו,6a1b0841a72b1e1a2fefc2ed,154.90,ILS,expense,19e79b97b9272573,
+2026-05-30,Wolt - וולט מרקט,6a1b0a98123e0b6956681400,356.50,ILS,expense,19e79dea8418dab5,
+2026-05-31,Wolt - ויקטורי,6a1beae81d35c54db01c86b0,131.50,ILS,expense,19e7d247b8aab3e1,
 2026-05-31,סופה הסעות וטיולים,157949,3855.00,ILS,expense,19ecf411ccf6b9ce,ארנונה 06/26
 2026-06-01,Wolt - ג׳פניקה כשר,6a1bed056dc4d0691533f9d1,536.90,ILS,expense,19e82db168ee5d87,
 2026-06-01,Wolt - וולט מרקט,6a1d92306056e32b71a5a114,52.10,ILS,expense,19e838a8be3237fc,
 2026-06-01,Wolt - וולט מרקט,6a1dbd523283645749d80871,285.40,ILS,expense,19e843dd2be3e995,
+2026-06-01,הולמס פלייס,756003538,272.11,ILS,expense,19e74f04fddcbeb9,מנוי - יוסי דן גור
+2026-06-01,הולמס פלייס,756002926,242.46,ILS,expense,19e709b4b398f559,מנוי - אושר דן גור
 2026-06-01,פרטנר תקשורת,17281413,43.85,ILS,expense,19ea43fa31881445,חשבון מאי; מס' מייל 1050416513
 2026-06-02,מוז-חולצות ומתנות (Verifone),93604810,2240.00,ILS,income,19e88d3703760c5c,שובר 08001001; לקוח hamden; מקדמה; עסקה 01/06
 2026-06-02,שני גולן כהן,61654,960.00,ILS,expense,19e8bff79d69f361,לקוח: יוסף דן גור; טיפול
@@ -31,6 +140,7 @@ date,vendor,invoice_number,amount,currency,direction,gmail_message_id,notes
 2026-06-07,Wolt - וולט מרקט,6a258e4c3beec3171aa6489d,28.40,ILS,expense,19ea2be7a0e402aa,
 2026-06-07,Wolt - מאפיית דון לאון,6a24f78c12706856bbbe62fd,453.90,ILS,expense,19ea097a8280f20a,
 2026-06-07,רבו פילאטיס (upapp/hyp),1009513336,UNKNOWN,ILS,expense,19ea22783353bccc,קובץ לא סונכרן - octet-stream
+2026-06-08,AMI (עמי) טכנולוגיות רפואיות,SI26020048,7080.00,ILS,expense,19ea70c2866d47ce,מזרקי Sculptra לאדוונס אסתטיקס
 2026-06-08,Apple (CapCut),770145119147,153.60,ILS,expense,19ea9e1ec0fc95dd,
 2026-06-08,Celonis (Make.com),2688-4597,54.28,USD,expense,19ea8f24926300ab,
 2026-06-08,Eleven Labs,2609-1019-9091,22.00,USD,expense,19ea65daf693a24c,
