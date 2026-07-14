@@ -1,4 +1,4 @@
-// Clinic (גלונס אסתטיקה) mailbox variant — Meta ads receipts ONLY.
+// Clinic (גלונס אסתטיקה) mailbox variant — all invoices/receipts.
 // Run INSIDE the clinic's Google account (script.google.com):
 //   1. New project → paste this file → save
 //   2. Run setup() once → approve consent (folder is created and shared automatically)
@@ -8,7 +8,7 @@
 
 const SHARE_WITH = 'osherv55@gmail.com';
 const PROP = PropertiesService.getScriptProperties();
-const SEARCH = 'from:(business-updates.facebook.com OR facebookmail.com) newer_than:90d';
+const SEARCH = '(חשבונית OR קבלה OR invoice OR receipt OR from:business-updates.facebook.com) newer_than:90d';
 const TIME_LIMIT_MS = 270000;
 
 function setup() {
