@@ -82,11 +82,20 @@ RTL glyph order (renders backwards).
   prepend RLM (U+200F) to any Hebrew line containing a Latin token (IMCAS,
   AAA) or the token jumps to line start. RLM alone proved unreliable — the
   bulletproof fix is wrapping the whole line in RLE…PDF (U+202B…U+202C).
-- **suez-lower** (user-approved 2026-07-15, current lecturer-video style):
-  titles = Suez One @86 near-white with subtle silver shimmer; body = Rubik
-  600 @68 `&H00F0F0F0`, outline 2.5 dark, shadow 4; ONE LINE per cue (split
-  long thoughts into sequential cues), Alignment=2 with MarginV 600/620
-  (lower-middle band — user: "בולט אבל לא משתלט", never on faces); mixed-
-  direction lines wrapped in RLE…PDF. Font pack lives in scratchpad
-  erlich/fonts5 (Suez One, Rubik, Secular One, Miriam Libre, Bellefair,
-  Karantina — download via raw.githubusercontent google/fonts).
+- **suez-lower** (user-approved 2026-07-15, current lecturer-video style;
+  v6 update: **Suez One for EVERYTHING** — user: "הפונט סיום זה הפונט שצריך
+  להיות לאורך כל הסרטון"): titles = Suez One @86 near-white with subtle
+  silver shimmer; body = Suez One @64 `&H00F0F0F0`, outline 2.5 dark,
+  shadow 4 (@64 is the max that fits the English credentials line in 1000px);
+  ONE LINE per cue (split long thoughts into sequential cues), Alignment=2
+  with MarginV 600/620 (lower-middle band — user: "בולט אבל לא משתלט", never
+  on faces); mixed-direction lines wrapped in RLE…PDF. Opening hook = staged
+  reveal (user asked for "מושך יותר"): line 1 big `\fs106` pop-in
+  (`\fscx90→100` over 280ms) at `\pos(540,1235)`, line 2 `\fs86` fades in
+  under it at `\pos(540,1362)` ~0.6s later, then payoff line `\fs116` with
+  its own pop. ⚠️ NEVER change `\fs` mid-line for emphasis — inline tags
+  split bidi runs and scramble Hebrew word order; emphasize with a bigger
+  whole line instead. Font pack lives in scratchpad erlich/fonts5 (Suez One,
+  Rubik, Secular One, Miriam Libre, Bellefair, Karantina — download via
+  raw.githubusercontent google/fonts). Reference: subs_erlich6.ass /
+  erlich v6 in media-memory.
