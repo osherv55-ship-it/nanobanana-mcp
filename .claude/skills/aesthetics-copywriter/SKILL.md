@@ -74,5 +74,10 @@ RTL glyph order (renders backwards).
   `{\blur3\1c&HC0C0C0&\t(200,1600,\1c&HFFFFFF&)\t(1600,3400,\1c&HD0D0D0&)}`,
   thin charcoal outline 2.5 + shadow 6 over `&HA0000000`; body @90 off-white
   `&H00EDEDED`, outline 1.8, shadow 4. No bordeaux. Titles/credentials in
-  HEBREW only (user rejected "M.D" on screen). Reference: `subs_erlich2.ass` /
-  erlich v2 in media-memory.
+  Reference: `subs_erlich3.ass` / erlich v3 in media-memory. v3 refinements
+  (user-approved 2026-07-15): captions TOP-aligned (Alignment=8, MarginV
+  170/190) so text never covers faces; title @100 / body @76 — "בולט אבל לא
+  משתלט"; muted metallic silver `&H00C8C8C8` base with grey-toned shadow (not
+  flat white); credentials in ENGLISH exactly as the bio ("M.D., MSc. ...");
+  prepend RLM (U+200F) to any Hebrew line containing a Latin token (IMCAS,
+  AAA) or the token jumps to line start.
