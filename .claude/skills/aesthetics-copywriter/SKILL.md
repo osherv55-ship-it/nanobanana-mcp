@@ -97,7 +97,13 @@ RTL glyph order (renders backwards).
   under it at `\pos(540,1370)` ~0.6s later, then payoff line `\fs122` with
   its own pop. ⚠️ NEVER change `\fs` mid-line for emphasis — inline tags
   split bidi runs and scramble Hebrew word order; emphasize with a bigger
-  whole line instead. Font pack lives in scratchpad erlich/fonts5 (Suez One,
+  whole line instead. To animate only SOME words in a line (v7 sparkle on
+  "שמרצה בהם"): split the line into two `\pos`-anchored cues placed side by
+  side (measure widths with PIL at the final fontsize; RTL = first words
+  rightmost), then give the emphasized cue chained `\t` pulses
+  white↔champagne (`\1c&HFFFFFF&\blur3.5` ↔ `\1c&HA8E4FF&\blur1.5`, ~350ms
+  per phase). Any line containing `?` (final OR mid-line) must be wrapped
+  in RLE…PDF or the `?` jumps to the line start. Font pack lives in scratchpad erlich/fonts5 (Suez One,
   Rubik, Secular One, Miriam Libre, Bellefair, Karantina — download via
   raw.githubusercontent google/fonts). Reference: subs_erlich6.ass /
   erlich v6 in media-memory.
