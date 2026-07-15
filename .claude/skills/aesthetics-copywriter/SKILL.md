@@ -69,3 +69,10 @@ RTL glyph order (renders backwards).
   unreadable. No serif fonts (Frank Ruhl rejected). Fonts via google/fonts
   variable TTFs → `fontTools.varLib.instancer`. Reference: `subs9.ass` /
   final_v9 in media-memory.
+- **silver-lux** (user-approved for lecturer/G2-adjacent content, 2026-07-15):
+  same Assistant fonts; title @120 silver `&H00E8E8E8` with shimmer override
+  `{\blur3\1c&HC0C0C0&\t(200,1600,\1c&HFFFFFF&)\t(1600,3400,\1c&HD0D0D0&)}`,
+  thin charcoal outline 2.5 + shadow 6 over `&HA0000000`; body @90 off-white
+  `&H00EDEDED`, outline 1.8, shadow 4. No bordeaux. Titles/credentials in
+  HEBREW only (user rejected "M.D" on screen). Reference: `subs_erlich2.ass` /
+  erlich v2 in media-memory.
