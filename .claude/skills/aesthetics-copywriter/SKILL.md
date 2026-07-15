@@ -84,15 +84,17 @@ RTL glyph order (renders backwards).
   bulletproof fix is wrapping the whole line in RLE…PDF (U+202B…U+202C).
 - **suez-lower** (user-approved 2026-07-15, current lecturer-video style;
   v6 update: **Suez One for EVERYTHING** — user: "הפונט סיום זה הפונט שצריך
-  להיות לאורך כל הסרטון"): titles = Suez One @86 near-white with subtle
-  silver shimmer; body = Suez One @64 `&H00F0F0F0`, outline 2.5 dark,
-  shadow 4 (@64 is the max that fits the English credentials line in 1000px);
+  להיות לאורך כל הסרטון"): titles = Suez One @94 near-white with subtle
+  silver shimmer; body = Suez One @72 `&H00F0F0F0`, outline 2.5 dark,
+  shadow 4, MarginL/R 30 (v6b sizes — user asked "תגדיל עוד קצת" over the
+  original 86/64; lines that overflow ~1020px get a whole-line `\fs` at the
+  cue start: English credentials `\fs64`, longest Hebrew line `\fs68`);
   ONE LINE per cue (split long thoughts into sequential cues), Alignment=2
   with MarginV 600/620 (lower-middle band — user: "בולט אבל לא משתלט", never
   on faces); mixed-direction lines wrapped in RLE…PDF. Opening hook = staged
-  reveal (user asked for "מושך יותר"): line 1 big `\fs106` pop-in
-  (`\fscx90→100` over 280ms) at `\pos(540,1235)`, line 2 `\fs86` fades in
-  under it at `\pos(540,1362)` ~0.6s later, then payoff line `\fs116` with
+  reveal (user asked for "מושך יותר"): line 1 big `\fs112` pop-in
+  (`\fscx90→100` over 280ms) at `\pos(540,1235)`, line 2 `\fs92` fades in
+  under it at `\pos(540,1370)` ~0.6s later, then payoff line `\fs122` with
   its own pop. ⚠️ NEVER change `\fs` mid-line for emphasis — inline tags
   split bidi runs and scramble Hebrew word order; emphasize with a bigger
   whole line instead. Font pack lives in scratchpad erlich/fonts5 (Suez One,
