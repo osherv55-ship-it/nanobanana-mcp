@@ -80,4 +80,13 @@ RTL glyph order (renders backwards).
   משתלט"; muted metallic silver `&H00C8C8C8` base with grey-toned shadow (not
   flat white); credentials in ENGLISH exactly as the bio ("M.D., MSc. ...");
   prepend RLM (U+200F) to any Hebrew line containing a Latin token (IMCAS,
-  AAA) or the token jumps to line start.
+  AAA) or the token jumps to line start. RLM alone proved unreliable — the
+  bulletproof fix is wrapping the whole line in RLE…PDF (U+202B…U+202C).
+- **suez-lower** (user-approved 2026-07-15, current lecturer-video style):
+  titles = Suez One @86 near-white with subtle silver shimmer; body = Rubik
+  600 @68 `&H00F0F0F0`, outline 2.5 dark, shadow 4; ONE LINE per cue (split
+  long thoughts into sequential cues), Alignment=2 with MarginV 600/620
+  (lower-middle band — user: "בולט אבל לא משתלט", never on faces); mixed-
+  direction lines wrapped in RLE…PDF. Font pack lives in scratchpad
+  erlich/fonts5 (Suez One, Rubik, Secular One, Miriam Libre, Bellefair,
+  Karantina — download via raw.githubusercontent google/fonts).
