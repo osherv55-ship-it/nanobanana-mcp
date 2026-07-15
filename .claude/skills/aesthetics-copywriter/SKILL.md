@@ -99,8 +99,14 @@ RTL glyph order (renders backwards).
   split bidi runs and scramble Hebrew word order; emphasize with a bigger
   whole line instead. To animate only SOME words in a line (v7 sparkle on
   "שמרצה בהם"): split the line into two `\pos`-anchored cues placed side by
-  side (measure widths with PIL at the final fontsize; RTL = first words
-  rightmost), then give the emphasized cue chained `\t` pulses
+  side (RTL = first words rightmost), then give the emphasized cue chained
+  `\t` pulses. ⚠️ When computing positions, PIL at the ASS Fontsize
+  OVERSHOOTS — libass maps Fontsize to the font's CELL height
+  (usWinAscent+usWinDescent), not the em. Measure at
+  `effective = Fontsize × upem/(winAscent+winDescent)` (Suez One: ×0.766)
+  or the split words render narrower and a huge gap opens (v7 bug, fixed
+  v7b: xR 779 / xL 417 at fs122). Verify with a 1-frame lavfi render of a
+  split-vs-whole-line test before the full build. Pulses:
   white↔champagne (`\1c&HFFFFFF&\blur3.5` ↔ `\1c&HA8E4FF&\blur1.5`, ~350ms
   per phase). Any line containing `?` (final OR mid-line) must be wrapped
   in RLE…PDF or the `?` jumps to the line start. Font pack lives in scratchpad erlich/fonts5 (Suez One,
