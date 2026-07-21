@@ -87,6 +87,16 @@ never block on a missing optional piece.
 A `new-doctor-folder.ps1` helper scaffolds an empty folder with a README that
 documents the convention. Suggest it when the user is starting on a new doctor.
 
+## Marketing playbooks — AAA + Glowence
+
+`playbooks/hormozi/` holds the Hormozi-based marketing strategy for both businesses:
+`aaa-playbook.md` (the academy — doctor audience) and `glowence-playbook.md` (the clinic —
+patient audience), covering offers, lead magnets, ads, creative direction, and full Hebrew
+conversation scripts (CLOSER + anti-no-show sequence). **Consult these before writing any
+marketing, ad copy, offer, or sales-conversation content for AAA or Glowence**, and keep them
+consistent with the `aaa-copywriter` / `glowence-copywriter` skills (playbooks = strategy,
+skills = voice). The source guide PDF is in media-memory (tags: `hormozi,strategy`).
+
 ## Code conventions
 
 - Node 20+, ESM (`"type": "module"`). Match `server.js` style: top-level async helpers, small focused functions, env-var config block at top.
