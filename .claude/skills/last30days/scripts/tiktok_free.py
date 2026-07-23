@@ -1,30 +1,32 @@
 #!/usr/bin/env python3
-"""Free keyless TikTok enrichment for /last30days.
+"""Free keyless TikTok enrichment + transcripts for /last30days.
 
-TikTok keyword *search* is locked behind paid scrapers (ScrapeCreators/Apify).
-But yt-dlp can pull full engagement data from any *known* TikTok video URL, and
-can enumerate a creator's recent videos, for free. So the free pipeline is:
+TikTok keyword *search* is locked behind paid scrapers (ScrapeCreators/Apify),
+but yt-dlp can, for free:
+  - pull full engagement data (views/likes/comments/reposts) from any video URL,
+  - enumerate a creator's recent videos,
+  - AND download the auto-generated CAPTIONS/subtitles (the spoken transcript).
 
-  1. Discover TikTok URLs / creator @handles via WebSearch (the host model's
-     own tool). General web searches often surface individual /video/ URLs;
-     domain-restricted ones surface /discover/ pages (topic aggregators).
-  2. Pipe those URLs and/or @handles to this script -> real view/like/comment/
-     repost data, ranked, PLUS an aggregate (average across all videos).
+So the free pipeline is:
+  1. Discover TikTok video URLs / creator @handles via WebSearch (host model's
+     own tool). General searches often surface /video/ URLs; domain-restricted
+     ones surface /discover/ topic pages.
+  2. Pipe those to this script -> engagement + (optionally) the transcript,
+     ranked, plus an aggregate (average across many videos). With --transcripts,
+     --match also searches the SPOKEN words, not just the caption — so you can
+     find "what reta creators actually SAY about bloating," not just hashtags.
 
 Usage:
-  tiktok_free.py URL [URL ...]                 # enrich specific video URLs
-  tiktok_free.py @creator [@creator ...]       # enumerate a creator's recent videos
-  tiktok_free.py @a @b --match kpv,tesa        # keep only captions matching ANY term
-  tiktok_free.py @a --per 20                   # pull 20 recent videos per creator
-  tiktok_free.py @a --stats-only               # print only the aggregate, no per-video JSON
+  tiktok_free.py URL [URL ...]                  # enrich video URLs
+  tiktok_free.py @creator [@creator ...]        # enumerate recent videos
+  tiktok_free.py @a --transcripts               # also pull spoken transcript
+  tiktok_free.py @a --transcripts --match bloating,gas   # match spoken words too
+  tiktok_free.py @a --per 20 --stats-only       # aggregate only
   printf '%s\n' url1 @creator2 | tiktok_free.py -
 
-Accepts video URLs, profile URLs, @handles, or bare creator names. Outputs a
-JSON array ranked by engagement on stdout, plus a per-video table AND an
-aggregate summary (count, average/median/total views-likes-comments, date span)
-on stderr. Requires yt-dlp on PATH. Fully free/keyless.
+Requires yt-dlp on PATH. Fully free/keyless.
 """
-import sys, json, subprocess, statistics, concurrent.futures
+import sys, os, re, json, glob, tempfile, subprocess, statistics, concurrent.futures
 
 PER_CREATOR = 12  # default recent videos to pull per creator
 
@@ -39,10 +41,9 @@ def _run(args, timeout=120):
 
 
 def creator_video_urls(handle: str, limit: int) -> list[str]:
-    """List a creator's recent video URLs via flat-playlist (cheap, no download).
+    """List a creator's recent video URLs (flat-playlist, cheap, no download).
 
-    Tolerates handle redirects (e.g. an old handle that now resolves to a new
-    one) because we prefer yt-dlp's own url/webpage_url over reconstructing it.
+    Prefers yt-dlp's own url/webpage_url so it tolerates handle redirects.
     """
     handle = handle.lstrip("@").strip().rstrip("/")
     if not handle:
@@ -66,7 +67,38 @@ def creator_video_urls(handle: str, limit: int) -> list[str]:
     return urls
 
 
-def enrich(url: str) -> dict | None:
+def _clean_vtt(path: str) -> str:
+    """Turn a .vtt subtitle file into a plain deduped transcript string."""
+    try:
+        txt = open(path, encoding="utf-8").read()
+    except Exception:
+        return ""
+    lines = []
+    for l in txt.splitlines():
+        if ("-->" in l or l.strip().isdigit() or l.startswith(("WEBVTT", "Kind", "Language"))
+                or not l.strip()):
+            continue
+        l = re.sub(r"<[^>]+>", "", l).strip()
+        if l and (not lines or lines[-1] != l):
+            lines.append(l)
+    return " ".join(lines)
+
+
+def fetch_transcript(url: str) -> str:
+    """Download TikTok auto-captions for a video and return the plain text.
+
+    Free: TikTok exposes eng-US auto-captions on many videos, which yt-dlp can
+    write without downloading the video itself.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        out_tpl = os.path.join(tmp, "s.%(ext)s")
+        _run(["--write-auto-subs", "--write-subs", "--sub-langs", "eng-US,en.*",
+              "--sub-format", "vtt", "--skip-download", "-o", out_tpl, url], timeout=90)
+        vtts = glob.glob(os.path.join(tmp, "*.vtt"))
+        return _clean_vtt(vtts[0]) if vtts else ""
+
+
+def enrich(url: str, want_transcript: bool = False) -> dict | None:
     url = url.strip()
     if not url or "tiktok.com" not in url:
         return None
@@ -80,7 +112,7 @@ def enrich(url: str) -> dict | None:
         d = json.loads(out.stdout)
     except Exception:
         return None
-    return {
+    item = {
         "url": d.get("webpage_url") or url,
         "creator": d.get("uploader") or d.get("uploader_id"),
         "title": d.get("title") or d.get("description"),
@@ -90,11 +122,14 @@ def enrich(url: str) -> dict | None:
         "comments": d.get("comment_count") or 0,
         "reposts": d.get("repost_count") or 0,
         "date": d.get("upload_date"),
+        "transcript": "",
     }
+    if want_transcript:
+        item["transcript"] = fetch_transcript(item["url"])
+    return item
 
 
 def _pop_opt(args, name):
-    """Pop `--name value` from args, returning value or None."""
     if name in args:
         i = args.index(name)
         val = args[i + 1] if i + 1 < len(args) else None
@@ -104,7 +139,6 @@ def _pop_opt(args, name):
 
 
 def aggregate(items: list[dict]) -> dict:
-    """Compute the average-across-many-videos summary the report cares about."""
     if not items:
         return {}
     v = [x["views"] for x in items]
@@ -114,44 +148,35 @@ def aggregate(items: list[dict]) -> dict:
     return {
         "videos": len(items),
         "creators": len({x["creator"] for x in items}),
-        "avg_views": round(statistics.mean(v)),
-        "median_views": round(statistics.median(v)),
-        "avg_likes": round(statistics.mean(l)),
-        "median_likes": round(statistics.median(l)),
+        "avg_views": round(statistics.mean(v)), "median_views": round(statistics.median(v)),
+        "avg_likes": round(statistics.mean(l)), "median_likes": round(statistics.median(l)),
         "avg_comments": round(statistics.mean(c)),
-        "total_views": sum(v),
-        "total_likes": sum(l),
-        "date_from": dates[0] if dates else None,
-        "date_to": dates[-1] if dates else None,
+        "total_views": sum(v), "total_likes": sum(l),
+        "date_from": dates[0] if dates else None, "date_to": dates[-1] if dates else None,
     }
 
 
 def main() -> int:
     args = sys.argv[1:]
-    stats_only = False
-    if "--stats-only" in args:
-        stats_only = True
+    stats_only = "--stats-only" in args
+    if stats_only:
         args.remove("--stats-only")
+    want_transcript = "--transcripts" in args
+    if want_transcript:
+        args.remove("--transcripts")
     per = int(_pop_opt(args, "--per") or PER_CREATOR)
     match_raw = _pop_opt(args, "--match")
-    # Comma-separated -> match ANY term (OR).
     terms = [t.strip().lower() for t in match_raw.split(",")] if match_raw else []
 
-    if args == ["-"] or not args:
-        tokens = [l.strip() for l in sys.stdin if l.strip()]
-    else:
-        tokens = args
+    tokens = [l.strip() for l in sys.stdin if l.strip()] if (args == ["-"] or not args) else args
 
-    # Expand @handles / bare creator names into their recent video URLs; keep
-    # explicit /video/ URLs as-is. De-dupe while preserving order.
     urls, seen = [], set()
     for t in tokens:
-        expanded = []
         if "tiktok.com" in t and "/video/" in t:
             expanded = [t]
-        elif "tiktok.com/@" in t:  # profile URL
+        elif "tiktok.com/@" in t:
             expanded = creator_video_urls(t.split("/@")[1].split("/")[0], per)
-        else:  # @handle or bare name
+        else:
             expanded = creator_video_urls(t, per)
         for u in expanded:
             key = u.split("?")[0]
@@ -161,28 +186,32 @@ def main() -> int:
 
     items = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
-        for r in ex.map(enrich, urls):
+        for r in ex.map(lambda u: enrich(u, want_transcript), urls):
             if not r:
                 continue
             if terms:
-                hay = ((r.get("description") or "") + " " + (r.get("title") or "")).lower()
+                # With transcripts, match the SPOKEN words too, not just the caption.
+                hay = " ".join([r.get("description") or "", r.get("title") or "",
+                                r.get("transcript") or ""]).lower()
                 if not any(term in hay for term in terms):
                     continue
             items.append(r)
     items.sort(key=lambda x: x["views"] + x["likes"] * 3 + x["comments"] * 5, reverse=True)
 
-    agg = aggregate(items)
     if not stats_only:
         print(json.dumps(items, ensure_ascii=False, indent=2))
 
-    # Per-video table
-    print(f"\n{len(items)}/{len(urls)} TikTok videos enriched (free, keyless via yt-dlp):",
+    print(f"\n{len(items)}/{len(urls)} TikTok videos enriched"
+          f"{' + transcripts' if want_transcript else ''} (free, keyless via yt-dlp):",
           file=sys.stderr)
     for it in items:
-        print(f"  @{it['creator']} | {it['views']:,}v {it['likes']:,}L {it['comments']:,}c "
-              f"| {it['date']} | {(it['title'] or '')[:70]}", file=sys.stderr)
+        line = (f"  @{it['creator']} | {it['views']:,}v {it['likes']:,}L {it['comments']:,}c "
+                f"| {it['date']} | {(it['title'] or '')[:60]}")
+        print(line, file=sys.stderr)
+        if want_transcript and it.get("transcript"):
+            print(f"      🗣 {it['transcript'][:160]}", file=sys.stderr)
 
-    # Aggregate summary — the "average across many videos" view.
+    agg = aggregate(items)
     if agg:
         print("\n=== AGGREGATE (average across many videos) ===", file=sys.stderr)
         print(f"  {agg['videos']} videos from {agg['creators']} creators "
