@@ -49,6 +49,29 @@ noted many yes-voters had peptide-industry ties.
   safest for gas/bloating; peppermint oil (Colpermin) helps IBS cramping but worsens reflux;
   **AVOID ibuprofen/Advil (NSAID) for gut symptoms — irritates gut lining, can worsen inflammation /
   trigger IBD flares.** Acetaminophen gentler if analgesic needed. Persistent/worsening/fever/blood → MD.
+  (Note: Gas-X is NOT absorbed & has no analgesic effect — pre-loading it "to prevent injection pain"
+  is a category error; it only breaks up gas already in the gut lumen.)
+- **KPV & histamine / mast cells:** KPV inhibits NF-κB (which drives ~80% of mast-cell cytokine
+  transcription), so it dampens histamine-DRIVEN inflammation **indirectly** + repairs gut barrier
+  (fewer triggers). Community calls it a "mast-cell stabilizer" (used for MCAS) but **direct mast-cell
+  stabilization data is thin (D)** — no controlled tryptase/histamine studies; claims of direct
+  IgE-FcεRI blockade are speculation. It likely reduces histamine-driven symptoms, doesn't "switch off"
+  mast cells.
+- **KPV for hangover (D, anecdotal, no direct study):** plausible because hangover = inflammation
+  (NF-κB) + histamine (alcohol raises histamine & blocks DAO) + leaky gut — the three axes KPV touches.
+  Same mechanism explains MCAS + hangover reports. Extrapolation, not evidence.
+- **RAPID onset — real, not just placebo (mechanistic, no human RCT):** KPV is a tiny water-soluble
+  tripeptide → fast subQ absorption (plasma detectable 15-30 min; local tissue in minutes). The slow
+  part is the NF-κB/genomic anti-inflammatory effect (hours-days); the FAST part is upstream:
+  **MC1R→cAMP signaling (seconds-minutes) → eNOS→NO→vasodilation** → warmth/tingling/flushing in
+  extremities, "lighter" feeling in inflamed areas (early reduced nociceptor sensitivity + micro-
+  circulation), transient vitality. KPV does NOT cross intact BBB, so "vitality/mood" is peripheral/
+  autonomic, not central. NOT opioid-mediated (unlike Semax/Selank). Community: immediate systemic
+  reports are UNCOMMON (norm = "takes days-weeks"); tingling/warmth/stinging at injection ARE
+  documented as expected mild effects. Deep-dive saved in references/kpv-deep-dive.md.
+- **Deep mechanism reference:** see `references/kpv-deep-dive.md` — full preclinical evidence base
+  (PepT1 self-targeting, importin-α3/p65 nuclear-transport blockade, MC1R-independence proven in e/e
+  mice, colitis/skin/airway models, antimicrobial controversy, delivery science, evidence gap).
 
 ## Semax (Met-Glu-His-Phe-Pro-Gly-Pro)
 - **What:** Russian synthetic ACTH(4-10) analog + Pro-Gly-Pro tail. Nootropic + neuroprotective.

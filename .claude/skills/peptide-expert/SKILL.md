@@ -85,6 +85,16 @@ mechanistic basis (e.g. "inject over the gut" — it doesn't gut-target). Rank e
 
 Reuse `references/peptide-knowledge.md` as a starting map — but for anything time-sensitive
 (FDA status, current sentiment) re-run live; don't recite the file as if it's fresh.
+Deeper single-peptide science lives in dedicated files (e.g. `references/kpv-deep-dive.md`).
+
+## Osher's profile — load on every dosing/protocol answer
+
+`references/osher-peptide-profile.md` holds her confirmed **fast/strong-responder** phenotype
+(reacts hard to retatrutide, MOTS-c, KPV), her health flags (PMDD, Lp(a), sensitive gut, Semax-
+stimulant interaction), her vials' reconstitution math, her proposed stack + the safe-sequence
+verdict, and the real-time safety-triage rules. **Always start her at the lowest dose, one peptide
+at a time, titrate slowly, and expect systemic reactions others don't get.** Confirm reconstitution
+(vial mg + water mL) before computing units — dose is undefined without it.
 
 ## Expert lenses
 
