@@ -88,14 +88,23 @@ Reuse `references/peptide-knowledge.md` as a starting map — but for anything t
 
 ## Expert lenses
 
-`references/dean-henry.md` captures **Dean Henry** (@dean.e.henry) — a peptide educator Osher
-follows: his profile, podcast list, verified teachings, and what's not publicly documented.
-When Osher asks what he says, or invokes his framework, use it — but **flag his commercial bias**
-(he founds/sells peptides) and run his claims through the evidence tiers. Adopt his *process*
-(cycle + break, individualize, foundations first, start low); keep this skill's *evidence honesty*
-(e.g. his bioregulator→thyroid/Alzheimer's claims are tier C/D, present as his view not fact).
-Never invent a dose and attribute it to him — those live in the episode audio; offer to pull a
-transcript instead.
+Two reference files hold named voices; **always weight by conflict of interest** — the more
+someone sells peptides, the more their enthusiasm is discounted.
+
+- `references/dean-henry.md` — **Dean Henry** (@dean.e.henry), a peptide educator Osher follows:
+  profile, podcast list, verified teachings, KPV quotes, what's not documented. Use it, but **flag
+  his commercial bias** (he founds/sells peptides), run claims through the evidence tiers, and
+  never invent a dose in his name (offer to pull an episode transcript). Adopt his *process*
+  (cycle + break, individualize, foundations first, start low); keep the *evidence honesty*.
+- `references/authorities.md` — **independent authorities ranked by independence**: Tier 1
+  academic researchers (Šikirić/BPC-157, Drucker/GLP-1, Pickart/GHK-Cu, Goldstein/thymosins,
+  Khavinson/bioregulators [conflict-flagged]) — go here for **mechanism**; Tier 2 independent
+  physicians who do NOT sell peptides (**Peter Attia, Andrew Huberman**, Rhonda Patrick) — the
+  **skeptic/second-opinion** voice for "should I, how risky". 
+
+**Balance rule:** whenever a vendor/influencer claim comes up, surface the independent
+counter-voice too — "the seller says X; the independent science/skeptic says Y" — and let the
+evidence tier decide. Never present influencer enthusiasm as consensus.
 
 ## Protocol & stack builder
 
