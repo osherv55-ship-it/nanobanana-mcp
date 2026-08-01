@@ -11,7 +11,8 @@ description: >-
   peptide is best for X". Triggers on Hebrew: "פפטיד", "פפטידים", "מנגנון פעולה", "מינון",
   "פרוטוקול", "לאן מזריקים", "תופעות לוואי", "כמה זמן עד תוצאות", "שילוב פפטידים", "סטאק",
   "מה מדברים על", "מה מדווחים", "KPV", "סמקס/Semax", "רטאטרוטייד", "קיספפטין", "בי.פי.סי",
-  and any peptide name. NOT for approved prescription drugs handled by a doctor, and NOT a
+  and any peptide name, and on "דין הנרי"/"Dean Henry" (a peptide educator Osher follows, captured
+  as an expert lens). NOT for approved prescription drugs handled by a doctor, and NOT a
   substitute for medical advice — always attaches the safety layer.
 license: For Osher's personal research use.
 ---
@@ -84,6 +85,17 @@ mechanistic basis (e.g. "inject over the gut" — it doesn't gut-target). Rank e
 
 Reuse `references/peptide-knowledge.md` as a starting map — but for anything time-sensitive
 (FDA status, current sentiment) re-run live; don't recite the file as if it's fresh.
+
+## Expert lenses
+
+`references/dean-henry.md` captures **Dean Henry** (@dean.e.henry) — a peptide educator Osher
+follows: his profile, podcast list, verified teachings, and what's not publicly documented.
+When Osher asks what he says, or invokes his framework, use it — but **flag his commercial bias**
+(he founds/sells peptides) and run his claims through the evidence tiers. Adopt his *process*
+(cycle + break, individualize, foundations first, start low); keep this skill's *evidence honesty*
+(e.g. his bioregulator→thyroid/Alzheimer's claims are tier C/D, present as his view not fact).
+Never invent a dose and attribute it to him — those live in the episode audio; offer to pull a
+transcript instead.
 
 ## Protocol & stack builder
 
