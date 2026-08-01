@@ -42,6 +42,13 @@ noted many yes-voters had peptide-industry ties.
 - **KPV + retatrutide:** active community question (r/Retatrutide, Jul 2026), NO settled protocol,
   no interaction data. KPV appears in stacks alongside Reta users (framed as heal/anti-inflam
   support), not as a proven combo. Reta's own GI side effects are the loose rationale.
+- **Injection food timing:** for **subQ KPV, food timing is irrelevant** (systemic; the empty-
+  stomach/PepT1 rule is ORAL-only). No evidence-based "wait X hours" rule for injection — pick a
+  fixed convenient time (AM). "Inject fasted" is protocol convention/anecdote, not proven.
+- **Post-injection gut symptoms — what to reach for (general info, D):** simethicone (Gas-X) =
+  safest for gas/bloating; peppermint oil (Colpermin) helps IBS cramping but worsens reflux;
+  **AVOID ibuprofen/Advil (NSAID) for gut symptoms — irritates gut lining, can worsen inflammation /
+  trigger IBD flares.** Acetaminophen gentler if analgesic needed. Persistent/worsening/fever/blood → MD.
 
 ## Semax (Met-Glu-His-Phe-Pro-Gly-Pro)
 - **What:** Russian synthetic ACTH(4-10) analog + Pro-Gly-Pro tail. Nootropic + neuroprotective.

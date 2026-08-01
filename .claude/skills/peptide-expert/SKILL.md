@@ -85,6 +85,31 @@ mechanistic basis (e.g. "inject over the gut" — it doesn't gut-target). Rank e
 Reuse `references/peptide-knowledge.md` as a starting map — but for anything time-sensitive
 (FDA status, current sentiment) re-run live; don't recite the file as if it's fresh.
 
+## Protocol & stack builder
+
+When Osher asks to **build a protocol** or a **combination/stack** ("תבנה לי פרוטוקול",
+"שילוב", "סטאק", "מה לשלב עם X", "איך לקחת את זה"), produce a concrete plan — but research-backed,
+not invented. Follow `references/stack-builder.md` (goal→peptide map, known stacks, synergy vs
+redundancy, sequencing, reconstitution/dosing math). Process:
+
+1. **Clarify the GOAL and constraints** if unstated — gut? skin? cognition? recovery? bone?
+   And route preference, needle-averse?, budget, her health flags.
+2. **Pick by goal + route** (goal→peptide table in stack-builder.md). Prefer the route with a
+   real mechanism (e.g. oral KPV for gut, not injection).
+3. **Check the combination**: is it a known community stack (KLOW/GLOW/etc.), is there synergy or
+   just redundancy, any interaction/contraindication? Research the specific pair with `sonar-pro`
+   if it's not already covered — never assert a combo is safe/effective from vibes.
+4. **Lay out the protocol as a table**: peptide · route · dose per admin · frequency · timing ·
+   cycle (on/off) · reconstitution (mg vial + mL water → units on a U-100 syringe).
+5. **Sequencing**: "start lean, add one variable at a time" — never launch a 4-peptide blend day 1;
+   titrate, so if something reacts you know which. State the order to introduce them.
+6. **Reconstitution math**: units on a U-100 insulin syringe = (dose_mg ÷ (vial_mg ÷ water_mL)) × 100.
+   ALWAYS state the missing variable (water volume) if unknown — the concentration is undefined
+   without it, and that's the #1 dosing error.
+7. Attach the safety layer and "this is a research scaffold, confirm with a physician".
+
+Label every protocol clearly as **experimental / community-practice**, not a validated regimen.
+
 ## Output format (Hebrew, RTL)
 
 Lead with a one-line **badge** so it's clear research ran, e.g.
