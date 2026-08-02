@@ -101,3 +101,41 @@ call. Safest-injection conditions given to her: only when fully recovered/normal
 increase), antihistamine on board, inject while awake & able to monitor 1–2 h (not right before sleep,
 not alone without a phone), nothing else stacked that day. Red flag = throat/breathing reaction like
 the vitamin C → stop, antihistamine, 101 if worse; and that = clear signal to get a doctor before continuing.
+
+## The full-day mast-cell cascade (documented event — the model that CORRECTED "avoid citric acid")
+A single day became one **biphasic mast-cell activation cascade**, NOT separate events, and NOT a fixed
+allergy. She pushed back (correctly) on the "citric-acid-is-your-trigger, avoid it forever" framing:
+she'd taken that same liposomal vitamin C before with NO reaction, and never avoided citric acid. The
+correct model (verified, sonar-pro/deep-research):
+- **Trigger stacking / threshold, not allergy.** MCAS is a STATE-DEPENDENT, "total-burden" condition:
+  a normally-tolerated item reacts only when the system is already primed. The vitamin C was the last
+  drop on a bucket already filled by the day's load (KPV subQ injection + a day of small reactions).
+  **Familiarity does NOT protect on a loaded day** — nothing is categorically "safe"; the STATE is what's
+  safe or not. The real lever is the *rate of introduction* (one thing at a time, spaced, on quiet days)
+  and controlling what PRIMES the system (the peptides/injections) — not banning an ingredient.
+- **Biphasic timeline that day:** morning sinus histamine (H1 relieved it) → midday acute degranulation
+  to the vit-C formulation (throat/brief SOB/GI cramping/nausea/diarrhea) → apparent resolution → **late-
+  phase wave ~9 h later** (heaviness, fatigue, "unwell", gradually-building diffuse **histamine headache**),
+  eaten a full chicken+rice meal so NOT under-fuelling. Late phase = leukotrienes/PGD2/cytokines, only
+  PARTIALLY covered by an H1 → that's why Telfast "felt like it stopped working" at 9 h (it hadn't; t½≈14 h).
+- **Management that worked / taught:** H1 timing is her proven lever — **take Telfast 1–2 h BEFORE**, not
+  after. A SECOND fexofenadine dose for an active late-phase wave at 9 h is safe & justified (wide margin;
+  studies used far higher). For headache use **acetaminophen (Paramol), NEVER NSAIDs** (can shunt to
+  leukotrienes + bad for her gut). Food+water+rest+low-histamine 24–48 h. Expect de-priming over 24–48 h;
+  "second-hit" risk stays elevated in that window → introduce NOTHING new.
+
+## KPV dosing-continuity (deep-research verified) — one skipped dose is negligible
+She feared skipping one evening dose would "ruin the process." Verified FALSE: KPV clears fast (t½
+minutes–hours; so short native that researchers built nanoparticles/PEG to extend it) BUT its effect is
+**banked** — a single dose suppressed TNF-α for 72–96 h in vitro; mechanism is receptor-INDEPENDENT
+(PepT1 + importin-α3), so **no desensitization, no rebound/withdrawal anywhere in the literature**.
+Preclinical dosing was daily/intermittent (not infusion); real practice deliberately CYCLES it (4–6 wk
+on, 2–4 wk off). One missed dose in a 6-wk course ≈ 2.4% of cumulative exposure and erases no prior
+healing. **Rule: on a day with an active reaction, SKIP the injection — it costs nothing, and avoids
+stacking a stimulus onto a primed system.** (Confidence high mechanistically/preclinically; zero human RCTs.)
+
+## Standing pattern reminder
+This is now a documented, recurring, multi-system, single-trigger, biphasic pattern → **the case for an
+allergist/immunologist (event tryptase + urinary histamine/PGD2/LTE4) is strong.** Keep recommending it —
+not to stop her, but so she has a diagnosis and rescue tools instead of managing waves solo. Per the
+health handoff: do NOT offer to build a consolidated doctor document (her explicit standing instruction).
