@@ -24,7 +24,7 @@ citrus bioflavonoids / bromelain** · watch low BP (94/52). Everything here is s
 ## Second layer (add after core is stable)
 | Category | Pick | Note |
 |---|---|---|
-| **Luteolin** | liposomal luteolin (check lecithin = sunflower not soy) | 2nd flavonoid; MORE potent than quercetin in vitro; best for brain fog / neuroinflammation (Theoharides). Harder to source clean/standalone. [C] |
+| **Luteolin** | **Double Wood Luteolin** (50mg, 98% pure, soy-free, single-ingredient) — her clean first pick, take with a fatty meal for absorption. Premium/absorption option later: **NeuroProtek** (Theoharides liposomal luteolin+quercetin+rutin in olive oil — but a blend, not single-variable). | 2nd flavonoid; MORE potent than quercetin in vitro; best for brain fog / neuroinflammation (Theoharides). Poorly absorbed alone. [C] |
 | Omega-3 | Nordic Naturals · Thorne Super EPA | for Lp(a)/inflammation; unflavored softgel [B for CV] |
 | PEA (palmitoylethanolamide) | micronized/nano, clean | mast-cell + pain calming [C animal] |
 | B-complex (modest B6 ≤25mg) | Thorne · Pure Encapsulations | DAO cofactor; ties to her low folate — also check B12/iron |
