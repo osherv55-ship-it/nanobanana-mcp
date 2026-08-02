@@ -3,11 +3,39 @@
 Apply this on EVERY peptide protocol/dosing question. She is the primary user. Research, not
 medical advice — but tailor to these facts and always start conservative.
 
-## Responder phenotype: FAST / STRONG RESPONDER (confirmed)
+## Responder phenotype: FAST / STRONG RESPONDER + likely HISTAMINE/MAST-CELL REACTIVE (confirmed)
 Reacts fast and strongly to peptides — documented for **retatrutide, MOTS-c, and KPV**. This is a
 consistent cross-peptide pattern (not formally a named phenotype in the literature, but real for her).
 **Implication: always start at the LOWEST end, one peptide at a time, titrate slowly, expect systemic
 reactions others don't get.** Do not rush dose increases.
+
+**Histamine / mast-cell reactivity (strongly suspected — possible MCAS).** In a single day she had
+THREE reactions: systemic response to KPV, sinus/head congestion (histamine — relieved by an
+antihistamine), and throat tightness + brief shortness of breath after **liposomal vitamin C**
+(Ecosupp) — reacted to the FORMULATION (citric acid / natural flavors / lecithin), NOT the ascorbic
+acid (which lowers histamine). This ties to the estrogen–histamine loop and her PMDD. **Practical
+rules:** introduce anything new ONE at a time on a calm day, lowest dose, watch; prefer "clean"
+formulations; her red-flag excipients = **citric acid + "natural flavors"** (+ artificial
+sweeteners/colors, soy lecithin). Strongly advise she see an **allergist/physician about the MCAS
+pattern** before advancing peptides/supplements. Keep an antihistamine (she uses Telfast/fexofenadine)
+available; know anaphylaxis red flags (lip/throat swelling, worsening breathing, hives → 101/ER).
+
+### Regular meds & supplements (as of this session)
+- **Attent 20 mg (methylphenidate)** — stimulant → flags: no caffeine, no L-tyrosine, no Semax
+  (all amplify it); watch cardiovascular (see Lp(a)).
+- **Folic acid 800 µg** (AM).
+- **Telfast 180 (fexofenadine)** — antihistamine; take AM with WATER (fruit juice/antacids/calcium
+  reduce absorption — space calcium ~2 h). Complements KPV/DAO on the histamine axis (different points).
+- **D&K (Calcium citrate ~300 mg elemental + D3 400 IU + K2/MK-7 45 µg, MCT softgel)** — regular,
+  tolerated. Take WITH a fatty meal, ~2 h from Telfast, different meal than zinc (Ca–Zn compete).
+  Calcium = best-evidenced PMS supplement + mildly mast-cell-stabilizing; K2 good for her Lp(a)/arteries.
+- iHerb order (has on hand): **DAO** (histamine — take 15–30 min BEFORE meals; NEW, introduce on a
+  calm day), **Zinc-L-carnosine (PepZin GI)** + **L-glutamine** (gut lining — complement KPV & help
+  Reta GI), **NR/NAD+ oral** (gentle vs injection; defer while settling), **ALCAR** + **caffeine**
+  (AVOID — stimulant stack), **creatine**, **Ultima electrolytes** (raspberry — contains CITRIC ACID +
+  natural flavors → a trigger for her; prefer plain: water + pinch salt + Solgar Potassium 99 mg).
+- **Solgar Potassium 99 mg** (potassium gluconate + benign fillers) — CLEAN, no citric acid/flavors;
+  her safe potassium source (with food).
 
 ### KPV first-dose event (for reference)
 2 units (0.1 mg, from a 10 mg vial + 2 mL bacteriostatic water = 5 mg/mL; so 1 unit = 50 µg),
@@ -51,3 +79,25 @@ headache, vision/speech/one-sided weakness, lip/throat swelling, breathing diffi
 hives/flushing spreading, fainting/racing heart, persistent/worsening tinnitus + hearing loss/vertigo,
 or rapid escalation. "Better to call and hear it's nothing." Unapproved substance + strong responder =
 low threshold to contact a clinician.
+
+## Supplement/food triggers & principles (learned this session)
+- **Her red-flag excipients:** CITRIC ACID and "NATURAL FLAVORS" (reacted twice — liposomal vitamin C,
+  and present in Ultima electrolytes). Also caution: artificial sweeteners/colors, soy lecithin,
+  carrageenan/gums, dairy/whey, cocoa (histamine liberators). Rule: **read the label, scan for citric
+  acid + flavors first.**
+- **Ascorbic acid itself LOWERS histamine** — her vitamin C reaction was the FORMULATION, not the C.
+  A "clean" plain ascorbic acid (no citrus/soy/flavors) may be fine later; not on a reactive day.
+- **Introducing a NEW supplement (e.g. DAO):** only on a CALM day, lowest dose, one at a time, watch.
+  A FAMILIAR/tolerated supplement (e.g. her regular D&K) is much lower risk — fine to continue.
+- **Caffeine:** avoid — stacks with her Attent (methylphenidate) + can aggravate mast cells + CV/Lp(a).
+- **When reactive/settling:** the right move is FOOD + water + REST, not more supplements. Under-eating
+  (Reta appetite suppression) → mild fog/confusion; fix with real food (carb+protein), not a pill.
+- **Clean electrolytes for her:** water + pinch salt + Solgar Potassium 99 mg — NOT flavored/citric-acid
+  electrolyte powders.
+
+## Session verdict on injecting KPV
+She chose to continue KPV nightly (2 units, evening, once daily) despite the day's reactivity — her
+call. Safest-injection conditions given to her: only when fully recovered/normal, hold 2 units (don't
+increase), antihistamine on board, inject while awake & able to monitor 1–2 h (not right before sleep,
+not alone without a phone), nothing else stacked that day. Red flag = throat/breathing reaction like
+the vitamin C → stop, antihistamine, 101 if worse; and that = clear signal to get a doctor before continuing.

@@ -131,3 +131,34 @@ No single peptide "balances hormones." Best-per-goal:
 - **GLOW** = GHK-Cu + BPC-157 + TB-500. KPV sometimes added and reportedly *reduced* injection welts.
 - Philosophy practitioners preach: "start lean, add one biological key (e.g. KPV for
   inflammation) only when a specific job is failing" — not everything at once.
+
+## Histamine × estrogen × PMDD (session research)
+- **Estrogen–histamine loop (real, evidence-backed):** estrogen activates mast cells → ↑histamine
+  release; estrogen ↓DAO (histamine-clearing enzyme); histamine ↑ovarian estrogen → self-reinforcing.
+  → high/fluctuating estrogen (ovulation, luteal phase) RAISES histamine load. Histamine-intolerant/
+  MCAS women flare cyclically (ovulation + premenstrual): migraines, bloating, anxiety, insomnia.
+- **PMDD core mechanism ≠ histamine.** PMDD = brain hypersensitivity to **allopregnanolone**
+  (progesterone metabolite) at **GABA-A** receptors. Histamine is a *modulator/amplifier* of some PMS
+  symptoms, not the cause. KPV (anti-inflammatory + histamine-dampening) might help the histamine/
+  inflammatory COMPONENT of premenstrual symptoms — it is NOT a PMDD treatment.
+- **What reduces allopregnanolone/GABA-A sensitivity (PMDD core, MD-managed):**
+  - SENSITIVITY: **SSRI** (first-line, works fast luteal; modulates the GABA-A/neurosteroid response);
+    **sepranolone/isoallopregnanolone** (GAMSA — directly blocks ALLO at GABA-A; phase-II, experimental).
+  - PRODUCTION: **dutasteride** (5-α-reductase inhibitor blocks progesterone→ALLO; small positive RCT).
+  - FLUCTUATION: ovulation suppression — drospirenone pill (Yaz)/continuous, GnRH agonists (severe cases).
+  - Neurosteroid PAMs (brexanolone/zuranolone) approved for PPD/MDD, NOT PMDD; wrong direction for allo-
+    hypersensitivity. **No peptide is a GAMSA** — the allo-antagonist approach is inherently STEROID-based
+    (sepranolone is a neurosteroid, not a peptide). Selank (GABAergic peptide) goes the OPPOSITE direction
+    (enhances GABA) — may ease anxiety symptomatically, doesn't fix the sensitivity.
+- **Supplements for premenstrual support (evidence tiers):** best = **calcium ~1200 mg** (B), then
+  magnesium (glycinate/taurate)+B6, omega-3, vitex (all ~moderate); calm aminos taurine/L-theanine/
+  glycine (weak-moderate). Histamine axis: quercetin, luteolin, vitamin C (plain), DAO enzyme. FLAGS:
+  serotonergic (tryptophan/5-HTP/saffron) + SSRI = serotonin-syndrome risk; L-tyrosine/Semax + her
+  methylphenidate = stimulant stack. NAD+/NR = energy, not PMDD; not-core. All MD-supervised.
+
+## NAD+ (nicotinamide adenine dinucleotide) — quick reference
+Coenzyme (NOT a peptide) for mitochondrial energy/redox + sirtuins/PARP. Oral precursors NR/NMN
+reliably raise NAD+; big claims (energy/cognition/mood/longevity) under-evidenced in humans. No direct
+PMDD/allo mechanism. **IV/injected NAD+ = notorious for strong acute reactions if infused fast**
+(flushing, chest tightness, nausea) — for a strong responder, prefer ORAL NR/NMN, low & slow. Metabolic
+stacking caution with Reta/MOTS-c; autonomic caution with methylphenidate.
