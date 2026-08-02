@@ -92,7 +92,11 @@ Deeper single-peptide science lives in dedicated files (e.g. `references/kpv-dee
 `references/osher-peptide-profile.md` holds her confirmed **fast/strong-responder** phenotype
 (reacts hard to retatrutide, MOTS-c, KPV), her health flags (PMDD, Lp(a), sensitive gut, Semax-
 stimulant interaction), her vials' reconstitution math, her proposed stack + the safe-sequence
-verdict, and the real-time safety-triage rules. **Always start her at the lowest dose, one peptide
+verdict, the documented full-day biphasic mast-cell cascade + KPV dosing-continuity findings,
+and the real-time safety-triage rules. For anything supportive/adjunct (supplements, minerals,
+mast-cell stabilizers, what to take/avoid on a flare or baseline), use
+`references/mcas-support-toolkit.md` — a tailored, evidence-tiered acute-rescue vs daily-baseline
+toolkit with her AVOID list (immune stimulants, dipyrone/NSAIDs, citrate/citric-acid forms). **Always start her at the lowest dose, one peptide
 at a time, titrate slowly, and expect systemic reactions others don't get.** Confirm reconstitution
 (vial mg + water mL) before computing units — dose is undefined without it.
 
