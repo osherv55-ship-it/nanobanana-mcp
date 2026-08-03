@@ -23,7 +23,12 @@ available; know anaphylaxis red flags (lip/throat swelling, worsening breathing,
 ### Regular meds & supplements (as of this session)
 - **Attent 20 mg (methylphenidate)** — stimulant → flags: no caffeine, no L-tyrosine, no Semax
   (all amplify it); watch cardiovascular (see Lp(a)).
-- **Folic acid 800 µg** (AM).
+- **Folate — switched folic acid → methylfolate (L-5-MTHF, iHerb) with a STRONG immediate positive response**
+  (alertness, "reset", brain balance). Her lab folate was low (3.6) *despite* taking folic acid → suggests poor
+  conversion (likely **MTHFR** variant). Methylfolate bypasses the conversion + feeds dopamine/serotonin synthesis,
+  and the SAME methylation system clears histamine (HNMT) + estrogen (COMT) — central to her whole picture.
+  Rules: stop the old folic acid (don't stack both); methylfolate can be activating (she's also on methylphenidate,
+  same dopamine axis) — if it tips to anxiety/insomnia, lower dose don't raise. Worth an MTHFR test. AM.
 - **Telfast 180 (fexofenadine)** — antihistamine; take AM with WATER (fruit juice/antacids/calcium
   reduce absorption — space calcium ~2 h). Complements KPV/DAO on the histamine axis (different points).
 - **D&K (Calcium citrate ~300 mg elemental + D3 400 IU + K2/MK-7 45 µg, MCT softgel)** — regular,
