@@ -1,0 +1,70 @@
+<footer>
+  <p style="margin-bottom:12px"><b>איך המדריך הזה נבנה.</b> ניתוח שלוש תמונות ללא איפור באור יום —
+  גוון, סאב־טון, מרקם, מבנה עפעף, יחסי שפתיים ומרכז פנים. הטכניקות מיוחסות למאפרים
+  שפיתחו אותן והותאמו לממצאים. כל מוצר נבדק מול קמעונאות ישראלית בפועל, וגוונים נבחרו
+  לעור בהיר בסאב־טון ניטרלי־חם.</p>
+  <p style="margin-bottom:12px"><b>שני סייגים.</b> גוון על מסך אינו גוון במציאות — כל מוצר בסיס
+  חייב סוואצ' על קו הלסת באור יום לפני קנייה. ומחירים שמסומנים ב־~ הם הערכת מדף ולא מחיר מאומת.</p>
+  <p>המדריך קוסמטי בלבד ואינו מהווה ייעוץ רפואי.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var wrap = document.getElementById('mapwrap');
+  var legend = document.getElementById('legend');
+  if(!wrap || !legend) return;
+  var zones = wrap.querySelectorAll('.zone');
+  var active = null;
+
+  function apply(z){
+    if(z === null){
+      wrap.classList.remove('dim');
+      zones.forEach(function(g){ g.classList.remove('on'); });
+    } else {
+      wrap.classList.add('dim');
+      zones.forEach(function(g){ g.classList.toggle('on', g.dataset.z === z); });
+    }
+    legend.querySelectorAll('button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.z === z));
+    });
+    active = z;
+  }
+
+  legend.addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if(!btn) return;
+    apply(active === btn.dataset.z ? null : btn.dataset.z);
+  });
+
+  zones.forEach(function(g){
+    g.addEventListener('click', function(){
+      apply(active === g.dataset.z ? null : g.dataset.z);
+    });
+  });
+})();
+
+/* rail: mark the section currently in view */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  if(!links.length || !('IntersectionObserver' in window)) return;
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      var a = map[en.target.id];
+      if(!a) return;
+      if(en.isIntersecting){
+        links.forEach(function(x){ x.style.color=''; x.style.background=''; });
+        a.style.color = 'var(--ink)';
+        a.style.background = 'var(--surface-2)';
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px' });
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id); if(el) io.observe(el);
+  });
+})();
+</script>

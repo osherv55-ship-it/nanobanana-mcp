@@ -1,0 +1,211 @@
+<!-- ============ 02 FACE MAP ============ -->
+<section id="map">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div>
+      <h2>מפת הפנים</h2>
+      <p class="sub">איפה בדיוק כל מוצר יושב על הפנים שלך. לחצי על שורה במקרא כדי לבודד אזור.</p>
+    </div>
+  </div>
+
+  <p class="lede">
+    רוב הטעויות באיפור הן לא בחירת מוצר — הן <b>מיקום</b>. המפה הזו מותאמת למבנה שלך:
+    מרכז פנים שטוח, זווית עין יורדת, אודם ממוקד ונקבוביות באף ובמצח.
+  </p>
+
+  <div class="mapwrap" id="mapwrap">
+    <svg viewBox="0 0 420 520" role="img" aria-labelledby="maptitle mapdesc">
+      <title id="maptitle">מפת מיקום מוצרים על הפנים</title>
+      <desc id="mapdesc">שרטוט פנים עם שבעה אזורי מיקום: טשטוש נקבוביות, אודם, ברונזר, סומק, הארה, קונסילר ופודרה.</desc>
+
+      <defs>
+        <clipPath id="faceclip">
+          <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294
+                   C310,338 291,378 261,408 C246,423 227,434 210,434
+                   C193,434 174,423 159,408 C129,378 110,338 99,294
+                   C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/>
+        </clipPath>
+      </defs>
+
+      <!-- neck -->
+      <path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404"
+            fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+
+      <!-- face -->
+      <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294
+               C310,338 291,378 261,408 C246,423 227,434 210,434
+               C193,434 174,423 159,408 C129,378 110,338 99,294
+               C90,264 84,234 86,192 C90,112 148,68 210,68 Z"
+            fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
+
+      <!-- ============ ZONES (clipped to face) ============ -->
+      <g clip-path="url(#faceclip)">
+
+        <!-- pore blur -->
+        <g class="zone" data-z="pore">
+          <ellipse cx="210" cy="152" rx="52" ry="23" fill="var(--z-pore)" fill-opacity=".26"/>
+          <path d="M204,258 C202,284 201,300 200,310 L220,310 C219,300 218,284 216,258 Z"
+                fill="var(--z-pore)" fill-opacity=".3"/>
+          <ellipse cx="250" cy="296" rx="21" ry="17" fill="var(--z-pore)" fill-opacity=".2"/>
+          <ellipse cx="170" cy="296" rx="21" ry="17" fill="var(--z-pore)" fill-opacity=".2"/>
+        </g>
+
+        <!-- redness -->
+        <g class="zone" data-z="red">
+          <ellipse cx="187" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".46"/>
+          <ellipse cx="233" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".46"/>
+          <path d="M180,326 C176,340 175,354 177,366" stroke="var(--z-red)" stroke-opacity=".36"
+                stroke-width="7" stroke-linecap="round" fill="none"/>
+          <path d="M240,326 C244,340 245,354 243,366" stroke="var(--z-red)" stroke-opacity=".36"
+                stroke-width="7" stroke-linecap="round" fill="none"/>
+          <ellipse cx="210" cy="400" rx="19" ry="10" fill="var(--z-red)" fill-opacity=".34"/>
+          <ellipse cx="210" cy="197" rx="7" ry="5" fill="var(--z-red)" fill-opacity=".34"/>
+        </g>
+
+        <!-- bronzer -->
+        <g class="zone" data-z="bronze">
+          <path d="M318,184 C322,208 318,230 310,246" stroke="var(--z-bronze)" stroke-opacity=".36"
+                stroke-width="22" stroke-linecap="round" fill="none"/>
+          <path d="M102,184 C98,208 102,230 110,246" stroke="var(--z-bronze)" stroke-opacity=".36"
+                stroke-width="22" stroke-linecap="round" fill="none"/>
+          <path d="M324,254 C306,274 284,286 262,292" stroke="var(--z-bronze)" stroke-opacity=".4"
+                stroke-width="20" stroke-linecap="round" fill="none"/>
+          <path d="M96,254 C114,274 136,286 158,292" stroke="var(--z-bronze)" stroke-opacity=".4"
+                stroke-width="20" stroke-linecap="round" fill="none"/>
+          <path d="M308,318 C300,352 282,382 260,404" stroke="var(--z-bronze)" stroke-opacity=".28"
+                stroke-width="16" stroke-linecap="round" fill="none"/>
+          <path d="M112,318 C120,352 138,382 160,404" stroke="var(--z-bronze)" stroke-opacity=".28"
+                stroke-width="16" stroke-linecap="round" fill="none"/>
+          <path d="M225,236 C228,266 229,290 230,306" stroke="var(--z-bronze)" stroke-opacity=".24"
+                stroke-width="7" stroke-linecap="round" fill="none"/>
+          <path d="M195,236 C192,266 191,290 190,306" stroke="var(--z-bronze)" stroke-opacity=".24"
+                stroke-width="7" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- blush -->
+        <g class="zone" data-z="blush">
+          <path d="M252,282 C274,272 294,258 310,240" stroke="var(--z-blush)" stroke-opacity=".38"
+                stroke-width="29" stroke-linecap="round" fill="none"/>
+          <path d="M168,282 C146,272 126,258 110,240" stroke="var(--z-blush)" stroke-opacity=".38"
+                stroke-width="29" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- highlight -->
+        <g class="zone" data-z="glow">
+          <path d="M268,256 C286,246 300,236 310,226" stroke="var(--z-glow)" stroke-opacity=".55"
+                stroke-width="10" stroke-linecap="round" fill="none"/>
+          <path d="M152,256 C134,246 120,236 110,226" stroke="var(--z-glow)" stroke-opacity=".55"
+                stroke-width="10" stroke-linecap="round" fill="none"/>
+          <circle cx="233" cy="226" r="5.5" fill="var(--z-glow)" fill-opacity=".62"/>
+          <circle cx="187" cy="226" r="5.5" fill="var(--z-glow)" fill-opacity=".62"/>
+          <path d="M199,361 C204,355 216,355 221,361" stroke="var(--z-glow)" stroke-opacity=".62"
+                stroke-width="7" stroke-linecap="round" fill="none"/>
+          <path d="M246,206 C260,197 276,194 290,196" stroke="var(--z-glow)" stroke-opacity=".38"
+                stroke-width="8" stroke-linecap="round" fill="none"/>
+          <path d="M174,206 C160,197 144,194 130,196" stroke="var(--z-glow)" stroke-opacity=".38"
+                stroke-width="8" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- concealer — inner third of the tear trough only -->
+        <g class="zone" data-z="conceal">
+          <path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z"
+                fill="var(--z-conceal)" fill-opacity=".52"/>
+          <path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z"
+                fill="var(--z-conceal)" fill-opacity=".52"/>
+        </g>
+
+        <!-- powder — three tiny zones -->
+        <g class="zone" data-z="powder">
+          <path d="M206,286 C205,298 204,306 203,312 L217,312 C216,306 215,298 214,286 Z"
+                fill="var(--z-powder)" fill-opacity=".44"/>
+          <ellipse cx="210" cy="403" rx="14" ry="8" fill="var(--z-powder)" fill-opacity=".4"/>
+          <path d="M233,243 C238,250 245,254 252,254 C245,259 235,256 231,249 Z"
+                fill="var(--z-powder)" fill-opacity=".36"/>
+          <path d="M187,243 C182,250 175,254 168,254 C175,259 185,256 189,249 Z"
+                fill="var(--z-powder)" fill-opacity=".36"/>
+        </g>
+      </g>
+
+      <!-- hair drawn ON TOP so it creates a real hairline and frames the face -->
+      <path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418
+               C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374
+               C314,322 318,258 314,206 C312,150 292,110 258,98
+               C244,93 228,90 210,90 C192,90 176,93 162,98
+               C128,110 108,150 106,206 C102,258 106,322 105,374
+               C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418
+               C68,322 61,254 62,190 C64,98 120,36 210,36 Z"
+            fill="var(--hair)" fill-opacity=".42"/>
+
+      <!-- ============ FEATURES ============ -->
+      <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <!-- eyes -->
+        <path d="M232,225 C244,208 272,206 282,222"/>
+        <path d="M282,222 C275,239 245,241 232,225"/>
+        <path d="M188,225 C176,208 148,206 138,222"/>
+        <path d="M138,222 C145,239 175,241 188,225"/>
+        <!-- nose -->
+        <path d="M192,311 C196,323 224,323 228,311"/>
+        <path d="M192,311 C184,315 182,325 190,329"/>
+        <path d="M228,311 C236,315 238,325 230,329"/>
+        <path d="M201,268 C199,286 197,300 195,309" stroke-opacity=".24"/>
+        <path d="M219,268 C221,286 223,300 225,309" stroke-opacity=".24"/>
+        <!-- lips -->
+        <path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372"/>
+        <path d="M172,372 C187,394 233,394 248,372"/>
+        <path d="M210,364 L210,372" stroke-opacity=".4"/>
+        <path d="M203,338 L204,362" stroke-opacity=".28"/>
+        <path d="M217,338 L216,362" stroke-opacity=".28"/>
+      </g>
+
+      <!-- irises -->
+      <circle cx="257" cy="224" r="10" fill="var(--skin-line)" fill-opacity=".8"/>
+      <circle cx="163" cy="224" r="10" fill="var(--skin-line)" fill-opacity=".8"/>
+      <circle cx="260" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+      <circle cx="166" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+
+      <!-- brows -->
+      <path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
+            fill="var(--skin-line)" fill-opacity=".72"/>
+      <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
+            fill="var(--skin-line)" fill-opacity=".72"/>
+    </svg>
+
+    <div class="legend" id="legend">
+      <button type="button" data-z="pore" aria-pressed="false">
+        <span class="sw" style="background:var(--z-pore)"></span>
+        <span class="lx"><span class="lt">טשטוש נקבוביות</span><span class="ld">מצח · אף · לחי פנימית. ללחוץ, לא למרוח.</span></span>
+      </button>
+      <button type="button" data-z="red" aria-pressed="false">
+        <span class="sw" style="background:var(--z-red)"></span>
+        <span class="lx"><span class="lt">אזורי אודם</span><span class="ld">כנפי האף · קפל אף־לחי · סנטר · בין הגבות.</span></span>
+      </button>
+      <button type="button" data-z="bronze" aria-pressed="false">
+        <span class="sw" style="background:var(--z-bronze)"></span>
+        <span class="lx"><span class="lt">ברונזר קרמי</span><span class="ld">רקות · מתחת לעצם הלחי · קו לסת · צדי האף. לפני הבסיס.</span></span>
+      </button>
+      <button type="button" data-z="blush" aria-pressed="false">
+        <span class="sw" style="background:var(--z-blush)"></span>
+        <span class="lx"><span class="lt">סומק קרמי</span><span class="ld">גבוה ומופנה כלפי הרקה — לא על התפוח.</span></span>
+      </button>
+      <button type="button" data-z="glow" aria-pressed="false">
+        <span class="sw" style="background:var(--z-glow)"></span>
+        <span class="lx"><span class="lt">הארה</span><span class="ld">גג עצם הלחי · פינה פנימית · קשת קופידון · מתחת לקשת הגבה.</span></span>
+      </button>
+      <button type="button" data-z="conceal" aria-pressed="false">
+        <span class="sw" style="background:var(--z-conceal)"></span>
+        <span class="lx"><span class="lt">קונסילר עין</span><span class="ld">רק השליש הפנימי של השקע. לא משולש.</span></span>
+      </button>
+      <button type="button" data-z="powder" aria-pressed="false">
+        <span class="sw" style="background:var(--z-powder)"></span>
+        <span class="lx"><span class="lt">פודרה</span><span class="ld">אף · סנטר · נגיעה זעירה מתחת לעין. שום דבר אחר.</span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:18px">
+    <b>שימי לב לשלושה דברים במפה.</b> ראשית, הברונזר והסומק <b>נפגשים ברקה</b> — זה מה שמרים
+    את מרכז הפנים. שנית, הסומק <b>לא יורד</b> מתחת לקו האישון — כל מה שנמוך מזה מוריד את הפנים
+    ומדגיש את קפל הנזולביאל. ושלישית, אזור הפודרה קטן להפליא. זה מכוון: כל גרגר פודרה מעבר
+    לשלושת האזורים האלה הוא צעד לכיוון "רואים שהתאפרת".
+  </div>
+</section>
