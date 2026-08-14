@@ -64,15 +64,13 @@ def glow_bad(u):
     return mini(u, VB_FACE, ov, label="נצנצים על האף והמצח — שגוי")
 
 def glow_good(u):
-    ov = (f'<path d="M268,256 C286,246 300,236 310,226" stroke="{Z["glow"]}" stroke-opacity=".7"'
+    ov = (f'<path d="M286,250 C298,240 308,232 316,222" stroke="{Z["glow"]}" stroke-opacity=".7"'
           f' stroke-width="10" stroke-linecap="round" fill="none"/>'
-          f'<path d="M152,256 C134,246 120,236 110,226" stroke="{Z["glow"]}" stroke-opacity=".7"'
+          f'<path d="M134,250 C122,240 112,232 104,222" stroke="{Z["glow"]}" stroke-opacity=".7"'
           f' stroke-width="10" stroke-linecap="round" fill="none"/>'
-          f'<circle cx="233" cy="226" r="6" fill="{Z["glow"]}" fill-opacity=".85"/>'
-          f'<circle cx="187" cy="226" r="6" fill="{Z["glow"]}" fill-opacity=".85"/>'
           f'<path d="M198,362 C203,356 207,362 210,364 C213,362 217,356 222,362" fill="none"'
           f' stroke="{Z["glow"]}" stroke-width="4.5" stroke-linecap="round"/>')
-    return mini(u, VB_FACE, ov, label="סאטן על גג עצם הלחי בלבד — נכון")
+    return mini(u, VB_FACE, ov, label="סאטן גבוה על עצם הלחי בלבד — נכון")
 
 
 # ---------- 4. application motion: circles vs press ----------
