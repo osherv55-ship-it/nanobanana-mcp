@@ -101,3 +101,25 @@ BRONZE_STROKES = [
     "M308,318 C300,352 282,382 260,404", "M112,318 C120,352 138,382 160,404",
 ]
 BLUSH_STROKES = ["M252,282 C274,272 294,258 310,240", "M168,282 C146,272 126,258 110,240"]
+
+
+# ---------------------------------------------------------------- animation
+def A(el, kind, t0, t1, **extra):
+    """Tag an element string with timeline data the JS engine reads.
+
+    kind: draw | fade | pop | sweep   (t0/t1 are normalised scene time)
+    """
+    attrs = f' data-a="{kind}" data-t0="{t0}" data-t1="{t1}"'
+    for k, v in extra.items():
+        attrs += f' data-{k.replace("_","-")}="{v}"'
+    i = el.index(">")
+    # skip self-closing detection: attributes always go before the first '>'
+    if el[i-1] == "/":
+        i -= 1
+    return el[:i] + attrs + el[i:]
+
+
+def stroke(d, color, w, op=1.0, cap="round", cls=""):
+    c = f' class="{cls}"' if cls else ""
+    return (f'<path{c} d="{d}" fill="none" stroke="{color}" stroke-opacity="{op}"'
+            f' stroke-width="{w}" stroke-linecap="{cap}"/>')

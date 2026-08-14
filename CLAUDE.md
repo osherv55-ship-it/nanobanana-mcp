@@ -97,6 +97,32 @@ marketing, ad copy, offer, or sales-conversation content for AAA or Glowence**, 
 consistent with the `aaa-copywriter` / `glowence-copywriter` skills (playbooks = strategy,
 skills = voice). The source guide PDF is in media-memory (tags: `hormozi,strategy`).
 
+## Makeup guide — illustration & video pipeline
+
+`guide/` builds a self-contained Hebrew RTL page (`guide/makeup-guide.html`) published as an
+Artifact. Never hand-edit the built file — edit `guide/src/*` and run `python3 guide/build.py`.
+
+- `guide/facelib.py` — the single 420x520 face chart every diagram is drawn on. All figures share
+  these coordinates, so a placement taught in one figure sits identically in every other. Change a
+  path here and every diagram and video moves together.
+- `guide/gen_anim.py` — the twelve routine scenes as normalised timelines (`data-a/-t0/-t1`).
+- `guide/src/anim.js` — the timeline engine. `window.__seekFig(svg, t)` is pure, which is what lets
+  the same scene play live in the guide and be captured frame-by-frame for video.
+- `guide/gen_donts.py` — the wrong/right pairs in the mistakes chapter.
+- `guide/make_videos.py` — renders the scenes to 1080x1920 MP4s in `guide/video/`
+  (`python3 guide/make_videos.py [2,5]` to render a subset). `build.py` inlines
+  `routine-full.mp4` into the page as a data URI.
+
+Rendering needs the venv at `.claude/skills/media-memory/.venv` (playwright + imageio-ffmpeg —
+Playwright's bundled ffmpeg is VP8-only and cannot write MP4). Chromium lives at
+`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`; pass `executable_path` rather than running
+`playwright install`. Fonts are inlined from a woff2 subset built by the block in
+`guide/build.py`'s FONTS path — the Artifact CSP blocks font CDNs.
+
+Osher's face analysis (tone, redness map, pore zones, hooding, lip asymmetry) is recorded in the
+guide's chapter 01 and in media-memory under tags `osher,face,makeup-guide`. Re-read it before
+changing any placement advice.
+
 ## Code conventions
 
 - Node 20+, ESM (`"type": "module"`). Match `server.js` style: top-level async helpers, small focused functions, env-var config block at top.

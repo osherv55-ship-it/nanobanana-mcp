@@ -4,8 +4,11 @@
     <div class="sec-num">03</div>
     <div>
       <h2>השגרה — 12 דקות</h2>
-      <p class="sub">לכל שלב יש איור משלו — בדיוק איפה המוצר יושב ולאיזה כיוון. הסדר כאן אינו המקובל, וזו הסיבה המרכזית שהתוצאה תיראה כמו עור.</p>
+      <p class="sub">לכל שלב יש <b>אנימציה</b> משלו — בדיוק איפה המוצר יושב ולאיזה כיוון. הסדר כאן אינו המקובל, וזו הסיבה המרכזית שהתוצאה תיראה כמו עור.</p>
     </div>
+    <button type="button" id="animToggle" class="animbtn" aria-pressed="false">
+      <span class="dotmark"></span><span class="lbl">עצירת אנימציות</span>
+    </button>
   </div>
 
   <p class="lede">
@@ -13,17 +16,27 @@
     זו שיטת ה־Underpainting, וזה ההבדל בין "צבע שמונח על הפנים" ל"צבע שיוצא מתוך הפנים".
   </p>
 
+  <figure class="videoblock">
+    <video controls playsinline preload="metadata" aria-label="סרטון השגרה המלאה">
+      <source src="/*VIDEO_WEBM*/" type="video/webm">
+      <source src="/*VIDEO_FULL*/" type="video/mp4">
+    </video>
+    <figcaption>
+      <b>כל השגרה, מ־00 עד 11.</b> אותן אנימציות בדיוק, בקובץ אחד לנייד —
+      1:47 דקות. אפשר גם לצפות בכל שלב בנפרד: <b>האיור לצד כל שלב מטה מנפיש את עצמו</b>
+      כשגוללים אליו, ולחיצה עליו מקפיאה אותו על התמונה הסופית.
+    </figcaption>
+  </figure>
+
   <div class="steps">
 
     <div class="step">
       <div class="dot">00</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="הכנה">
-<defs>
-  <marker id="ars0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="6" viewBox="0 0 420 520" role="img" aria-label="הכנה"><defs>
+  <marker id="ara0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs0"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca0"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="#B07C57" fill-opacity=".5"><circle cx="168" cy="286" r="2.1"/><circle cx="180" cy="296" r="1.7"/><circle cx="156" cy="300" r="1.9"/><circle cx="190" cy="282" r="1.5"/><circle cx="174" cy="272" r="1.6"/><circle cx="252" cy="286" r="2.1"/><circle cx="240" cy="296" r="1.7"/><circle cx="264" cy="300" r="1.9"/><circle cx="230" cy="282" r="1.5"/><circle cx="246" cy="272" r="1.6"/><circle cx="198" cy="268" r="1.4"/><circle cx="222" cy="268" r="1.4"/><circle cx="210" cy="258" r="1.5"/><circle cx="163" cy="266" r="1.5"/><circle cx="257" cy="266" r="1.5"/><circle cx="196" cy="150" r="1.3"/><circle cx="224" cy="146" r="1.3"/><circle cx="210" cy="132" r="1.2"/></g>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
@@ -46,9 +59,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs0)"><ellipse cx="210" cy="250" rx="150" ry="200" fill="var(--z-pore)" fill-opacity=".13"/></g><g transform="translate(128,140)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(300,150)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(112,250)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(322,258)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(150,392)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(276,398)"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(345,432)"><circle r="30" fill="var(--surface)" stroke="var(--ink)" stroke-width="2" stroke-opacity=".5"/><path d="M0,-17 A17,17 0 1 1 -14,9" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/><text y="6" text-anchor="middle" font-family="Assistant,sans-serif" font-size="17" font-weight="700" fill="var(--ink)">90</text></g>
-</svg><figcaption>לחות ← ואז 90 שניות המתנה</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca0)"><ellipse cx="210" cy="250" rx="150" ry="200" fill="var(--z-pore)" fill-opacity=".13" data-a="fade" data-t0="0.45" data-t1="0.8"/></g><g transform="translate(128,140)" data-a="drop" data-t0="0.05" data-t1="0.245" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(300,150)" data-a="drop" data-t0="0.125" data-t1="0.32" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(112,250)" data-a="drop" data-t0="0.2" data-t1="0.395" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(322,258)" data-a="drop" data-t0="0.275" data-t1="0.47" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(150,392)" data-a="drop" data-t0="0.35" data-t1="0.545" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(276,398)" data-a="drop" data-t0="0.425" data-t1="0.62" data-dy="26"><path d="M0,-7 C4,-2 6,1 6,3 A6,6 0 0 1 -6,3 C-6,1 -4,-2 0,-7 Z" fill="var(--z-pore)" fill-opacity=".55"/></g><g transform="translate(345,432)"><circle r="30" fill="var(--surface)" stroke="var(--ink)" stroke-width="2" stroke-opacity=".5"/><path d="M0,-17 A17,17 0 1 1 -14,9" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round" data-a="draw" data-t0="0.5" data-t1="0.95"/><text y="6" text-anchor="middle" font-family="Assistant,sans-serif" font-size="17" font-weight="700" fill="var(--ink)">90</text></g></svg><figcaption>לחות ← ואז 90 שניות המתנה</figcaption></figure>
       <div>
         <h3>הכנה — והמתנה</h3>
         <div class="when">3 דקות · לפני שנוגעים באיפור</div>
@@ -64,13 +75,11 @@
 
     <div class="step">
       <div class="dot">01</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="פריימר מטשטש על אזורי הנקבוביות בלבד">
-<defs>
-  <marker id="ars1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="7" viewBox="0 0 420 520" role="img" aria-label="פריימר על אזורי הנקבוביות"><defs>
+  <marker id="ara1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs1"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca1"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -92,9 +101,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs1)"><g fill="var(--z-pore)" fill-opacity=".34"><ellipse cx="210" cy="152" rx="52" ry="23"/><path d="M204,258 C202,284 201,300 200,310 L220,310 C219,300 218,284 216,258 Z"/><ellipse cx="250" cy="296" rx="21" ry="17"/><ellipse cx="170" cy="296" rx="21" ry="17"/></g></g><path d="M210,120 L210,146" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars1)"/><path d="M186,270 L186,296" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars1)"/><path d="M234,270 L234,296" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars1)"/><path d="M170,286 L170,312" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars1)"/><path d="M250,286 L250,312" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars1)"/>
-</svg><figcaption>ללחוץ ↓ · לא למרוח</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca1)"><ellipse cx="210" cy="152" rx="52" ry="23" fill="var(--z-pore)" fill-opacity=".34" data-a="fade" data-t0="0.05" data-t1="0.275"/><path d="M204,258 C202,284 201,300 200,310 L220,310 C219,300 218,284 216,258 Z" fill="var(--z-pore)" fill-opacity=".34" data-a="fade" data-t0="0.175" data-t1="0.4"/><ellipse cx="250" cy="296" rx="21" ry="17" fill="var(--z-pore)" fill-opacity=".28" data-a="fade" data-t0="0.3" data-t1="0.525"/><ellipse cx="170" cy="296" rx="21" ry="17" fill="var(--z-pore)" fill-opacity=".28" data-a="fade" data-t0="0.425" data-t1="0.65"/></g><path d="M210,120 L210,146" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara1)" data-a="sweep" data-t0="0.12" data-t1="0.332"/><path d="M186,270 L186,296" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara1)" data-a="sweep" data-t0="0.252" data-t1="0.464"/><path d="M234,270 L234,296" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara1)" data-a="sweep" data-t0="0.384" data-t1="0.596"/><path d="M170,286 L170,312" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara1)" data-a="sweep" data-t0="0.516" data-t1="0.728"/><path d="M250,286 L250,312" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara1)" data-a="sweep" data-t0="0.648" data-t1="0.86"/><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>ללחוץ ↓ · לא למרוח</figcaption></figure>
       <div>
         <h3>טשטוש ממוקד</h3>
         <div class="when">20 שניות · אף, מצח, לחי פנימית בלבד</div>
@@ -113,13 +120,11 @@
 
     <div class="step">
       <div class="dot">02</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="ברונזר קרמי ברקות, מתחת לעצם הלחי ובקו הלסת">
-<defs>
-  <marker id="ars2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="9" viewBox="0 0 420 520" role="img" aria-label="ברונזר קרמי — Underpainting"><defs>
+  <marker id="ara2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs2"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca2"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -141,9 +146,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs2)"><path d="M318,184 C322,208 318,230 310,246" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M102,184 C98,208 102,230 110,246" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M324,254 C306,274 284,286 262,292" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M96,254 C114,274 136,286 158,292" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M308,318 C300,352 282,382 260,404" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M112,318 C120,352 138,382 160,404" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="21" stroke-linecap="round"/><path d="M225,236 C228,266 229,290 230,306" stroke="var(--z-bronze)" stroke-opacity=".3" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M195,236 C192,266 191,290 190,306" stroke="var(--z-bronze)" stroke-opacity=".3" stroke-width="7" stroke-linecap="round" fill="none"/></g><path d="M262,300 C286,288 306,272 320,254" fill="none" stroke="var(--z-bronze)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars2)"/><path d="M158,300 C134,288 114,272 100,254" fill="none" stroke="var(--z-bronze)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars2)"/>
-</svg><figcaption>תמיד כלפי מעלה וחוץ</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca2)"><path d="M318,184 C322,208 318,230 310,246" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.05" data-t1="0.172"/><path d="M102,184 C98,208 102,230 110,246" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.172" data-t1="0.293"/><path d="M324,254 C306,274 284,286 262,292" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.293" data-t1="0.415"/><path d="M96,254 C114,274 136,286 158,292" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.415" data-t1="0.537"/><path d="M308,318 C300,352 282,382 260,404" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.537" data-t1="0.658"/><path d="M112,318 C120,352 138,382 160,404" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="21" stroke-linecap="round" data-a="draw" data-t0="0.658" data-t1="0.78"/><path d="M225,236 C228,266 229,290 230,306" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.3" stroke-width="7" stroke-linecap="round" data-a="draw" data-t0="0.6" data-t1="0.725"/><path d="M195,236 C192,266 191,290 190,306" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.3" stroke-width="7" stroke-linecap="round" data-a="draw" data-t0="0.725" data-t1="0.85"/></g><path d="M262,300 C286,288 306,272 320,254" fill="none" stroke="var(--z-bronze)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara2)" data-a="sweep" data-t0="0.82" data-t1="0.97"/><path d="M158,300 C134,288 114,272 100,254" fill="none" stroke="var(--z-bronze)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara2)" data-a="sweep" data-t0="0.82" data-t1="0.97"/><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>תמיד כלפי מעלה וחוץ</figcaption></figure>
       <div>
         <h3>Underpainting — ברונזר קרמי</h3>
         <div class="when">90 שניות · לפני הבסיס</div>
@@ -160,13 +163,11 @@
 
     <div class="step">
       <div class="dot">03</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="סומק גבוה על עצם הלחי, מופנה לרקה">
-<defs>
-  <marker id="ars3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="סומק גבוה, מופנה לרקה"><defs>
+  <marker id="ara3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs3"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca3"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -188,9 +189,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs3)"><path d="M252,282 C274,272 294,258 310,240" fill="none" stroke="var(--z-blush)" stroke-opacity=".46" stroke-width="30" stroke-linecap="round"/><path d="M168,282 C146,272 126,258 110,240" fill="none" stroke="var(--z-blush)" stroke-opacity=".46" stroke-width="30" stroke-linecap="round"/><path d="M92,300 L328,300" stroke="var(--cognac)" stroke-width="2.6" stroke-opacity=".85" stroke-dasharray="7 6"/></g><path d="M246,290 C270,278 292,262 308,244" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars3)"/><path d="M174,290 C150,278 128,262 112,244" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars3)"/><g transform="translate(344,318)"><circle r="17" fill="var(--cognac-soft)" stroke="var(--cognac)" stroke-width="2"/><path d="M-7,-7 L7,7 M7,-7 L-7,7" stroke="var(--cognac)" stroke-width="3" stroke-linecap="round"/></g>
-</svg><figcaption>שום סומק מתחת לקו הזה</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca3)"><path d="M252,282 C274,272 294,258 310,240" fill="none" stroke="var(--z-blush)" stroke-opacity="0.46" stroke-width="30" stroke-linecap="round" data-a="draw" data-t0="0.08" data-t1="0.35"/><path d="M168,282 C146,272 126,258 110,240" fill="none" stroke="var(--z-blush)" stroke-opacity="0.46" stroke-width="30" stroke-linecap="round" data-a="draw" data-t0="0.35" data-t1="0.62"/><path d="M92,300 L328,300" stroke="var(--cognac)" stroke-width="2.6" stroke-opacity=".85" stroke-dasharray="7 6" fill="none" data-a="fade" data-t0="0.66" data-t1="0.8"/></g><path d="M246,290 C270,278 292,262 308,244" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara3)" data-a="sweep" data-t0="0.55" data-t1="0.72"/><path d="M174,290 C150,278 128,262 112,244" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara3)" data-a="sweep" data-t0="0.55" data-t1="0.72"/><g transform="translate(344,318)" data-a="pop" data-t0="0.8" data-t1="0.95" data-cx="344" data-cy="318"><circle r="17" fill="var(--cognac-soft)" stroke="var(--cognac)" stroke-width="2"/><path d="M-7,-7 L7,7 M7,-7 L-7,7" stroke="var(--cognac)" stroke-width="3" stroke-linecap="round"/></g><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>שום סומק מתחת לקו הזה</figcaption></figure>
       <div>
         <h3>סומק קרמי — גבוה</h3>
         <div class="when">40 שניות · עדיין לפני הבסיס</div>
@@ -206,13 +205,11 @@
 
     <div class="step">
       <div class="dot">04</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="סקין־טינט על מרכז הפנים בלבד, החוצה עד לאין">
-<defs>
-  <marker id="ars4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="סקין־טינט מהמרכז החוצה"><defs>
+  <marker id="ara4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs4"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca4"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="#B07C57" fill-opacity=".5"><circle cx="168" cy="286" r="2.1"/><circle cx="180" cy="296" r="1.7"/><circle cx="156" cy="300" r="1.9"/><circle cx="190" cy="282" r="1.5"/><circle cx="174" cy="272" r="1.6"/><circle cx="252" cy="286" r="2.1"/><circle cx="240" cy="296" r="1.7"/><circle cx="264" cy="300" r="1.9"/><circle cx="230" cy="282" r="1.5"/><circle cx="246" cy="272" r="1.6"/><circle cx="198" cy="268" r="1.4"/><circle cx="222" cy="268" r="1.4"/><circle cx="210" cy="258" r="1.5"/><circle cx="163" cy="266" r="1.5"/><circle cx="257" cy="266" r="1.5"/><circle cx="196" cy="150" r="1.3"/><circle cx="224" cy="146" r="1.3"/><circle cx="210" cy="132" r="1.2"/></g>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
@@ -235,9 +232,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs4)"><g fill="var(--z-pore)" fill-opacity=".2"><ellipse cx="210" cy="150" rx="46" ry="26"/><ellipse cx="210" cy="300" rx="62" ry="46"/><ellipse cx="210" cy="398" rx="34" ry="22"/></g></g><path d="M210,300 L268,286" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars4)"/><path d="M210,300 L152,286" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars4)"/><path d="M210,150 L272,138" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars4)"/><path d="M210,150 L148,138" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars4)"/>
-</svg><figcaption>מהמרכז החוצה · ~40%</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca4)"><ellipse cx="210" cy="300" rx="62" ry="46" fill="var(--z-pore)" fill-opacity=".2" data-a="fade" data-t0="0.05" data-t1="0.32"/><ellipse cx="210" cy="150" rx="46" ry="26" fill="var(--z-pore)" fill-opacity=".2" data-a="fade" data-t0="0.2" data-t1="0.47"/><ellipse cx="210" cy="398" rx="34" ry="22" fill="var(--z-pore)" fill-opacity=".2" data-a="fade" data-t0="0.35" data-t1="0.62"/></g><path d="M210,300 L268,286" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara4)" data-a="sweep" data-t0="0.5" data-t1="0.665"/><path d="M210,300 L152,286" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara4)" data-a="sweep" data-t0="0.605" data-t1="0.77"/><path d="M210,150 L272,138" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara4)" data-a="sweep" data-t0="0.71" data-t1="0.875"/><path d="M210,150 L148,138" fill="none" stroke="var(--z-pore)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara4)" data-a="sweep" data-t0="0.815" data-t1="0.98"/><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>מהמרכז החוצה · ~40%</figcaption></figure>
       <div>
         <h3>סקין־טינט — שכבה אחת דקה</h3>
         <div class="when">90 שניות · מעל הכל</div>
@@ -258,13 +253,11 @@
 
     <div class="step">
       <div class="dot">05</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="קונסילר בשלוש נקודות: אודם, שקע פנימי, כתם">
-<defs>
-  <marker id="ars5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="קונסילר בשלוש נקודות"><defs>
+  <marker id="ara5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs5"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca5"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -286,9 +279,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs5)"><path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z" fill="var(--z-conceal)" fill-opacity=".62"/><path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z" fill="var(--z-conceal)" fill-opacity=".62"/><ellipse cx="187" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".62"/><ellipse cx="233" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".62"/><circle cx="272" cy="272" r="7" fill="var(--z-red)" fill-opacity=".62"/></g><circle cx="246" cy="250" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="246" y="256" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">ב</text><circle cx="210" cy="332" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="210" y="338" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">א</text><circle cx="288" cy="262" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="288" y="268" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">ג</text>
-</svg><figcaption>שלוש נקודות · לא משולש</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca5)"><g data-a="fade" data-t0="0.05" data-t1="0.353"><ellipse cx="187" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".62"/><ellipse cx="233" cy="318" rx="9" ry="7" fill="var(--z-red)" fill-opacity=".62"/></g><g data-a="fade" data-t0="0.253" data-t1="0.557"><path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z" fill="var(--z-conceal)" fill-opacity=".62"/><path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z" fill="var(--z-conceal)" fill-opacity=".62"/></g><g data-a="fade" data-t0="0.457" data-t1="0.76"><circle cx="272" cy="272" r="7" fill="var(--z-red)" fill-opacity=".62"/></g></g><g data-a="pop" data-t0="0.313" data-t1="0.473" data-cx="210" data-cy="318"><circle cx="210" cy="318" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="210" y="324" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">א</text></g><g data-a="pop" data-t0="0.517" data-t1="0.677" data-cx="246" data-cy="250"><circle cx="246" cy="250" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="246" y="256" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">ב</text></g><g data-a="pop" data-t0="0.72" data-t1="0.88" data-cx="288" data-cy="262"><circle cx="288" cy="262" r="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".45"/><text x="288" y="268" text-anchor="middle" font-family="Assistant,sans-serif" font-size="16" font-weight="700" fill="var(--ink)">ג</text></g></svg><figcaption>שלוש נקודות · לא משולש</figcaption></figure>
       <div>
         <h3>קונסילר — שלוש נקודות בלבד</h3>
         <div class="when">60 שניות</div>
@@ -308,13 +299,11 @@
 
     <div class="step">
       <div class="dot">06</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="פודרה על האף, הסנטר ונגיעה מתחת לעין">
-<defs>
-  <marker id="ars6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="7" viewBox="0 0 420 520" role="img" aria-label="פודרה בשלושה אזורים"><defs>
+  <marker id="ara6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs6"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca6"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -336,9 +325,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<g clip-path="url(#fcs6)"><g fill="var(--z-powder)" fill-opacity=".55"><path d="M206,286 C205,298 204,306 203,312 L217,312 C216,306 215,298 214,286 Z"/><ellipse cx="210" cy="403" rx="14" ry="8"/><path d="M233,243 C238,250 245,254 252,254 C245,259 235,256 231,249 Z"/><path d="M187,243 C182,250 175,254 168,254 C175,259 185,256 189,249 Z"/></g></g>
-</svg><figcaption>שלושה אזורים · זהו</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><g clip-path="url(#fca6)"><path d="M206,286 C205,298 204,306 203,312 L217,312 C216,306 215,298 214,286 Z" fill="var(--z-powder)" fill-opacity=".55" data-a="fade" data-t0="0.08" data-t1="0.433"/><ellipse cx="210" cy="403" rx="14" ry="8" fill="var(--z-powder)" fill-opacity=".55" data-a="fade" data-t0="0.293" data-t1="0.647"/><g data-a="fade" data-t0="0.507" data-t1="0.86"><path d="M233,243 C238,250 245,254 252,254 C245,259 235,256 231,249 Z" fill="var(--z-powder)" fill-opacity=".5"/><path d="M187,243 C182,250 175,254 168,254 C175,259 185,256 189,249 Z" fill="var(--z-powder)" fill-opacity=".5"/></g></g><path d="M210,238 L210,262" fill="none" stroke="var(--z-powder)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara6)" data-a="sweep" data-t0="0.08" data-t1="0.433"/><path d="M210,354 L210,378" fill="none" stroke="var(--z-powder)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara6)" data-a="sweep" data-t0="0.293" data-t1="0.647"/><path d="M210,198 L210,222" fill="none" stroke="var(--z-powder)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara6)" data-a="sweep" data-t0="0.507" data-t1="0.86"/></svg><figcaption>שלושה אזורים · זהו</figcaption></figure>
       <div>
         <h3>פודרה — שלושה אזורים זעירים</h3>
         <div class="when">20 שניות</div>
@@ -354,13 +341,11 @@
 
     <div class="step">
       <div class="dot">07</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="גבות: סירוק כלפי מעלה ומילוי נקודתי בלבד">
-<defs>
-  <marker id="ars7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="גבות — סירוק כלפי מעלה"><defs>
+  <marker id="ara7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs7"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca7"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -382,9 +367,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<path d="M140,214 L140,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><path d="M163,214 L163,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><path d="M186,214 L186,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><path d="M234,214 L234,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><path d="M257,214 L257,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><path d="M280,214 L280,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ars7)"/><circle cx="152" cy="197" r="11" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-dasharray="4 3"/><circle cx="292" cy="194" r="11" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-dasharray="4 3"/><path d="M296,194 L318,186" fill="none" stroke="var(--z-bronze)" stroke-width="2.6" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars7)"/>
-</svg><figcaption>לסרק ↑ · למלא רק בעיגולים</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><path d="M280,214 L280,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.05" data-t1="0.215"/><path d="M257,214 L257,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.145" data-t1="0.31"/><path d="M234,214 L234,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.24" data-t1="0.405"/><path d="M186,214 L186,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.335" data-t1="0.5"/><path d="M163,214 L163,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.43" data-t1="0.595"/><path d="M140,214 L140,190" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.525" data-t1="0.69"/><circle cx="152" cy="197" r="11" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-dasharray="4 3" data-a="pop" data-t0="0.66" data-t1="0.82" data-cx="152" data-cy="197"/><circle cx="292" cy="194" r="11" fill="none" stroke="var(--z-bronze)" stroke-width="2.4" stroke-dasharray="4 3" data-a="pop" data-t0="0.72" data-t1="0.88" data-cx="292" data-cy="194"/><path d="M296,194 L318,186" fill="none" stroke="var(--z-bronze)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara7)" data-a="sweep" data-t0="0.86" data-t1="0.98"/></svg><figcaption>לסרק ↑ · למלא רק בעיגולים</figcaption></figure>
       <div>
         <h3>גבות — לסרק, לא למלא</h3>
         <div class="when">40 שניות</div>
@@ -402,8 +385,8 @@
 
     <div class="step">
       <div class="dot">08</div>
-      <figure class="figwrap"><svg class="fig" viewBox="60 150 300 160" role="img" aria-label="מיפוי עפעף עם עיניים פקוחות">
-<defs><marker id="ars8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="9" viewBox="60 150 300 160" role="img" aria-label="מיפוי עפעף">
+<defs><marker id="ara8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
  orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker></defs>
 <rect x="60" y="150" width="300" height="160" fill="var(--skin)"/>
 <path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
@@ -414,27 +397,19 @@
       stroke-opacity=".45" stroke-dasharray="4 4"/>
 <path d="M184,222 C170,214 152,213 140,219" fill="none" stroke="var(--skin-line)" stroke-width="1.3"
       stroke-opacity=".45" stroke-dasharray="4 4"/>
-<path d="M232,214 C248,204 272,203 288,210" fill="none" stroke="var(--z-bronze)" stroke-width="9"
-      stroke-opacity=".5" stroke-linecap="round"/>
-<path d="M188,214 C172,204 148,203 132,210" fill="none" stroke="var(--z-bronze)" stroke-width="9"
-      stroke-opacity=".5" stroke-linecap="round"/>
+<path d="M232,214 C248,204 272,203 288,210" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="9" stroke-linecap="round" data-a="draw" data-t0="0.06" data-t1="0.42"/>
+<path d="M188,214 C172,204 148,203 132,210" fill="none" stroke="var(--z-bronze)" stroke-opacity="0.5" stroke-width="9" stroke-linecap="round" data-a="draw" data-t0="0.06" data-t1="0.42"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.9" stroke-linecap="round">
  <path d="M232,225 C244,208 272,206 282,222"/><path d="M282,222 C275,239 245,241 232,225"/>
  <path d="M188,225 C176,208 148,206 138,222"/><path d="M138,222 C145,239 175,241 188,225"/></g>
 <circle cx="257" cy="224" r="10" fill="var(--skin-line)" fill-opacity=".8"/>
 <circle cx="163" cy="224" r="10" fill="var(--skin-line)" fill-opacity=".8"/>
-<path d="M270,228 C278,226 284,224 289,221" stroke="var(--ink)" stroke-width="4.5"
-      stroke-opacity=".75" stroke-linecap="round" fill="none"/>
-<path d="M150,228 C142,226 136,224 131,221" stroke="var(--ink)" stroke-width="4.5"
-      stroke-opacity=".75" stroke-linecap="round" fill="none"/>
-<path d="M290,212 C302,204 310,198 316,192" fill="none" stroke="var(--z-bronze)" stroke-width="2.6"
-      stroke-linecap="round" marker-end="url(#ars8)"/>
-<path d="M130,212 C118,204 110,198 104,192" fill="none" stroke="var(--z-bronze)" stroke-width="2.6"
-      stroke-linecap="round" marker-end="url(#ars8)"/>
-<text x="210" y="176" text-anchor="middle" font-family="Assistant,sans-serif" font-size="13"
-      font-weight="700" fill="var(--z-bronze)">הצללית מעל הקפל — במקום שנשאר גלוי</text>
-<text x="210" y="303" text-anchor="middle" font-family="Assistant,sans-serif" font-size="13"
-      font-weight="700" fill="var(--ink)">עיפרון מרוח — שליש חיצוני בלבד</text>
+<path d="M270,228 C278,226 284,224 289,221" fill="none" stroke="var(--ink)" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round" data-a="draw" data-t0="0.46" data-t1="0.72"/>
+<path d="M150,228 C142,226 136,224 131,221" fill="none" stroke="var(--ink)" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round" data-a="draw" data-t0="0.46" data-t1="0.72"/>
+<path d="M290,212 C302,204 310,198 316,192" fill="none" stroke="var(--z-bronze)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara8)" data-a="sweep" data-t0="0.76" data-t1="0.94"/>
+<path d="M130,212 C118,204 110,198 104,192" fill="none" stroke="var(--z-bronze)" stroke-width="2.6" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara8)" data-a="sweep" data-t0="0.76" data-t1="0.94"/>
+<circle class="applicator" r="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="2" opacity="0"/>
+<circle class="applicator-dot" r="2.6" fill="var(--ink)" opacity="0"/>
 </svg><figcaption>הכל מעל הקפל וכלפי חוץ</figcaption></figure>
       <div>
         <h3>עיניים — הכל כלפי חוץ ולמעלה</h3>
@@ -463,13 +438,11 @@
 
     <div class="step">
       <div class="dot">09</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="נקודות ההארה: עצם הלחי, פינה פנימית, קשת קופידון">
-<defs>
-  <marker id="ars9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="ארבע נקודות הארה"><defs>
+  <marker id="ara9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs9"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca9"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -491,9 +464,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<circle cx="288" cy="250" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="288" cy="250" r="6" fill="var(--z-glow)" fill-opacity=".85"/><circle cx="132" cy="250" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="132" cy="250" r="6" fill="var(--z-glow)" fill-opacity=".85"/><circle cx="233" cy="226" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="233" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".85"/><circle cx="187" cy="226" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="187" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".85"/><circle cx="210" cy="361" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="210" cy="361" r="6" fill="var(--z-glow)" fill-opacity=".85"/><circle cx="210" cy="420" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="210" cy="420" r="6" fill="var(--z-glow)" fill-opacity=".85"/><path d="M268,256 C286,246 300,236 310,226" stroke="var(--z-glow)" stroke-opacity=".6" stroke-width="10" stroke-linecap="round" fill="none"/><path d="M152,256 C134,246 120,236 110,226" stroke="var(--z-glow)" stroke-opacity=".6" stroke-width="10" stroke-linecap="round" fill="none"/>
-</svg><figcaption>סאטן · אפס נצנצים</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><path d="M268,256 C286,246 300,236 310,226" fill="none" stroke="var(--z-glow)" stroke-opacity="0.6" stroke-width="10" stroke-linecap="round" data-a="draw" data-t0="0.05" data-t1="0.265"/><path d="M152,256 C134,246 120,236 110,226" fill="none" stroke="var(--z-glow)" stroke-opacity="0.6" stroke-width="10" stroke-linecap="round" data-a="draw" data-t0="0.265" data-t1="0.48"/><g data-a="pop" data-t0="0.45" data-t1="0.647" data-cx="233" data-cy="226"><circle cx="233" cy="226" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="233" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".85"/></g><g data-a="pop" data-t0="0.568" data-t1="0.765" data-cx="187" data-cy="226"><circle cx="187" cy="226" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="187" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".85"/></g><g data-a="pop" data-t0="0.685" data-t1="0.882" data-cx="210" data-cy="361"><circle cx="210" cy="361" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="210" cy="361" r="6" fill="var(--z-glow)" fill-opacity=".85"/></g><g data-a="pop" data-t0="0.802" data-t1="1.0" data-cx="210" data-cy="420"><circle cx="210" cy="420" r="13" fill="var(--z-glow)" fill-opacity=".3"/><circle cx="210" cy="420" r="6" fill="var(--z-glow)" fill-opacity=".85"/></g><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>סאטן · אפס נצנצים</figcaption></figure>
       <div>
         <h3>הארה — ארבע נקודות</h3>
         <div class="when">20 שניות</div>
@@ -509,13 +480,11 @@
 
     <div class="step">
       <div class="dot">10</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="עיפרון שפתיים: חידוד קשת הקופידון והרמת שתי הזוויות">
-<defs>
-  <marker id="ars10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="עיפרון שפתיים"><defs>
+  <marker id="ara10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs10"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca10"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
    stroke-linecap="round" stroke-linejoin="round">
@@ -537,9 +506,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<path d="M198,362 C203,356 207,362 210,364 C213,362 217,356 222,362" fill="none" stroke="var(--z-glow)" stroke-width="4" stroke-linecap="round"/><path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity=".9"/><path d="M168,376 C164,368 164,362 166,356" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars10)"/><path d="M252,376 C256,368 256,362 254,356" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="1" stroke-linecap="round" marker-end="url(#ars10)"/><circle cx="210" cy="356" r="15" fill="none" stroke="var(--z-glow)" stroke-width="2.2" stroke-dasharray="4 3"/>
-</svg><figcaption>קשת קופידון + הרמת זוויות</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><path d="M198,362 C203,356 207,362 210,364 C213,362 217,356 222,362" fill="none" stroke="var(--z-glow)" stroke-opacity="1.0" stroke-width="4" stroke-linecap="round" data-a="draw" data-t0="0.06" data-t1="0.32"/><path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372" fill="none" stroke="var(--z-blush)" stroke-opacity="0.9" stroke-width="3" stroke-linecap="round" data-a="draw" data-t0="0.3" data-t1="0.62"/><path d="M168,376 C164,368 164,362 166,356" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara10)" data-a="sweep" data-t0="0.62" data-t1="0.82"/><path d="M252,376 C256,368 256,362 254,356" fill="none" stroke="var(--z-blush)" stroke-width="3" stroke-opacity="0.95" stroke-linecap="round" marker-end="url(#ara10)" data-a="sweep" data-t0="0.62" data-t1="0.82"/><circle cx="210" cy="356" r="15" fill="none" stroke="var(--z-glow)" stroke-width="2.2" stroke-dasharray="4 3" data-a="pop" data-t0="0.84" data-t1="0.98" data-cx="210" data-cy="356"/><circle class="applicator" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.2" opacity="0"/><circle class="applicator-dot" r="3.4" fill="var(--ink)" opacity="0"/></svg><figcaption>קשת קופידון + הרמת זוויות</figcaption></figure>
       <div>
         <h3>שפתיים — הגדרה והרמה</h3>
         <div class="when">60 שניות</div>
@@ -558,13 +525,11 @@
 
     <div class="step">
       <div class="dot">11</div>
-      <figure class="figwrap"><svg class="fig" viewBox="0 0 420 520" role="img" aria-label="ספריי קיבוע ולחיצת כפות ידיים">
-<defs>
-  <marker id="ars11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+      <figure class="figwrap"><svg class="fig anim" data-dur="8" viewBox="0 0 420 520" role="img" aria-label="קיבוע ולחיצה"><defs>
+  <marker id="ara11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
-  <clipPath id="fcs11"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
-</defs>
-<path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+  <clipPath id="fca11"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
 <path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
 <g fill="#B07C57" fill-opacity=".5"><circle cx="168" cy="286" r="2.1"/><circle cx="180" cy="296" r="1.7"/><circle cx="156" cy="300" r="1.9"/><circle cx="190" cy="282" r="1.5"/><circle cx="174" cy="272" r="1.6"/><circle cx="252" cy="286" r="2.1"/><circle cx="240" cy="296" r="1.7"/><circle cx="264" cy="300" r="1.9"/><circle cx="230" cy="282" r="1.5"/><circle cx="246" cy="272" r="1.6"/><circle cx="198" cy="268" r="1.4"/><circle cx="222" cy="268" r="1.4"/><circle cx="210" cy="258" r="1.5"/><circle cx="163" cy="266" r="1.5"/><circle cx="257" cy="266" r="1.5"/><circle cx="196" cy="150" r="1.3"/><circle cx="224" cy="146" r="1.3"/><circle cx="210" cy="132" r="1.2"/></g>
 <g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
@@ -587,9 +552,7 @@
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
-<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/>
-<circle cx="120" cy="110" r="4" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="180" cy="86" r="3" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="250" cy="96" r="4" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="310" cy="120" r="3" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="96" cy="190" r="3" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="330" cy="200" r="4" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="140" cy="60" r="3" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="280" cy="62" r="4" fill="var(--z-pore)" fill-opacity=".4"/><circle cx="210" cy="72" r="3" fill="var(--z-pore)" fill-opacity=".4"/><g clip-path="url(#fcs11)"><ellipse cx="210" cy="250" rx="150" ry="200" fill="var(--z-glow)" fill-opacity=".14"/></g><g stroke="var(--ink)" stroke-opacity=".55" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M108,300 C96,292 92,278 94,266"/><path d="M312,300 C324,292 328,278 326,266"/></g><path d="M118,306 L142,316" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-opacity="0.6" stroke-linecap="round" marker-end="url(#ars11)"/><path d="M302,306 L278,316" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-opacity="0.6" stroke-linecap="round" marker-end="url(#ars11)"/>
-</svg><figcaption>לרסס ואז ללחוץ בכפות הידיים</figcaption></figure>
+<path d="M210,36 C300,36 356,98 358,190 C359,254 352,322 360,418 C362,444 364,462 368,480 L322,480 C318,448 316,412 315,374 C314,322 318,258 314,206 C312,150 292,110 258,98 C244,93 228,90 210,90 C192,90 176,93 162,98 C128,110 108,150 106,206 C102,258 106,322 105,374 C104,412 102,448 98,480 L52,480 C56,462 58,444 60,418 C68,322 61,254 62,190 C64,98 120,36 210,36 Z" fill="var(--hair)" fill-opacity=".38"/><circle cx="120" cy="110" r="4" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.02" data-t1="0.244" data-dy="40"/><circle cx="180" cy="86" r="3" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.064" data-t1="0.289" data-dy="40"/><circle cx="250" cy="96" r="4" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.109" data-t1="0.333" data-dy="40"/><circle cx="310" cy="120" r="3" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.153" data-t1="0.378" data-dy="40"/><circle cx="96" cy="190" r="3" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.198" data-t1="0.422" data-dy="40"/><circle cx="330" cy="200" r="4" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.242" data-t1="0.467" data-dy="40"/><circle cx="140" cy="60" r="3" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.287" data-t1="0.511" data-dy="40"/><circle cx="280" cy="62" r="4" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.331" data-t1="0.556" data-dy="40"/><circle cx="210" cy="72" r="3" fill="var(--z-pore)" fill-opacity=".4" data-a="drop" data-t0="0.376" data-t1="0.6" data-dy="40"/><g clip-path="url(#fca11)"><ellipse cx="210" cy="250" rx="150" ry="200" fill="var(--z-glow)" fill-opacity=".14" data-a="fade" data-t0="0.45" data-t1="0.68"/></g><g stroke="var(--ink)" stroke-opacity=".55" stroke-width="2.4" fill="none" stroke-linecap="round" data-a="fade" data-t0="0.6" data-t1="0.78"><path d="M108,300 C96,292 92,278 94,266"/><path d="M312,300 C324,292 328,278 326,266"/></g><path d="M118,306 L142,316" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-opacity="0.6" stroke-linecap="round" marker-end="url(#ara11)" data-a="sweep" data-t0="0.78" data-t1="0.96"/><path d="M302,306 L278,316" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-opacity="0.6" stroke-linecap="round" marker-end="url(#ara11)" data-a="sweep" data-t0="0.78" data-t1="0.96"/></svg><figcaption>לרסס ואז ללחוץ בכפות הידיים</figcaption></figure>
       <div>
         <h3>קיבוע — ולחיצה</h3>
         <div class="when">20 שניות</div>
