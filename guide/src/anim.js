@@ -15,7 +15,8 @@
         t0: parseFloat(el.dataset.t0), t1: parseFloat(el.dataset.t1),
         base: el.getAttribute('transform') || '',
         cx: parseFloat(el.dataset.cx || 0), cy: parseFloat(el.dataset.cy || 0),
-        dy: parseFloat(el.dataset.dy || 0)
+        dx: parseFloat(el.dataset.dx || 0), dy: parseFloat(el.dataset.dy || 0),
+        t2: parseFloat(el.dataset.t2 || 0), t3: parseFloat(el.dataset.t3 || 1)
       };
       if ((kind === 'draw' || kind === 'sweep') && el.getTotalLength) {
         try { it.len = el.getTotalLength(); } catch (e) { it.len = 0; }
@@ -51,6 +52,17 @@
         el.setAttribute('transform',
           'translate(' + it.cx + ',' + it.cy + ') scale(' + s.toFixed(3) + ') translate(' +
           (-it.cx) + ',' + (-it.cy) + ') ' + it.base);
+      } else if (it.kind === 'press') {
+        /* slide the palm in, hold it on the skin, then lift it straight off */
+        var pin = EASE(it.t1 > it.t0 ? (t - it.t0) / (it.t1 - it.t0) : 1);
+        var pout = it.t3 > it.t2 ? EASE((t - it.t2) / (it.t3 - it.t2)) : 0;
+        if (t < it.t0) { el.style.opacity = 0; }
+        else {
+          var off = (1 - pin) + pout * 0.5;
+          el.style.opacity = Math.min(1, pin * 2.5) * (1 - pout * 0.85);
+          el.setAttribute('transform',
+            'translate(' + (it.dx * off).toFixed(2) + ',' + (it.dy * off).toFixed(2) + ') ' + it.base);
+        }
       } else if (it.kind === 'drop') {
         el.style.opacity = Math.min(1, p * 2.2);
         el.setAttribute('transform', 'translate(0,' + (-it.dy * (1 - p)).toFixed(2) + ') ' + it.base);

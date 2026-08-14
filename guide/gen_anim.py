@@ -6,7 +6,7 @@ frame-by-frame for video. At t=1 a scene matches the static diagram exactly.
 """
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from facelib import (defs, base, clipped, A, stroke, VB,
+from facelib import (defs, base, clipped, A, stroke, VB, hand,
                      PORE, BRONZE_STROKES, BLUSH_STROKES)
 
 Z = dict(pore="var(--z-pore)", red="var(--z-red)", bronze="var(--z-bronze)",
@@ -221,20 +221,27 @@ def s10(u):
 
 # --------------------------------------------------------------- 11 set spray
 def s11(u):
+    """Mist, then the palms actually land on the cheeks and lift straight off."""
     mist = [(120,110,4),(180,86,3),(250,96,4),(310,120,3),(96,190,3),
             (330,200,4),(140,60,3),(280,62,4),(210,72,3)]
     ov = ""
-    for (x, y, r), (a, b) in zip(mist, seq(len(mist), .02, .42, .18)):
+    for (x, y, r), (a, b) in zip(mist, seq(len(mist), .02, .3, .14)):
         ov += A(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{Z["pore"]}" fill-opacity=".4"/>',
                 "drop", a, b, dy=40)
+    # the palms: slide in from the sides, hold on the cheeks, lift off
+    ov += A(hand(126, 322, rot=-14), "press", .40, .58, dx=-150, dy=40, t2=.86, t3=1.0)
+    ov += A(hand(294, 322, rot=14), "press", .40, .58, dx=150, dy=40, t2=.86, t3=1.0)
+    # warmth under the palms while they are pressing
     ov += clipped(u, A(f'<ellipse cx="210" cy="250" rx="150" ry="200" fill="{Z["glow"]}"'
-                       f' fill-opacity=".14"/>', "fade", .45, .68))
-    ov += A('<g stroke="var(--ink)" stroke-opacity=".55" stroke-width="2.4" fill="none" stroke-linecap="round">'
-            '<path d="M108,300 C96,292 92,278 94,266"/><path d="M312,300 C324,292 328,278 326,266"/></g>',
-            "fade", .6, .78)
-    ov += arrow_a(u, "M118,306 L142,316", "var(--ink)", 2.4, .78, .96, op=.6)
-    ov += arrow_a(u, "M302,306 L278,316", "var(--ink)", 2.4, .78, .96, op=.6)
-    return scene(u, ov, freckles=True, label="קיבוע ולחיצה", applicator=False), "לרסס ואז ללחוץ בכפות הידיים", 8
+                       f' fill-opacity=".16"/>', "fade", .58, .74))
+    # the 5-second count
+    ov += A('<g transform="translate(210,452)">'
+            '<circle r="30" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="2.5"/>'
+            '<text y="9" text-anchor="middle" font-family="Assistant,sans-serif" font-size="26"'
+            ' font-weight="700" fill="var(--accent)">5</text></g>',
+            "pop", .62, .76, cx=210, cy=452)
+    return scene(u, ov, freckles=True, label="לרסס, להניח כפות ידיים וללחוץ",
+                 applicator=False), "להניח · ללחוץ 5 · להרים ישר", 9
 
 
 SCENES = {0: s00, 1: s01, 2: s02, 3: s03, 4: s04, 5: s05,

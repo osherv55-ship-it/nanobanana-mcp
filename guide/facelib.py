@@ -123,3 +123,21 @@ def stroke(d, color, w, op=1.0, cap="round", cls=""):
     c = f' class="{cls}"' if cls else ""
     return (f'<path{c} d="{d}" fill="none" stroke="{color}" stroke-opacity="{op}"'
             f' stroke-width="{w}" stroke-linecap="{cap}"/>')
+
+
+def hand(cx, cy, rot=0, scale=1.0, opacity=.55, cls=""):
+    """A flat palm silhouette, wrist down, drawn around (cx,cy).
+
+    Used for the pressing step — fingertips are deliberately not the contact
+    point, so the shape reads as a whole palm laid on the skin.
+    """
+    palm = ("M-32,4 C-34,-20 -32,-40 -26,-52 L26,-52 C32,-40 34,-20 32,4 "
+            "C32,18 20,26 0,26 C-20,26 -32,18 -32,4 Z")
+    fingers = [(-27, -90, 13, 40), (-11, -98, 14, 48), (6, -94, 14, 44), (22, -80, 12, 30)]
+    f = "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{w/2:.1f}"/>' for x, y, w, h in fingers)
+    thumb = '<rect x="-52" y="-30" width="12" height="34" rx="6" transform="rotate(-32 -46 -13)"/>'
+    c = f' class="{cls}"' if cls else ""
+    return (f'<g{c} transform="translate({cx},{cy}) rotate({rot}) scale({scale})"'
+            f' fill="var(--skin)" fill-opacity="{opacity}" stroke="var(--skin-line)"'
+            f' stroke-width="2.4" stroke-opacity=".55" stroke-linejoin="round">'
+            f'<path d="{palm}"/>{f}{thumb}</g>')
