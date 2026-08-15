@@ -178,6 +178,13 @@ section{ scroll-margin-top:24px }
   font-family:var(--sans); font-weight:700; font-size:14px; color:var(--accent); font-variant-numeric:tabular-nums }
 .step h3{ font-size:20.5px; margin-bottom:3px; padding-top:5px; letter-spacing:-.008em }
 .step .when{ font-size:12px; font-weight:700; letter-spacing:.09em; color:var(--ink-faint); margin-bottom:11px }
+.step .prod{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 8px; margin:-4px 0 13px;
+  font-size:13px; line-height:1.5 }
+.step .prod .k{ font-weight:700; color:var(--accent); letter-spacing:.02em }
+.step .prod .v{ color:var(--ink); font-weight:700 }
+.step .prod .m{ color:var(--ink-faint) }
+.step .prod .sh{ font-weight:700; color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid var(--accent-line); border-radius:5px; padding:0 6px; font-size:12px }
 .step .body{ font-size:15.5px; line-height:1.68; color:var(--ink-soft); display:flex; flex-direction:column; gap:11px }
 .step .body b{ color:var(--ink); font-weight:700 }
 .callout{ border-inline-start:2px solid var(--accent-line); background:var(--accent-soft);
@@ -764,6 +771,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>הכנה — והמתנה</h3>
         <div class="when">3 דקות · לפני שנוגעים באיפור</div>
+        <div class="prod"><span class="k">קרם לחות:</span> <span class="v">CeraVe Oil Control Gel-Cream</span> <span class="m">· 71.90 ₪ · סופר־פארם</span> <span class="m">|</span> <span class="k">הגנה:</span> <span class="v">LRP Anthelios UVAir Serum SPF50+</span> <span class="m">· 99.90 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>ניקוי, שכבת לחות דקה, קרם עיניים <b>בכמות זעירה</b> (גרגר אורז לשתי העיניים), מקדם הגנה.</p>
@@ -806,6 +814,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>טשטוש ממוקד</h3>
         <div class="when">20 שניות · אף, מצח, לחי פנימית בלבד</div>
+        <div class="prod"><span class="k">פריימר:</span> <span class="v">NYX Pore Filler</span> <span class="sh">שקוף</span> <span class="m">· ~50–60 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>כמות בגודל אפונה של פריימר מטשטש, <b>רק על שלושת האזורים במפה</b>. לא על כל הפנים —
@@ -851,6 +860,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>Underpainting — ברונזר קרמי</h3>
         <div class="when">90 שניות · לפני הבסיס</div>
+        <div class="prod"><span class="k">ברונזר קרמי:</span> <span class="v">NARS Laguna Bronzing Cream</span> <span class="sh">01</span> <span class="m">· 190 ₪ · NARS ישראל</span> <span class="m">|</span> <span class="k">זול יותר:</span> <span class="v">MILUCCA Contour/Bronzer Stick</span> <span class="sh">SEDONA</span> <span class="m">· ~25–45 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>ברונזר קרמי בארבעה מקומות (ראי מפה): <b>הרקות</b>, <b>מתחת לעצם הלחי</b> בקו אלכסוני
@@ -894,6 +904,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>סומק קרמי — גבוה</h3>
         <div class="when">40 שניות · עדיין לפני הבסיס</div>
+        <div class="prod"><span class="k">סומק קרמי:</span> <span class="v">NARS Afterglow Liquid Blush</span> <span class="sh">Dolce Vita</span> <span class="m">· 160 ₪ · NARS ישראל</span> <span class="m">|</span> <span class="k">זול יותר:</span> <span class="v">Maybelline Sunkisser</span> <span class="sh">02 Uptown Glow</span> <span class="m">· לבדוק במדף · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>נקודה קטנה על <b>גג עצם הלחי</b>, ומטשטשים באלכסון <b>כלפי הרקה</b> — עד שהסומק
@@ -937,6 +948,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>סקין־טינט — שכבה אחת דקה</h3>
         <div class="when">90 שניות · מעל הכל</div>
+        <div class="prod"><span class="k">סקין־טינט:</span> <span class="v">L'Oréal True Match Nude סרום</span> <span class="sh">2-3 Light</span> <span class="m">· 70–95 ₪ · סופר־פארם</span> <span class="m">|</span> <span class="k">חלופה:</span> <span class="v">Maybelline Super Stay Skin Tint</span> <span class="sh">21 Nude Beige</span> <span class="m">· ~60–85 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>כמות של חצי מטבע לכל הפנים. <b>מתחילים ממרכז הפנים</b> (סביב האף, שם האודם)
@@ -984,6 +996,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>קונסילר — שלוש נקודות בלבד</h3>
         <div class="when">60 שניות</div>
+        <div class="prod"><span class="k">עין:</span> <span class="v">Maybelline Instant Anti-Age Eraser</span> <span class="sh">בגוון הבסיס</span> <span class="m">· 45–60 ₪ · סופר־פארם</span> <span class="m">|</span> <span class="k">אודם:</span> <span class="v">Maybelline Instant Anti-Age Eraser</span> <span class="sh">06</span> <span class="m">· 45–60 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p><b>א. אזורי האודם:</b> נקודה זעירה של קונסילר בכיסוי גבוה על כנפי האף ובקפל אף־לחי.
@@ -1037,6 +1050,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>פודרה — שלושה אזורים זעירים</h3>
         <div class="when">20 שניות</div>
+        <div class="prod"><span class="k">פודרה:</span> <span class="v">VARIETE פודרה שקופה</span> <span class="sh">שקוף</span> <span class="m">· 35–60 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>מברשת קטנה, כמות מינימלית, <b>בלחיצה</b>: על האף, על הסנטר, ונגיעה של ממש
@@ -1079,6 +1093,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>גבות — לסרק, לא למלא</h3>
         <div class="when">40 שניות</div>
+        <div class="prod"><span class="k">ג׳ל:</span> <span class="v">Maybelline Superlock ג׳ל גבות</span> <span class="sh">שקוף</span> <span class="m">· 35–55 ₪ · סופר־פארם</span> <span class="m">|</span> <span class="k">עיפרון:</span> <span class="v">NYX Micro Brow</span> <span class="sh">01 Taupe</span> <span class="m">· לבדוק במדף · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>מסרקים את השערות <b>כלפי מעלה ומעט החוצה</b>, מקבעים בג'ל. עיפרון דק בשתי נקודות
@@ -1176,6 +1191,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>הארה — ארבע נקודות</h3>
         <div class="when">20 שניות</div>
+        <div class="prod"><span class="k">הארה:</span> <span class="v">NARS Light Reflecting Luminizing Stick</span> <span class="sh">Moonlit</span> <span class="m">· 185 ₪ · NARS ישראל</span> <span class="m">|</span> <span class="k">זול יותר:</span> <span class="v">PIXI On-The-Glow</span> <span class="sh">Naturalustre</span> <span class="m">· לבדוק במדף · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p>מוצר קרמי בגימור סאטן (<b>לא נצנץ</b>) בשני מקומות בלבד:
@@ -1227,6 +1243,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>שפתיים — הגדרה והרמה</h3>
         <div class="when">60 שניות</div>
+        <div class="prod"><span class="k">עיפרון שפתיים:</span> <span class="v">MAC Lip Pencil</span> <span class="sh">Whirl</span> <span class="m">· 110 ₪ · MAC ישראל</span> <span class="m">|</span> <span class="k">צבע:</span> <span class="v">NARS Afterglow Lip Balm</span> <span class="sh">Dolce Vita</span> <span class="m">· 140 ₪ · NARS ישראל</span></div>
       </div>
       <div class="body">
         <p>מתחילים בלחות (בלם/שמן שפתיים) ומנגבים את העודף. ואז עיפרון בגוון קרוב מאוד לשפה
@@ -1273,6 +1290,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
       <div>
         <h3>קיבוע — ולחיצה</h3>
         <div class="when">20 שניות · ריסוס ← המתנה ← לחיצה</div>
+        <div class="prod"><span class="k">ספריי:</span> <span class="v">essence fix & LAST 18h</span> <span class="m">· 20–35 ₪ · סופר־פארם</span></div>
       </div>
       <div class="body">
         <p><b>1. לרסס.</b> הבקבוק במרחק <b>20–30 ס״מ</b> מהפנים, עיניים ופה סגורים.
