@@ -109,6 +109,10 @@ Artifact. Never hand-edit the built file — edit `guide/src/*` and run `python3
 - `guide/src/anim.js` — the timeline engine. `window.__seekFig(svg, t)` is pure, which is what lets
   the same scene play live in the guide and be captured frame-by-frame for video.
 - `guide/gen_donts.py` — the wrong/right pairs in the mistakes chapter.
+- `guide/gen_undereye.py` — the three-panel advanced under-eye sequence in chapter 04.
+- `guide/inject_figs.py` — writes the generators' SVG back into `guide/src/*`. The generators are the
+  source of truth; the HTML only ever holds their output. **Run it after touching any generator, before
+  `build.py`** — forgetting this is how a stale figure ships next to fresh text.
 - `guide/make_videos.py` — renders the scenes to 1080x1920 MP4s in `guide/video/`
   (`python3 guide/make_videos.py [2,5]` to render a subset). `build.py` inlines
   `routine-full.mp4` into the page as a data URI.

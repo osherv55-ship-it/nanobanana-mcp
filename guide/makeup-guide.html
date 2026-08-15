@@ -31,6 +31,7 @@
   /* face-map zone hues — mid-tone so they read on both grounds */
   --z-red:#2E8C68; --z-pore:#4E79AC; --z-bronze:#A96A2C;
   --z-blush:#C4557C; --z-glow:#C89322; --z-conceal:#7A68BC; --z-powder:#7E8794;
+  --z-trough:#46609B; --z-peach:#D98A62;
   /* the chart itself is "paper" in both themes so zone colour reads identically */
   --skin:#F4E7DC; --skin-line:#5A4740; --skin-edge:#B99C89; --hair:#937052;
 }
@@ -289,8 +290,14 @@ tbody tr.grouprow td small{ font-family:var(--sans); font-weight:400; font-size:
 .vs-cell.good{ border-color:var(--accent-line) }
 .vs-cell.good figcaption{ color:var(--accent-ink); background:var(--accent-soft); border-top-color:var(--accent-line) }
 .vs-cell.good .mk{ background:var(--accent) }
+.vs.trio{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+@media (max-width:540px){ .vs.trio{ grid-template-columns:1fr } }
+.vs-cell.seq{ border-color:var(--rule-strong) }
+.vs-cell.seq figcaption{ color:var(--ink); background:var(--surface-2); border-top-color:var(--rule) }
+.vs-cell.seq .mk{ background:var(--ink-soft); font-weight:700; font-variant-numeric:tabular-nums }
 :root[data-theme="dark"] .vs-cell.bad .mk,
-:root[data-theme="dark"] .vs-cell.good .mk{ color:#1a1420 }
+:root[data-theme="dark"] .vs-cell.good .mk,
+:root[data-theme="dark"] .vs-cell.seq .mk{ color:#1a1420 }
 
 /* ============ misc ============ */
 .note{ border:1px dashed var(--rule-strong); background:var(--surface); border-radius:11px; padding:17px 20px;
@@ -1385,13 +1392,19 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
     <div class="finding">
       <div class="top">
         <h3>הקונסילר מתקמט בקווים</h3>
-        <p class="obs">אחרי שעה־שעתיים נוצרים קווים דקים בתוך הקונסילר.</p>
+        <p class="obs">אחרי שעה־שעתיים נוצרים קווים דקים בתוך הקונסילר. זה כמעט אף פעם
+        לא העור עצמו — זה <b>מוצר שנע לתוך הקו</b>.</p>
         <div class="tagrow"><span class="tag s">כמות</span><span class="tag s">קיבוע</span></div>
       </div>
       <div class="fix">
-        כמעט תמיד <b>כמות</b>, לא מוצר. חצי ממה ששמת. ואם קיבעת בפודרה —
-        פחות פודרה, ורק בנגיעה מתחת לפינה הפנימית.<br><br>
-        ואם זה קורה כבר בשעה הראשונה — <b>קרם העיניים עשיר מדי</b>. בבוקר ג'ל־קרם קליל בלבד.
+        <b>עכשיו, בלי להוריד:</b> לא להוסיף קונסילר — הוא יישב על הקמט ויכפיל אותו.
+        קצה אצבע נקייה או ספוג לח, <b>ללחוץ ולהחליק פעם אחת כלפי מטה</b>. זה ממיס
+        את המוצר בחזרה ומיישר את הקו.<br><br>
+        <b>בפעם הבאה:</b> חצי מהכמות, בשתי שכבות דקיקות במקום אחת; ואם זה קורה כבר
+        בשעה הראשונה — <b>קרם העיניים עשיר מדי</b> או שלא חיכית. ג'ל־קרם קליל, לספוג
+        עודף בטישו, ולחכות.<br><br>
+        <b>והמנוף האמיתי:</b> קורקטור ורוד־אפרסקי בכמות של ראש סיכה לפני הקונסילר —
+        מוריד את כמות הקונסילר לרבע. הפרוטוקול המלא בפרק 04, "הקווים הדקיקים מתחת לעין".
       </div>
     </div>
 
@@ -1519,16 +1532,171 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
           <li>כמות זעירה, במברשת קטנה, רק על הקו הכהה עצמו.</li>
           <li>לטפוח עם הקמיצה (האצבע הכי חלשה — לא תמתח את העור).</li>
           <li>לקבע רק אם באמת צריך, ורק בנגיעה של פודרה במברשת קטנה.</li>
-          <li>נקודת אור אחת בפינה הפנימית — זה מה שבאמת "פותח" את העין.</li>
+          <li>ואת החיבור ללחי עושים ב<b>חום</b> — נגיעת ברונזר קרמי בקצה החיצוני, לא נקודת אור.</li>
         </ol>
 
         <h4>ההתאמה לפנים שלך</h4>
-        <p>יש לך <b>שקע דמעה מבני</b> עם צל כחלחל, לא כתם פיגמנטי. אור מנצח כיסוי:
-        קונסילר לח, גוון אחד בהיר מהבסיס, בכמות מינימלית — ואז נקודת הארה. יותר מוצר
-        פשוט יגרום לצל להיראות אפור.</p>
+        <p>יש לך <b>שקע דמעה מבני</b> עם צל כחלחל, לא כתם פיגמנטי — ולכן כאן העיקרון הוא
+        <b>לנטרל, לא להבהיר</b>. קונסילר לח, <b>בדיוק בגוון הבסיס</b> (לא בהיר ממנו),
+        בכמות מינימלית. כל גוון בהיר יותר, וכל מקור אור נוסף באותה רצועה, הופך את הצל לאפור־חיוור.
+        ההרמה המתקדמת של האזור הזה — בטכניקה הבאה.</p>
 
         <h4>הטעות הנפוצה</h4>
         <p>קונסילר בהיר בשניים־שלושה גוונים. זה לא מאיר — זה יוצר טבעת אפורה־לבנה.</p>
+      </div>
+    </details>
+
+    <details class="tech" open>
+      <summary><div class="th">
+        <h3>הקווים הדקיקים מתחת לעין — ההרמה המתקדמת</h3>
+        <div class="by">Bobbi Brown · Lisa Eldridge <span>· לנטרל במקום לכסות, ולקבע רק את מה שמתקפל</span></div>
+      </div></summary>
+      <div class="tbody">
+        <p>אין מוצר שמיישר עור. כמעט כל קמט שנראה מתחת לעין אחרי שעתיים הוא לא העור —
+        הוא <b>קונסילר שנע לתוך הקו</b>. ולכן כל מה שמתקדם באזור הזה הולך לכיוון אחד:
+        פחות מוצר, במקום מדויק יותר, בשכבה דקה יותר.</p>
+        <p>שני מנופים אמיתיים, ושניהם לא "עוד קונסילר":
+        <b>קורקטור שמנטרל את הצל</b> — ומאפשר לרבע מכמות הקונסילר לעשות את אותה עבודה;
+        ו<b>קיבוע רק ברצועה שבאמת מתקפלת</b> במקום על כל השטח.</p>
+
+        <!--UE_FIG--><div class="vs trio"><figure class="vs-cell seq"><svg class="fig" viewBox="216 176 118 106" role="img" aria-label="קורקטור אפרסק רק בעומק שקע הדמעה"><defs>
+  <marker id="arue1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+          orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
+  <clipPath id="fcue1"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+<path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
+<g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
+   stroke-linecap="round" stroke-linejoin="round">
+ <path d="M232,225 C244,208 272,206 282,222"/><path d="M282,222 C275,239 245,241 232,225"/>
+ <path d="M188,225 C176,208 148,206 138,222"/><path d="M138,222 C145,239 175,241 188,225"/>
+ <path d="M192,311 C196,323 224,323 228,311"/>
+ <path d="M192,311 C184,315 182,325 190,329"/><path d="M228,311 C236,315 238,325 230,329"/>
+ <path d="M201,268 C199,286 197,300 195,309" stroke-opacity="0.30"/>
+ <path d="M219,268 C221,286 223,300 225,309" stroke-opacity="0.30"/>
+ <path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372"/>
+ <path d="M172,372 C187,394 233,394 248,372"/>
+ <path d="M210,364 L210,372" stroke-opacity="0.40"/>
+</g>
+<circle cx="257" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="163" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="260" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<circle cx="166" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/>
+<path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcue1)"><path d="M228,246 C244,262 262,266 278,262" fill="none" stroke="var(--z-trough)" stroke-opacity="0.34" stroke-width="15" stroke-linecap="round"/><path d="M229,247 C240,256 249,261 255,262" fill="none" stroke="var(--z-peach)" stroke-opacity="0.95" stroke-width="8" stroke-linecap="round"/></g></svg><figcaption><span class="mk">1</span>קורקטור — רק בעומק הצל</figcaption></figure><figure class="vs-cell seq"><svg class="fig" viewBox="216 176 118 106" role="img" aria-label="שכבת קונסילר דקה מעל, מטושטשת כלפי מטה בלבד"><defs>
+  <marker id="arue2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+          orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
+  <clipPath id="fcue2"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+<path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
+<g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
+   stroke-linecap="round" stroke-linejoin="round">
+ <path d="M232,225 C244,208 272,206 282,222"/><path d="M282,222 C275,239 245,241 232,225"/>
+ <path d="M188,225 C176,208 148,206 138,222"/><path d="M138,222 C145,239 175,241 188,225"/>
+ <path d="M192,311 C196,323 224,323 228,311"/>
+ <path d="M192,311 C184,315 182,325 190,329"/><path d="M228,311 C236,315 238,325 230,329"/>
+ <path d="M201,268 C199,286 197,300 195,309" stroke-opacity="0.30"/>
+ <path d="M219,268 C221,286 223,300 225,309" stroke-opacity="0.30"/>
+ <path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372"/>
+ <path d="M172,372 C187,394 233,394 248,372"/>
+ <path d="M210,364 L210,372" stroke-opacity="0.40"/>
+</g>
+<circle cx="257" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="163" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="260" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<circle cx="166" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/>
+<path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcue2)"><path d="M228,246 C244,262 262,266 278,262" fill="none" stroke="var(--z-trough)" stroke-opacity="0.16" stroke-width="15" stroke-linecap="round"/><path d="M229,247 C240,256 249,261 255,262" fill="none" stroke="var(--z-peach)" stroke-opacity="0.45" stroke-width="8" stroke-linecap="round"/><path d="M229,247 C242,257 254,262 262,262" fill="none" stroke="var(--z-conceal)" stroke-opacity="0.36" stroke-width="12" stroke-linecap="round"/></g><path d="M238,266 L239,276" fill="none" stroke="var(--z-conceal)" stroke-width="1.9" stroke-opacity="0.9" stroke-linecap="round" marker-end="url(#arue2)"/><path d="M250,270 L252,280" fill="none" stroke="var(--z-conceal)" stroke-width="1.9" stroke-opacity="0.9" stroke-linecap="round" marker-end="url(#arue2)"/><path d="M261,269 L264,279" fill="none" stroke="var(--z-conceal)" stroke-width="1.9" stroke-opacity="0.9" stroke-linecap="round" marker-end="url(#arue2)"/><path d="M270,259 C280,255 289,248 296,240" fill="none" stroke="var(--cognac)" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5 5"/><g stroke="var(--cognac)" stroke-width="2.4" stroke-linecap="round"><path d="M293.5,233.5 L302.5,242.5"/><path d="M302.5,233.5 L293.5,242.5"/></g></svg><figcaption><span class="mk">2</span>קונסילר — לחישה, וכלפי מטה</figcaption></figure><figure class="vs-cell seq"><svg class="fig" viewBox="216 176 118 106" role="img" aria-label="פודרה רק על רצועת הקיפול"><defs>
+  <marker id="arue3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
+          orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
+  <clipPath id="fcue3"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
+</defs><path d="M172,404 C172,432 170,450 163,464 L257,464 C250,450 248,432 248,404" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.4"/>
+<path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z" fill="var(--skin)" stroke="var(--skin-edge)" stroke-width="1.8"/>
+<g fill="none" stroke="var(--skin-line)" stroke-width="1.7" stroke-opacity="1.0"
+   stroke-linecap="round" stroke-linejoin="round">
+ <path d="M232,225 C244,208 272,206 282,222"/><path d="M282,222 C275,239 245,241 232,225"/>
+ <path d="M188,225 C176,208 148,206 138,222"/><path d="M138,222 C145,239 175,241 188,225"/>
+ <path d="M192,311 C196,323 224,323 228,311"/>
+ <path d="M192,311 C184,315 182,325 190,329"/><path d="M228,311 C236,315 238,325 230,329"/>
+ <path d="M201,268 C199,286 197,300 195,309" stroke-opacity="0.30"/>
+ <path d="M219,268 C221,286 223,300 225,309" stroke-opacity="0.30"/>
+ <path d="M172,372 C185,358 198,367 210,364 C222,367 235,358 248,372"/>
+ <path d="M172,372 C187,394 233,394 248,372"/>
+ <path d="M210,364 L210,372" stroke-opacity="0.40"/>
+</g>
+<circle cx="257" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="163" cy="224" r="10" fill="var(--skin-line)" fill-opacity="0.80"/>
+<circle cx="260" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<circle cx="166" cy="221" r="3" fill="#fff" fill-opacity=".8"/>
+<path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/>
+<path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
+      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcue3)"><path d="M228,246 C244,262 262,266 278,262" fill="none" stroke="var(--z-trough)" stroke-opacity="0.12" stroke-width="15" stroke-linecap="round"/><path d="M229,247 C242,257 254,262 262,262" fill="none" stroke="var(--z-conceal)" stroke-opacity="0.22" stroke-width="12" stroke-linecap="round"/><path d="M240,267 C252,274 265,275 275,271" fill="none" stroke="var(--z-powder)" stroke-opacity="0.95" stroke-width="7" stroke-linecap="round" stroke-dasharray="1.2 5.5"/></g></svg><figcaption><span class="mk">3</span>קיבוע — רק קו הקיפול</figcaption></figure></div><!--/UE_FIG-->
+
+        <h4>הפרוטוקול</h4>
+        <ol>
+          <li><b>תזמון והכנה.</b> קרם עיניים קליל, ואחרי חמש דקות <b>לספוג את העודף</b> בקצה
+          טישו — ולחכות עוד חמש. עור חלקלק הוא הסיבה מספר אחת לקמטוט בשעה הראשונה.
+          ביום שחשוב בו: פאץ' הידרוג'ל עשר דקות, ואז לספוג.</li>
+
+          <li><b>קורקטור לפני הקונסילר.</b> כמות בגודל ראש סיכה של קורקטור ורוד־אפרסקי,
+          <b>רק בחלק העמוק ביותר של השקע</b> — הרבע הפנימי, לא כל הרצועה. הוא מנטרל את הכחול,
+          ומהרגע הזה הקונסילר שמעליו יכול להיות רבע ממה שאת שמה היום.</li>
+
+          <li><b>לדלל על גב היד.</b> להוציא את הקונסילר על גב היד, לקחת ממנו במברשת קטנה
+          ולעבוד אותו שם שתי־שלוש שניות. חום היד ממיס אותו, ואת מורידה כ־70% מהכמות
+          <b>לפני</b> שהוא נוגע בעין.</li>
+
+          <li><b>שתי שכבות לחישה, לא אחת אמיתית.</b> שכבה, המתנה של 30 שניות, ורק אם באמת
+          חסר — שכבה שנייה. שכבה אחת עבה כמעט תמיד תתקמט; שתיים דקיקות כמעט אף פעם לא.</li>
+
+          <li><b>שלושה כלים, לכל אחד תפקיד אחד.</b> מברשת קטנה <b>מניחה</b> בדיוק על הצל ·
+          הקמיצה <b>ממיסה</b> בטפיחות · ספוג לח וסחוט חזק <b>מוחק את הקצה</b> בגלגול קצר אחד.
+          אף כלי אחד לא עושה את שלושתם.</li>
+
+          <li><b>כיוון אחד — כלפי מטה והחוצה.</b> תנועת הלוך־ושוב פותחת את הקווים ודוחפת
+          מוצר לתוכם. ואף פעם לא למתוח את העור באצבע השנייה כדי "ליישר": ברגע שהוא חוזר,
+          המוצר יושב בדיוק בתוך הקפל.</li>
+
+          <li><b>לקבע רק את מה שמתקפל.</b> לחייך מול המראה — הרצועה שנוצרת היא היחידה
+          שמקבלת פודרה. נגיעה, במברשת קטנה או בקצה ספוג לח, ב<b>לחיצה</b>. כל השאר נשאר
+          בלי פודרה בכלל.</li>
+
+          <li><b>ואם אפשר, בלי פודרה.</b> ריסוס קל של ספריי קיבוע <b>על הספוג</b> — לא על
+          הפנים — ולחיצה מתחת לעין. מקבע בלי להוסיף מרקם, ולעור שלך זה עדיף על פודרה ברוב הימים.</li>
+        </ol>
+
+        <h4>התיקון באמצע היום</h4>
+        <p>הכלל: <b>לעולם לא להוסיף קונסילר על קמט.</b> הוא יישב עליו ויכפיל אותו.
+        במקום זה — קצה אצבע נקייה או ספוג לח, <b>ללחוץ ולהחליק פעם אחת כלפי מטה</b>.
+        זה ממיס את המוצר בחזרה ומיישר את הקו. ואם ממש יבש: כמות זעירה של קרם עיניים
+        על קצה האצבע, ללחוץ, ורק אז ליישר.</p>
+
+        <h4>ההתאמה לפנים שלך</h4>
+        <p>הצל שלך <b>מבני וכחלחל</b>, ולכן קורקטור הוא המנוף הנכון אצלך יותר מכל קונסילר:
+        הוא מנטרל את הכחול בכמות זעירה — ובכך פותר גם את הבעיה השנייה שדיווחת עליה.
+        פחות מוצר בהיר מתחת לעין = <b>גם פחות חיוורון וגם פחות קמטוט</b>. שתי בעיות, מנוף אחד.</p>
+        <p><b>הגוון:</b> על עור בהיר עם צל כחול־אפור המשפחה הנכונה היא <b>ורוד־אפרסקי בהיר</b>
+        (אצל Bobbi Brown זו משפחת ה־<span dir="ltr">Bisque</span>) — <b>לא כתום</b>.
+        כתום נכון לגוון חום־ירקרק ועל עור בהיר הוא משאיר גוון חמים־חולני.</p>
+        <p>ודבר אחרון שמשנה כמה הקווים בולטים ואין לו קשר לקונסילר: <b>מסקרה על הריסים
+        התחתונים — לא.</b> ריסים תחתונים כהים מטילים צל נוסף בדיוק על הרצועה הזו ומעמיקים
+        את המראה. במקום זה, את העוגן הכהה לוקחים <b>למעלה</b> — tightlining בקו הריסים העליון.</p>
+
+        <h4>הטעות הנפוצה</h4>
+        <p><b>בייקינג</b> — שכבת פודרה עבה שמחכה חמש דקות. זה נבנה לצילום עם פלאש, והוא
+        מייבש את העור הדק ביותר בפנים. על עור עם קווים דקיקים זו הדרך המהירה ביותר להדגיש אותם.</p>
+        <p>והשנייה: <b>קונסילר "מבהיר" עם חלקיקים מחזירי אור.</b> הוא נראה מדהים באריזה
+        ומדגיש כל מרקם על העור. את צריכה גימור <b>סאטן־דק עם הרבה לחות</b>, לא זוהר.</p>
+
+        <div class="callout warn"><span class="lbl">הגבול הכן</span>
+        שקע דמעה מבני הוא <b>מבנה</b>, לא צבע. איפור יכול לרכך אותו ולהוריד את הניגודיות —
+        הוא לא ימלא אותו. את הצד השני של המשוואה את מכירה מהקליניקה טוב ממני; מה ששייך
+        למדריך הזה הוא הצד של הבוקר, והוא מגיע עד כאן. שווה לדעת איפה הגבול עובר,
+        כדי לא לנסות לפצות עליו בעוד שכבה.</div>
       </div>
     </details>
 
@@ -1905,6 +2073,47 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
     <b>1.</b> להתאים ל<b>גבות</b> (חום אפרפר, קריר) ולא לשיער (קרמל, חם) — אותה מלכודת כמו בעיפרון הגבות.
     <b>2.</b> להתרחק מכל גוון ששמו כולל <b>mahogany · brick · rust · cherry · plum</b> — אלה אדומים,
     והם יגרמו לעין להיראות עייפה. ומכל דבר <b>מטאלי או מנצנץ</b> — הוא מדגיש את מרקם העפעף.
+  </div>
+
+  <h3 style="font-size:25px;margin-bottom:6px">הקורקטור — הפריט שחסר מתחת לעין</h3>
+  <p class="prose" style="margin-bottom:18px">
+    זה המנוף לשתי הבעיות שדיווחת עליהן ביחד: הרצועה הבהירה <b>והקמטוט</b>. קורקטור
+    ורוד־אפרסקי מנטרל את הכחול בכמות של ראש סיכה, ולכן הקונסילר שמעליו יורד לרבע —
+    פחות מוצר בהיר, פחות מה שיזוז לתוך הקווים. <b>הגוון: ורוד־אפרסקי בהיר, לא כתום.</b>
+    הפרוטוקול המלא בפרק 04.
+  </p>
+  <div class="tablewrap" style="margin-bottom:44px">
+    <table>
+      <thead><tr><th>הפריט</th><th>גוון</th><th>למה דווקא זה</th><th>איפה</th><th>מחיר</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="pname">Corrector</span><span class="brand">Bobbi Brown</span></td>
+          <td><span class="shade">Extra Light Bisque</span><br><small>או Light Bisque — לסוואצ׳</small></td>
+          <td><b>הבחירה שלי, וזה סטנדרט התעשייה לדבר הזה.</b> קרמי, לא מבריק, ועובד בכמויות
+          זעירות. משפחת ה־<span dir="ltr">Bisque</span> היא הוורוד־אפרסקי — לצל <b>כחול־סגול</b>
+          כמו שלך. משפחת ה־<span dir="ltr">Peach</span> נועדה לצל <b>חום־ירקרק</b>; היא לא שלך.
+          <br>1.5 גרם זה נראה זעיר — בכמות שאת אמורה להשתמש בה זה שנה בערך.</td>
+          <td><span class="where il">bobbibrown.co.il</span><br><span class="tier">ובעמדות בסופר־פארם</span></td><td class="price">185 ₪</td>
+        </tr>
+        <tr>
+          <td><span class="pname">Instant Age Rewind Eraser</span><span class="brand">Maybelline</span></td>
+          <td><span class="shade">06 Neutralizer</span></td>
+          <td><b>הגרסה הזולה.</b> גוון 06 הוא גוון מנטרל אפרסקי, וקיים ברשימת הגוונים
+          הישראלית של המותג. <b>אזהרה חשובה:</b> הנוסחה הזו <b>מחזירת אור</b> — בדיוק
+          המנגנון שגרם לך להיראות חיוורת. השתמשי בו <b>רק כקורקטור נקודתי בעומק השקע</b>,
+          לא ככיסוי על כל הרצועה.</td>
+          <td><span class="where sp">סופר־פארם</span><br><span class="tier">המחיר נצפה ב־cosmetix · מחירון 60.90 ₪</span></td><td class="price">44.60 ₪</td>
+        </tr>
+        <tr>
+          <td><span class="pname">מה שכבר יש לך</span><span class="brand">— בלי לקנות כלום</span></td>
+          <td><span class="shade">ברונזר/סומק קרמי</span></td>
+          <td><b>לנסות לפני שקונים.</b> נגיעה מיקרוסקופית מהברונזר הקרמי או מסומק אפרסקי,
+          מעורבבת לתוך הקונסילר על גב היד, עושה חלק ניכר מאותה עבודה. אם זה פותר לך את זה —
+          חסכת. אם לא, זו הסיבה שקורקטור ייעודי קיים.</td>
+          <td><span class="where il">בבית</span></td><td class="price">0 ₪</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <h3 style="font-size:25px;margin-bottom:16px">הרשימה המלאה</h3>
@@ -2715,7 +2924,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
 <path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
-      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcundereyeb)"><path d="M234,238 C258,238 276,244 288,250 L252,300 Z" fill="var(--z-conceal)" fill-opacity=".55"/><path d="M186,238 C162,238 144,244 132,250 L168,300 Z" fill="var(--z-conceal)" fill-opacity=".55"/></g></svg><figcaption><span class="mk">✕</span>עוד ועוד קונסילר</figcaption></figure><figure class="vs-cell good"><svg class="fig" viewBox="112 196 196 118" role="img" aria-label="שליש פנימי בלבד ונקודת אור — נכון"><defs>
+      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcundereyeb)"><path d="M234,238 C258,238 276,244 288,250 L252,300 Z" fill="var(--z-conceal)" fill-opacity=".55"/><path d="M186,238 C162,238 144,244 132,250 L168,300 Z" fill="var(--z-conceal)" fill-opacity=".55"/></g></svg><figcaption><span class="mk">✕</span>עוד ועוד קונסילר</figcaption></figure><figure class="vs-cell good"><svg class="fig" viewBox="112 196 196 118" role="img" aria-label="שליש פנימי בלבד, וחום כלפי חוץ — נכון"><defs>
   <marker id="arundereyeg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5"
           orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 Z" fill="context-stroke"/></marker>
   <clipPath id="fcundereyeg"><path d="M210,68 C272,68 330,112 334,192 C336,234 330,264 321,294 C310,338 291,378 261,408 C246,423 227,434 210,434 C193,434 174,423 159,408 C129,378 110,338 99,294 C90,264 84,234 86,192 C90,112 148,68 210,68 Z"/></clipPath>
@@ -2740,7 +2949,7 @@ footer{ margin-top:clamp(56px,8vw,96px); padding-top:26px; border-top:1px solid 
 <path d="M228,201 C244,187 274,183 296,193 C291,199 282,197 269,198 C253,200 238,204 228,206 Z"
       fill="var(--skin-line)" fill-opacity="0.72"/>
 <path d="M192,201 C176,187 146,183 124,193 C129,199 138,197 151,198 C167,200 182,204 192,206 Z"
-      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcundereyeg)"><path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z" fill="var(--z-conceal)" fill-opacity=".7"/><path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z" fill="var(--z-conceal)" fill-opacity=".7"/></g><circle cx="233" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".9"/><circle cx="187" cy="226" r="6" fill="var(--z-glow)" fill-opacity=".9"/></svg><figcaption><span class="mk">✓</span>שליש פנימי + נקודת אור</figcaption></figure></div>
+      fill="var(--skin-line)" fill-opacity="0.72"/><g clip-path="url(#fcundereyeg)"><path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z" fill="var(--z-conceal)" fill-opacity=".7"/><path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z" fill="var(--z-conceal)" fill-opacity=".7"/></g><path d="M256,262 C268,258 278,252 288,244" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="9" stroke-linecap="round"/><path d="M164,262 C152,258 142,252 132,244" fill="none" stroke="var(--z-bronze)" stroke-opacity=".5" stroke-width="9" stroke-linecap="round"/></svg><figcaption><span class="mk">✓</span>שליש פנימי + חום כלפי חוץ</figcaption></figure></div>
     </div></div>
 
     <div class="dont"><span class="x">✕</span><div>

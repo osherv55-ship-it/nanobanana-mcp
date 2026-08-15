@@ -28,9 +28,13 @@ def eye_bad(u):
 def eye_good(u):
     ov = clipped(u, f'<path d="M231,240 C236,250 244,255 253,255 C244,262 233,258 228,248 Z" fill="{Z["conceal"]}" fill-opacity=".7"/>'
                     f'<path d="M189,240 C184,250 176,255 167,255 C176,262 187,258 192,248 Z" fill="{Z["conceal"]}" fill-opacity=".7"/>')
-    ov += (f'<circle cx="233" cy="226" r="6" fill="{Z["glow"]}" fill-opacity=".9"/>'
-           f'<circle cx="187" cy="226" r="6" fill="{Z["glow"]}" fill-opacity=".9"/>')
-    return mini(u, VB_EYE, ov, hair=False, label="שליש פנימי בלבד ונקודת אור — נכון")
+    # no inner-corner highlight: on this face a third light source in the same
+    # strip is what turns the under-eye pale. Warmth goes outward instead.
+    ov += (f'<path d="M256,262 C268,258 278,252 288,244" fill="none" stroke="{Z["bronze"]}"'
+           f' stroke-opacity=".5" stroke-width="9" stroke-linecap="round"/>'
+           f'<path d="M164,262 C152,258 142,252 132,244" fill="none" stroke="{Z["bronze"]}"'
+           f' stroke-opacity=".5" stroke-width="9" stroke-linecap="round"/>')
+    return mini(u, VB_EYE, ov, hair=False, label="שליש פנימי בלבד, וחום כלפי חוץ — נכון")
 
 
 # ---------- 2. blush: low on the apple vs high toward the temple ----------
@@ -107,7 +111,7 @@ def freck_good(u):
 
 
 PAIRS = {
- "undereye": (eye_bad, eye_good, "עוד ועוד קונסילר", "שליש פנימי + נקודת אור"),
+ "undereye": (eye_bad, eye_good, "עוד ועוד קונסילר", "שליש פנימי + חום כלפי חוץ"),
  "blush":    (blush_bad, blush_good, "נמוך על התפוח", "גבוה, מופנה לרקה"),
  "glow":     (glow_bad, glow_good, "נצנץ על אף ומצח", "סאטן על עצם הלחי"),
  "motion":   (motion_bad, motion_good, "מריחה במעגלים", "לחיצות מלמעלה"),

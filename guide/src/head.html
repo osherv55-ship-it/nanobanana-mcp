@@ -16,6 +16,7 @@
   /* face-map zone hues — mid-tone so they read on both grounds */
   --z-red:#2E8C68; --z-pore:#4E79AC; --z-bronze:#A96A2C;
   --z-blush:#C4557C; --z-glow:#C89322; --z-conceal:#7A68BC; --z-powder:#7E8794;
+  --z-trough:#46609B; --z-peach:#D98A62;
   /* the chart itself is "paper" in both themes so zone colour reads identically */
   --skin:#F4E7DC; --skin-line:#5A4740; --skin-edge:#B99C89; --hair:#937052;
 }
@@ -274,8 +275,14 @@ tbody tr.grouprow td small{ font-family:var(--sans); font-weight:400; font-size:
 .vs-cell.good{ border-color:var(--accent-line) }
 .vs-cell.good figcaption{ color:var(--accent-ink); background:var(--accent-soft); border-top-color:var(--accent-line) }
 .vs-cell.good .mk{ background:var(--accent) }
+.vs.trio{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+@media (max-width:540px){ .vs.trio{ grid-template-columns:1fr } }
+.vs-cell.seq{ border-color:var(--rule-strong) }
+.vs-cell.seq figcaption{ color:var(--ink); background:var(--surface-2); border-top-color:var(--rule) }
+.vs-cell.seq .mk{ background:var(--ink-soft); font-weight:700; font-variant-numeric:tabular-nums }
 :root[data-theme="dark"] .vs-cell.bad .mk,
-:root[data-theme="dark"] .vs-cell.good .mk{ color:#1a1420 }
+:root[data-theme="dark"] .vs-cell.good .mk,
+:root[data-theme="dark"] .vs-cell.seq .mk{ color:#1a1420 }
 
 /* ============ misc ============ */
 .note{ border:1px dashed var(--rule-strong); background:var(--surface); border-radius:11px; padding:17px 20px;
