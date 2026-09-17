@@ -14,8 +14,9 @@
 |---|---|---|
 | `aaa-playbook.md` | AAA — Advance Aesthetic Academy | רופאים (סקפטיים, 32–55) |
 | `glowence-playbook.md` | Glowence Aesthetics | מטופלות (30–60) |
+| `revenue-ideas.md` | AAA + Glowence | רעיונות להגדלת הכנסה — חוצה שני העסקים |
 
-כל פלייבוק מכסה את אותם שישה פרקים, בהתאמה לקהל:
+שני הפלייבוקים (AAA ו-Glowence) מכסים את אותם שישה פרקים, בהתאמה לקהל:
 1. **ההצעה** — משוואת הערך + Grand Slam Offer
 2. **לידים** — Core Four + מגנטי לידים
 3. **פרסום** — זוויות, הוקים, מבנה קמפיין
