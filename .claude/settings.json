@@ -5,10 +5,17 @@
         "source": "github",
         "repo": "mvanhorn/last30days-skill"
       }
+    },
+    "show-me-the-money": {
+      "source": {
+        "source": "github",
+        "repo": "osherv55-ship-it/show-me-the-money"
+      }
     }
   },
   "enabledPlugins": {
-    "last30days@last30days-skill": true
+    "last30days@last30days-skill": true,
+    "money@show-me-the-money": true
   },
   "hooks": {
     "SessionStart": [
