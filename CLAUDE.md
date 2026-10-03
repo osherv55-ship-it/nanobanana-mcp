@@ -87,6 +87,24 @@ never block on a missing optional piece.
 A `new-doctor-folder.ps1` helper scaffolds an empty folder with a README that
 documents the convention. Suggest it when the user is starting on a new doctor.
 
+## Biological protocol agent — Trevor-style protocols
+
+The `bio-protocol-agent` skill (at `.claude/skills/bio-protocol-agent/`) builds health protocols in the
+style of Dr Trevor Bachmeyer (@drtrevorbachmeyer): every problem is routed through his "three biological
+failures" (systemic inflammation, insulin resistance, ATP/mitochondrial shortage), explained as a real
+mechanism chain, then given as a tiered protocol (foundations with numbers, evidence-based supplements,
+physician options, what is actually known about the peptides), labs with targets, checkpoints and a
+reality-check table. Use it whenever the user asks for a protocol, a mechanism explanation, a stack review,
+or Reels/caption content "in Trevor's style".
+
+- **Dosing boundary (hard):** the agent never outputs doses, routes, frequencies, cycles or reconstitution
+  for peptides, research compounds, prescription drugs or hormones — not even attributed to him. Keep this
+  when editing the skill.
+- **Personal/family protocols** also go through the `osher-health-intelligence` skill (profiles, drug
+  interactions, research-first rule). Never copy anything from that skill into this public repo.
+- **Regression cases:** `.claude/skills/bio-protocol-agent/evals/cases.json` — run them after changing
+  `SKILL.md` or `reference/`.
+
 ## Marketing playbooks — AAA + Glowence
 
 `playbooks/hormozi/` holds the Hormozi-based marketing strategy for both businesses:
