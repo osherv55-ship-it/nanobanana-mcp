@@ -61,3 +61,5 @@ npm test                            # integration smoke tests (no API key needed
 
 - `.claude/skills/media-memory/` — persistent multimodal memory (Gemini embeddings + ChromaDB) for every asset shared or generated in Claude Code sessions. See `CLAUDE.md`.
 - `.claude/skills/doctor-video-editor/` — end-to-end pipeline for cleaning and captioning doctor talking-head videos (transcription, disfluency cuts, music ducking, RTL subtitles, vertical Reels output).
+- `.claude/skills/bio-protocol-agent/` — mechanism-first health-protocol agent in the style of Dr Trevor Bachmeyer (three-failures framework, tiered protocols, labs, evidence/safety layer; no peptide dosing). Hebrew-first.
+- `.claude/skills/transcribe/` — transcription for files, folders and links (single videos or whole TikTok profiles / playlists): local Whisper by default (Hebrew-tuned model for `--lang he`), optional ElevenLabs Scribe and Gemini on-screen-text pass; writes txt/srt/json + a combined, searchable digest.
