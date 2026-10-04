@@ -87,6 +87,16 @@ never block on a missing optional piece.
 A `new-doctor-folder.ps1` helper scaffolds an empty folder with a README that
 documents the convention. Suggest it when the user is starting on a new doctor.
 
+## Transcription — standard tool
+
+The `transcribe` skill (`.claude/skills/transcribe/`) is the default way to turn any audio/video into text:
+local files, folders, or links (a single TikTok/YouTube/Instagram video or a whole profile/playlist). Run
+`bash .claude/skills/transcribe/setup.sh` once per container, then `scripts/transcribe.py` (see its
+`SKILL.md`). Default engine is local Whisper (free, no quota); always pass `--lang he` for Hebrew (it
+switches to ivrit.ai's Hebrew-tuned model). Use Gemini (`--visual`) only for on-screen text, since the free
+tier runs out quickly. Bulk downloads of third-party videos are deleted after transcription and are not
+ingested into media-memory.
+
 ## Biological protocol agent — Trevor-style protocols
 
 The `bio-protocol-agent` skill (at `.claude/skills/bio-protocol-agent/`) builds health protocols in the

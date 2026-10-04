@@ -4,8 +4,9 @@ npm-debug.log*
 # media-memory: vector index is derived; rebuild via scripts/reindex.py
 .chroma/
 
-# media-memory skill local venv
+# skill-local venvs
 .claude/skills/media-memory/.venv/
+.claude/skills/transcribe/.venv/
 
 # python bytecode cache
 __pycache__/
