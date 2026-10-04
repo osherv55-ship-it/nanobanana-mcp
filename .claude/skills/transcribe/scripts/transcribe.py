@@ -277,14 +277,17 @@ def elevenlabs_run(path, args, tmp_dir):
     finally:
         if made and os.path.exists(audio):
             os.remove(audio)
-    # Group words into readable segments: new segment on speaker change, a pause > 0.8 s, or ~20 words.
+    # Group words into subtitle-sized segments: break on speaker change, a pause > 0.8 s, the end of a
+    # sentence once a few words are in, or a hard cap so a run-on sentence still splits.
     segments, cur = [], None
     for w in resp.get("words", []):
         if w.get("type") == "spacing":
             continue
         spk = w.get("speaker_id")
         gap = cur and w.get("start") is not None and w["start"] - cur["end"] > 0.8
-        if not cur or spk != cur["speaker"] or gap or len(cur["words"]) >= 20:
+        sentence_end = cur and len(cur["words"]) >= 4 and re.search(r"[.!?…]$", cur["words"][-1])
+        clause_end = cur and len(cur["words"]) >= 14 and cur["words"][-1].endswith(",")
+        if not cur or spk != cur["speaker"] or gap or sentence_end or clause_end or len(cur["words"]) >= 30:
             cur = {"start": w.get("start", 0), "end": w.get("end", 0), "speaker": spk, "words": []}
             segments.append(cur)
         cur["words"].append(w.get("text", ""))
@@ -348,8 +351,25 @@ def header_lines(rec):
     return lines
 
 
+def multi_speaker(rec):
+    return len({s.get("speaker") for s in rec.get("segments", []) if s.get("speaker")}) > 1
+
+
 def rec_text(rec):
     return " ".join(s["text"] for s in rec.get("segments", []) if s.get("text")).strip()
+
+
+def speaker_turns(rec):
+    """'speaker: text' lines, merging consecutive segments of the same speaker."""
+    turns = []
+    for s in rec.get("segments", []):
+        if not s.get("text"):
+            continue
+        if turns and turns[-1][0] == s.get("speaker"):
+            turns[-1][1].append(s["text"])
+        else:
+            turns.append((s.get("speaker"), [s["text"]]))
+    return "\n".join(f"{spk}: {' '.join(parts)}" for spk, parts in turns)
 
 
 def write_outputs(rec, out_dir):
@@ -357,7 +377,8 @@ def write_outputs(rec, out_dir):
     rec["text"] = rec_text(rec)
     with open(base + ".json", "w", encoding="utf-8") as f:
         json.dump(rec, f, ensure_ascii=False, indent=1)
-    body = header_lines(rec) + ["", rec["text"] or "(no speech detected)"]
+    multi = multi_speaker(rec)
+    body = header_lines(rec) + ["", (speaker_turns(rec) if multi else rec["text"]) or "(no speech detected)"]
     if rec.get("on_screen_text"):
         body += ["", "ON-SCREEN TEXT:"] + [f"- {t}" for t in rec["on_screen_text"]]
     if rec.get("visual"):
@@ -368,7 +389,7 @@ def write_outputs(rec, out_dir):
     if timed:
         with open(base + ".srt", "w", encoding="utf-8") as f:
             for i, s in enumerate(timed, 1):
-                spk = f"[{s['speaker']}] " if s.get("speaker") else ""
+                spk = f"[{s['speaker']}] " if multi and s.get("speaker") else ""
                 f.write(f"{i}\n{srt_time(s['start'])} --> {srt_time(s['end'])}\n{spk}{s['text']}\n\n")
 
 
@@ -376,7 +397,8 @@ def write_combined(recs, out_dir, pattern):
     recs = sorted(recs, key=lambda r: r["meta"].get("timestamp") or 0)
     def block(r):
         out = [f"## {fmt_date(r['meta'].get('timestamp'))} · {r['meta'].get('title') or r['id']}", ""]
-        out += [f"- {l}" for l in header_lines(r)] + ["", r.get("text") or "(no speech detected)"]
+        speech = speaker_turns(r) if multi_speaker(r) else r.get("text")
+        out += [f"- {l}" for l in header_lines(r)] + ["", speech or "(no speech detected)"]
         if r.get("on_screen_text"):
             out += ["", "**On-screen text:** " + " | ".join(r["on_screen_text"])]
         if r.get("visual"):

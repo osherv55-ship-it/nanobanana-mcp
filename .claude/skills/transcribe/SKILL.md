@@ -32,8 +32,12 @@ $T <inputs...> --out <folder> [options]
 | Hebrew | add `--lang he` | Uses `ivrit-ai/whisper-large-v3-turbo-ct2` (Hebrew-tuned). Always pass it for Hebrew content |
 | Bulk screening of hundreds of clips | add `--fast` | Whisper `small`, greedy — ~3× faster, slightly less accurate |
 | Text that only appears on screen (labels, overlays, captions) | add `--visual` | Gemini pass on top of the speech engine. Free-tier quota is per model per day; when spent, speech is still saved and a later run with `--visual` fills in only the missing part |
-| Speaker labels, word timing | `--engine elevenlabs` | Needs `ELEVENLABS_API_KEY` with Speech-to-Text permission (the same key doctor-video-editor uses) |
+| Most accurate, speaker labels — Hebrew, interviews, meetings, anything where exact wording matters | `--engine elevenlabs` | Needs `ELEVENLABS_API_KEY` (Speech-to-Text permission; same key doctor-video-editor uses). Seconds per clip, perfect on the Hebrew test set. Spends the ElevenLabs plan's STT allowance, so use whisper for bulk sweeps of hundreds of clips |
 | Speech + on-screen text in one call | `--engine gemini` | Free tier is limited; prefer whisper + `--visual` for big batches |
+
+**Picking by default:** if `ELEVENLABS_API_KEY` is set and the job is a handful of files, use
+`--engine elevenlabs`; for large batches (whole profiles) use whisper, optionally re-running only the
+`matches.md` hits through ElevenLabs. Without the key, whisper.
 
 Pass `--lang` whenever you know the language (`he`, `en`, `pt`, `ar`, …) — auto-detect works but a
 fixed language is faster and avoids misdetection on short clips.
