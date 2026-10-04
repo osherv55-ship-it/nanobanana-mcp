@@ -511,15 +511,21 @@ def main():
 
     def api_item(it, path):
         try:
-            if args.engine == "gemini":
+            jp = os.path.join(out_dir, it["id"] + ".json")
+            if os.path.exists(jp) and not args.force:
+                rec = json.load(open(jp, encoding="utf-8"))  # speech is done; only the visual pass is missing
+            elif args.engine == "gemini":
                 rec = gemini_run(path, full_pool)
             else:
                 rec = elevenlabs_run(path, args, media_dir)
-                if args.visual and not gemini_out.is_set():
-                    try:
-                        rec.update(gemini_run(path, lite_pool, visual_only=True))
-                    except gemini_pool.Exhausted:
-                        gemini_out.set()
+            if args.visual and not gemini_out.is_set() and not (rec.get("visual") or rec.get("on_screen_text")):
+                try:
+                    rec.update(gemini_run(path, lite_pool, visual_only=True))
+                except gemini_pool.Exhausted:
+                    gemini_out.set()
+                    log("[gemini] quota spent: remaining items keep speech only; rerun later with --visual")
+                except Exception as e:
+                    log(f"[visual] {it['id']}: {e}")
             rec.update(id=it["id"], url=it["url"], path=it["path"], meta=it["meta"])
             finish(it, path, rec)
             log(f"[done] {it['id']} ({len(rec_text(rec))} chars)")
